@@ -281,6 +281,7 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
   List<String> userFavoriteTypes = []; // Store user's favorite types from Quick Setup
   String userName = ''; // State variable for user name from Firestore
   late TabController _tabController; // Add TabController
+  String selectedFilter = 'Alle proeven'; // For the dropdown filter
   
   // Enhanced scroll tracking for better UX
   bool _showHeader = true;
@@ -377,6 +378,7 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
           userFavoriteTypes = savedTypes;
           // Auto-select Favorieten if user has preferences
           selectedTypes = ['Favorieten'];
+          selectedFilter = 'Favorieten';
         });
         print('🎯 Auto-selecting Favorieten filter for user ${user.email}');
       } else {
@@ -384,6 +386,7 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
         setState(() {
           userFavoriteTypes = [];
           selectedTypes = ['Alle proeven']; // Default for new users
+          selectedFilter = 'Alle proeven';
         });
         print('🎯 New user ${user.email} - no preferences found, using default filter');
       }
@@ -394,6 +397,7 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
       setState(() {
         userFavoriteTypes = [];
         selectedTypes = ['Alle proeven'];
+        selectedFilter = 'Alle proeven';
       });
     }
   }
@@ -568,11 +572,12 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
       );
     }
 
-    // SHOW LIST VIEW (Original build method content)
+    // SHOW LIST VIEW (Modernized build method)
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 375;
     final isLargeScreen = screenWidth > 414;
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       body: NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {
           if (notification is ScrollUpdateNotification) {
@@ -587,208 +592,249 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
           }
           return false;
         },
-            child: Column(
-              children: [
-                // Personalized greeting section - ALWAYS show this
-                if (_showHeader) Container(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Hi, ${userName.isNotEmpty ? userName : 'there'} 👋',
-                        style: TextStyle(
-                          fontSize: isSmallScreen ? 20 : 24,
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF535B22),
-                        ),
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        icon: const Icon(Icons.help_outline, color: Color(0xFF535B22)),
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => const HelpScreen()),
-                          );
-                        },
-                      ),
-                    ],
+        child: Column(
+          children: [
+            // Modern header with greeting
+            if (_showHeader) Container(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+              color: Colors.white,
+              child: Row(
+                children: [
+                  Text(
+                    'Hi, ${userName.isNotEmpty ? userName : 'there'} 👋',
+                    style: TextStyle(
+                      fontSize: isSmallScreen ? 20 : 24,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF535B22),
+                    ),
                   ),
-                ),
-                
-                // Search and filter section
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      // Search bar
-                      TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Zoek proeven...',
-                          prefixIcon: const Icon(Icons.search),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            searchQuery = value;
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      // Filter chips
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: matchTypes.map((type) {
-                            final isSelected = selectedTypes.contains(type);
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 8),
-                              child: FilterChip(
-                                label: Text(type),
-                                selected: isSelected,
-                                onSelected: (selected) {
-                                  setState(() {
-                                    if (selected) {
-                                      selectedTypes.add(type);
-                                    } else {
-                                      selectedTypes.remove(type);
-                                    }
-                                  });
-                                },
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                
-                // Proper tab bar with correct structure - ALWAYS show this
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildTabButton('Alle', selectedTab == 0),
-                      _buildTabButton('Beschikbaar', selectedTab == 1),
-                      _buildTabButton('Binnenkort', selectedTab == 2),
-                      _buildTabButton('Gesloten', selectedTab == 3),
-                    ],
-                  ),
-                ),
-                
-                const SizedBox(height: 8),
-                
-                // Content area - show matches or empty state
-                Expanded(
-                  child: FutureBuilder<List<Map<String, dynamic>>>(
-                    future: MatchService.fetchMatches(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
-                      if (snapshot.hasError) {
-                        // Show error state but keep the proper UI structure
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.error_outline, size: 64, color: Colors.grey[400]),
-                              const SizedBox(height: 16),
-                              Text(
-                                'Er is een probleem met het laden van proeven',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey[700],
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Controleer je internetverbinding en probeer het opnieuw',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey[600],
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 16),
-                              ElevatedButton(
-                                onPressed: () {
-                                  setState(() {}); // Re-runs the future builder
-                                },
-                                child: const Text('Opnieuw proberen'),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-
-                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        // Show empty state but keep the proper UI structure
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
-                              const SizedBox(height: 16),
-                              Text(
-                                'Geen proeven gevonden',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey[700],
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Pas je zoekopdracht of filters aan, of probeer het later opnieuw',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey[600],
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 16),
-                              ElevatedButton(
-                                onPressed: () {
-                                  setState(() {}); // Re-runs the future builder
-                                },
-                                child: const Text('Opnieuw proberen'),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-
-                      // This is where the match list is built.
-                      // I will modify the onTap for the cards inside _buildFullMatchListWidget
-                      return _buildFullMatchListWidget(snapshot);
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.help_outline, color: Color(0xFF535B22)),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => const HelpScreen()),
+                      );
                     },
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        );
-      }
+            
+            // Modern search and filter section
+            Container(
+              padding: const EdgeInsets.all(20),
+              color: Colors.white,
+              child: Column(
+                children: [
+                  // Search bar with modern styling
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Zoek proeven…',
+                        hintStyle: TextStyle(color: Colors.grey[600]),
+                        prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          searchQuery = value;
+                        });
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  
+                  // Modern filter dropdown
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: selectedFilter,
+                        isExpanded: true,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        items: matchTypes.map((String type) {
+                          return DropdownMenuItem<String>(
+                            value: type,
+                            child: Text(type),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          if (newValue != null) {
+                            setState(() {
+                              selectedFilter = newValue;
+                              selectedTypes = [newValue];
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            // Modern tab bar with correct labels
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildModernTabButton('Alle', selectedTab == 0),
+                  _buildModernTabButton('Inschrijven', selectedTab == 1),
+                  _buildModernTabButton('Binnenkort', selectedTab == 2),
+                  _buildModernTabButton('Gesloten', selectedTab == 3),
+                ],
+              ),
+            ),
+            
+            // Result count display
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              color: Colors.white,
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: MatchService.fetchMatches(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final matches = snapshot.data!;
+                    final filteredMatches = _getFilteredMatches(matches);
+                    return Text(
+                      '${filteredMatches.length} resultaten',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    );
+                  }
+                  return Text(
+                    '0 resultaten',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  );
+                },
+              ),
+            ),
+            
+            // Content area with modern styling
+            Expanded(
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: MatchService.fetchMatches(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-  // Helper method to build tab buttons with proper styling
-  Widget _buildTabButton(String label, bool isSelected) {
-    return TextButton(
-      onPressed: () {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.error_outline, size: 64, color: Colors.grey[400]),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Er is een probleem met het laden van proeven',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[700],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Controleer je internetverbinding en probeer het opnieuw',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[600],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() {}); // Re-runs the future builder
+                            },
+                            child: const Text('Opnieuw proberen'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Geen proeven gevonden',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[700],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Pas je zoekopdracht of filters aan, of probeer het later opnieuw',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[600],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() {}); // Re-runs the future builder
+                            },
+                            child: const Text('Opnieuw proberen'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  return _buildModernMatchList(snapshot);
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Helper method to build modern tab buttons
+  Widget _buildModernTabButton(String label, bool isSelected) {
+    return GestureDetector(
+      onTap: () {
         setState(() {
-          // Map the new tab structure to the existing logic
           switch (label) {
             case 'Alle':
               selectedTab = 0;
               break;
-            case 'Beschikbaar':
+            case 'Inschrijven':
               selectedTab = 1;
               break;
             case 'Binnenkort':
@@ -800,45 +846,38 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
           }
         });
       },
-      child: Text(
-        label,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: isSelected ? const Color(0xFF535B22) : Colors.grey,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: isSelected ? const Color(0xFF535B22) : Colors.transparent,
+              width: 2,
+            ),
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            color: isSelected ? const Color(0xFF535B22) : Colors.grey[600],
+          ),
         ),
       ),
     );
   }
 
-  // In _buildMatchCard, change the onTap parameter
-  // from: onTap: () => Navigator.push(...),
-  // to:   onTap: () => setState(() => _selectedMatch = match),
-  
-  // The actual implementation will find the _MatchCard widget and change its onTap.
-  // Let's assume _buildFullMatchListWidget builds the cards.
-  
-  Widget _buildFullMatchListWidget(AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-    final matches = snapshot.data ?? [];
-
-    // --- Patch: Robustly handle Timestamp/String for registration_text and date ---
+  // Helper method to get filtered matches
+  List<Map<String, dynamic>> _getFilteredMatches(List<Map<String, dynamic>> matches) {
+    // Categorize matches
     List<Map<String, dynamic>> beschikbaar = [];
     List<Map<String, dynamic>> binnenkort = [];
     List<Map<String, dynamic>> gesloten = [];
 
     for (final match in matches) {
       final regText = (match['registration_text'] ?? match['raw']?['registration_text'] ?? '').toString().toLowerCase();
-      final dateRaw = match['date'] ?? match['raw']?['date'];
-      String dateStr;
-      if (dateRaw is Timestamp) {
-        dateStr = dateRaw.toDate().toIso8601String();
-      } else if (dateRaw is DateTime) {
-        dateStr = dateRaw.toIso8601String();
-      } else if (dateRaw is String) {
-        dateStr = dateRaw;
-      } else {
-        dateStr = '';
-      }
-
+      
       if (regText == 'inschrijven') {
         beschikbaar.add(match);
       } else if (regText.startsWith('vanaf ')) {
@@ -846,30 +885,11 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
       } else if (regText == 'niet mogelijk' || regText == 'niet meer mogelijk') {
         gesloten.add(match);
       } else {
-        // Fallback: if registration_text is missing, treat as closed
         gesloten.add(match);
       }
     }
 
-    // Sort each tab by date
-    int dateCompare(Map<String, dynamic> a, Map<String, dynamic> b) {
-      final dateA = a['date'] ?? a['raw']?['date'];
-      final dateB = b['date'] ?? b['raw']?['date'];
-      DateTime? dtA;
-      DateTime? dtB;
-      if (dateA is Timestamp) dtA = dateA.toDate();
-      else if (dateA is DateTime) dtA = dateA;
-      else if (dateA is String) { try { dtA = DateTime.parse(dateA); } catch (_) {} }
-      if (dateB is Timestamp) dtB = dateB.toDate();
-      else if (dateB is DateTime) dtB = dateB;
-      else if (dateB is String) { try { dtB = DateTime.parse(dateB); } catch (_) {} }
-      if (dtA == null || dtB == null) return 0;
-      return dtA.compareTo(dtB);
-    }
-    beschikbaar.sort(dateCompare);
-    binnenkort.sort(dateCompare);
-    gesloten.sort(dateCompare);
-
+    // Get matches for selected tab
     List<Map<String, dynamic>> tabMatches;
     switch (selectedTab) {
       case 1:
@@ -885,11 +905,12 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
         tabMatches = [...beschikbaar, ...binnenkort, ...gesloten];
     }
 
-    // Filter matches based on search query and selected types
-    final filteredMatches = tabMatches.where((match) {
+    // Apply search and filter
+    return tabMatches.where((match) {
       final title = match['title']?.toString().toLowerCase() ?? '';
       final organizer = match['organizer']?.toString().toLowerCase() ?? '';
       final type = match['type']?.toString().toLowerCase() ?? '';
+      
       // Search filter
       if (searchQuery.isNotEmpty) {
         final query = searchQuery.toLowerCase();
@@ -897,16 +918,25 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
           return false;
         }
       }
+      
       // Type filter
       if (selectedTypes.isNotEmpty && !selectedTypes.contains('Alle proeven')) {
         if (!selectedTypes.any((selectedType) => type.contains(selectedType.toLowerCase()))) {
           return false;
         }
       }
+      
       return true;
     }).toList();
+  }
+
+  // Modern match list builder
+  Widget _buildModernMatchList(AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+    final matches = snapshot.data ?? [];
+    final filteredMatches = _getFilteredMatches(matches);
 
     return ListView.builder(
+      padding: const EdgeInsets.symmetric(vertical: 8),
       itemCount: filteredMatches.length,
       itemBuilder: (context, index) {
         final match = filteredMatches[index];
@@ -917,14 +947,12 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
             setState(() {
               _selectedMatch = match;
             });
-            // MijnAgendaPage.addRecentlyViewed(match); // Temporarily commented out
           },
         );
       },
     );
   }
 }
-
 
 // Settings page now uses the standalone InstellingenPage from instellingen_page.dart
 
