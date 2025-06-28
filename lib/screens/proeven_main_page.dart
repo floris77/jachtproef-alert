@@ -661,9 +661,6 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                         value: selectedFilter,
                         isExpanded: true,
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
                         items: matchTypes.map((String type) {
                           return DropdownMenuItem<String>(
                             value: type,
