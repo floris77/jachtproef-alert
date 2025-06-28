@@ -1,0 +1,9 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // TEMPORARY DEBUG: Allow anyone to read/write everything (NO AUTHENTICATION REQUIRED)
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+} 

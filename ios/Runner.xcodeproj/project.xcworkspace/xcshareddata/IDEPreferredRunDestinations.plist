@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDEPreferredRunDestinations</key>
+	<array>
+		<dict>
+			<key>deviceIdentifier</key>
+			<string>com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation</string>
+			<key>displayName</key>
+			<string>iPhone SE (3rd generation)</string>
+			<key>runtimeIdentifier</key>
+			<string>com.apple.CoreSimulator.SimRuntime.iOS-18-5</string>
+		</dict>
+		<dict>
+			<key>deviceIdentifier</key>
+			<string>com.apple.CoreSimulator.SimDeviceType.iPhone-16</string>
+			<key>displayName</key>
+			<string>iPhone 16</string>
+			<key>runtimeIdentifier</key>
+			<string>com.apple.CoreSimulator.SimRuntime.iOS-18-5</string>
+		</dict>
+		<dict>
+			<key>deviceIdentifier</key>
+			<string>com.apple.CoreSimulator.SimDeviceType.iPad-10th-generation</string>
+			<key>displayName</key>
+			<string>iPad (10th generation)</string>
+			<key>runtimeIdentifier</key>
+			<string>com.apple.CoreSimulator.SimRuntime.iOS-18-5</string>
+		</dict>
+	</array>
+</dict>
+</plist> 

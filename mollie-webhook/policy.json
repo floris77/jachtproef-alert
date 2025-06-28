@@ -1,0 +1,10 @@
+{
+  "constraint": "constraints/iam.allowedPolicyMemberDomains",
+  "etag": "CK73xMIGEPihvvYC",
+  "listPolicy": {
+    "allowedValues": [
+      "nordrobe.com"
+    ]
+  },
+  "updateTime": "2025-06-17T09:55:58.785355Z"
+}

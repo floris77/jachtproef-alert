@@ -1,0 +1,20 @@
+3159:default	19:13:20.254755+0200	runningboardd	Acquiring assertion targeting [app<com.fhkjin1.JachtProef-Alert(501)>:14745] from originator [osservice<com.apple.coreservices.launchservicesd>:373] with description <RBSAssertionDescriptor| "frontmost:14745" ID:407-373-5318 target:14745 attributes:[\
+3162:default	19:13:20.254832+0200	runningboardd	Assertion 407-373-5318 (target:[app<com.fhkjin1.JachtProef-Alert(501)>:14745]) will be created as active\
+3184:default	19:13:20.256098+0200	runningboardd	Acquiring assertion targeting [app<com.fhkjin1.JachtProef-Alert(501)>:14745] from originator [osservice<com.apple.coreservices.launchservicesd>:373] with description <RBSAssertionDescriptor| "notification:14745" ID:407-373-5319 target:14745 attributes:[\
+3188:default	19:13:20.256129+0200	runningboardd	Assertion 407-373-5319 (target:[app<com.fhkjin1.JachtProef-Alert(501)>:14745]) will be created as active\
+3198:default	19:13:20.263812+0200	runningboardd	Calculated state for app<com.fhkjin1.JachtProef-Alert(501)>: running-active (role: UserInteractiveFocal) (endowments: <private>)\
+3199:default	19:13:20.264241+0200	runningboardd	Acquiring assertion targeting [app<com.fhkjin1.JachtProef-Alert(501)>:14745] from originator [osservice<com.apple.WindowServer(88)>:403] with description <RBSAssertionDescriptor| "FUSBFrontmostProcess" ID:407-403-5320 target:14745 attributes:[\
+3203:default	19:13:20.264401+0200	runningboardd	Assertion 407-403-5320 (target:[app<com.fhkjin1.JachtProef-Alert(501)>:14745]) will be created as active\
+3206:default	19:13:20.264972+0200	WindowServer	Received state update for 14745 (app<com.fhkjin1.JachtProef-Alert(501)>, running-active-NotVisible\
+3211:default	19:13:20.267043+0200	gamepolicyd	Received state update for 14745 (app<com.fhkjin1.JachtProef-Alert(501)>, running-active-NotVisible\
+3212:default	19:13:20.267054+0200	PerfPowerServices	Received state update for 14745 (app<com.fhkjin1.JachtProef-Alert(501)>, running-active-Visible\
+3213:default	19:13:20.269120+0200	runningboardd	Calculated state for app<com.fhkjin1.JachtProef-Alert(501)>: running-active (role: UserInteractiveFocal) (endowments: <private>)\
+3214:default	19:13:20.269464+0200	WindowServer	Received state update for 14745 (app<com.fhkjin1.JachtProef-Alert(501)>, running-active-NotVisible\
+3215:default	19:13:20.269733+0200	gamepolicyd	Received state update for 14745 (app<com.fhkjin1.JachtProef-Alert(501)>, running-active-NotVisible\
+3216:default	19:13:20.269874+0200	PerfPowerServices	Received state update for 14745 (app<com.fhkjin1.JachtProef-Alert(501)>, running-active-Visible\
+3218:default	19:13:20.273017+0200	runningboardd	Calculated state for app<com.fhkjin1.JachtProef-Alert(501)>: running-active (role: UserInteractiveFocal) (endowments: <private>)\
+3224:default	19:13:20.273509+0200	WindowServer	Received state update for 14745 (app<com.fhkjin1.JachtProef-Alert(501)>, running-active-NotVisible\
+3225:default	19:13:20.273802+0200	gamepolicyd	Received state update for 14745 (app<com.fhkjin1.JachtProef-Alert(501)>, running-active-NotVisible\
+3226:default	19:13:20.273864+0200	PerfPowerServices	Received state update for 14745 (app<com.fhkjin1.JachtProef-Alert(501)>, running-active-Visible\
+3227:default	19:13:20.276499+0200	UIKitSystem	Received state update for 14745 (app<com.fhkjin1.JachtProef-Alert(501)>, running-active-NotVisible\
+3228:default	19:13:20.276664+0200	UIKitSystem	Received state update for 14745 (app<com.fhkjin1.JachtProef-Alert(501)>, running-active-NotVisible\

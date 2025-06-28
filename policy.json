@@ -1,0 +1,9 @@
+{
+  "constraint": "constraints/iam.allowedPolicyMemberDomains",
+  "listPolicy": {
+    "allowedValues": [
+      "C027b9m5v",
+      "C*"
+    ]
+  }
+} 

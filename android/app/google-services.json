@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "939285492657",
+    "project_id": "jachtproef-alert",
+    "storage_bucket": "jachtproef-alert.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:939285492657:android:05c0987c2ced68467a4390",
+        "android_client_info": {
+          "package_name": "com.jachtproef.alert"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "939285492657-12vtoejlcb4llkmqslimfv4qvqoeh9j7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsIPbkmgYZmldtc8v7E_wa26OiTzG4fW0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "939285492657-9bf382i0g86ntrm0e4hegpqi6shtmrnj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "939285492657-1fs80e92241c7k7ikcq7f6aqeot7etmo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.fhkjin1.JachtProef-Alert",
+                "app_store_id": "6744362363"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>BuildSystemType</key>
+	<string>Original</string>
+	<key>IDEWorkspaceSharedSettings_AutocreateContextsIfNeeded</key>
+	<false/>
+	<key>IDEWorkspaceSharedSettings_PreferredRunDestinations</key>
+	<array>
+		<dict>
+			<key>deviceIdentifier</key>
+			<string>4BB80019-DD20-4EFA-AAA6-E1A771818D62</string>
+			<key>displayName</key>
+			<string>iPhone SE (3rd gen)</string>
+		</dict>
+		<dict>
+			<key>deviceIdentifier</key>
+			<string>C7ECEBCE-EE53-4E8C-822F-882B55C52AA6</string>
+			<key>displayName</key>
+			<string>iPhone 16</string>
+		</dict>
+		<dict>
+			<key>deviceIdentifier</key>
+			<string>654F2800-AD73-44F6-92F4-DAC3F494ADB7</string>
+			<key>displayName</key>
+			<string>iPad (A16)</string>
+		</dict>
+	</array>
+</dict>
+</plist>

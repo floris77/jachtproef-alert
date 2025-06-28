@@ -1,0 +1,81 @@
+{
+  // Cursor Settings for Flutter Multi-App Development
+  // Place this in your Cursor settings or workspace settings
+  
+  // Dart & Flutter Configuration
+  "dart.flutterSdkPath": "/opt/homebrew/Caskroom/flutter",
+  "dart.debugExternalPackageLibraries": false,
+  "dart.debugSdkLibraries": false,
+  "dart.openDevTools": "flutter",
+  "dart.previewLsp": true,
+  "dart.runPubGetOnPubspecChanges": true,
+  "dart.warnWhenEditingFilesOutsideWorkspace": true,
+  
+  // Project Isolation Settings
+  "dart.analysisServerFolding": true,
+  "dart.closingLabels": true,
+  "dart.completeFunctionCalls": true,
+  "dart.enableSdkFormatter": true,
+  "dart.insertArgumentPlaceholders": true,
+  "dart.lineLength": 120,
+  
+  // File Associations for Flutter
+  "files.associations": {
+    "*.dart": "dart",
+    "pubspec.yaml": "yaml",
+    "pubspec.lock": "yaml",
+    "analysis_options.yaml": "yaml"
+  },
+  
+  // Auto-save and formatting
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.organizeImports": true
+  },
+  
+  // Flutter Build Performance
+  "dart.buildRunnerAdditionalArgs": [
+    "--delete-conflicting-outputs"
+  ],
+  
+  // Project-specific exclusions (add to workspace settings)
+  "files.exclude": {
+    "**/build/**": true,
+    "**/.dart_tool/**": true,
+    "**/ios/Pods/**": true,
+    "**/ios/.symlinks/**": true,
+    "**/android/.gradle/**": true,
+    "**/android/app/build/**": true,
+    "**/.flutter-plugins": true,
+    "**/.flutter-plugins-dependencies": true
+  },
+  
+  // Watcher exclusions for performance
+  "files.watcherExclude": {
+    "**/build/**": true,
+    "**/.dart_tool/**": true,
+    "**/ios/Pods/**": true,
+    "**/ios/.symlinks/**": true,
+    "**/android/.gradle/**": true,
+    "**/android/app/build/**": true
+  },
+  
+  // Search exclusions
+  "search.exclude": {
+    "**/build/**": true,
+    "**/.dart_tool/**": true,
+    "**/ios/Pods/**": true,
+    "**/android/.gradle/**": true
+  },
+  
+  // Terminal settings for Flutter
+  "terminal.integrated.env.osx": {
+    "FLUTTER_ROOT": "/opt/homebrew/Caskroom/flutter"
+  },
+  
+  // Multi-root workspace support
+  "extensions.ignoreRecommendations": false,
+  "workbench.settings.enableNaturalLanguageSearch": false
+} 

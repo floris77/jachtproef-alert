@@ -1,0 +1,100 @@
+\f0\fs24 \cf0 default	19:13:16.157399+0200	airportd	[corewifi] END REQ [GET INTF NAME] took 0.026841167s (pid=490 proc=symptomsd bundleID=com.apple.symptomsd codesignID=com.apple.symptomsd service=com.apple.private.corewifi-xpc qos=17 intf=(null) uuid=9D825 err=0 reply=\{\
+default	19:13:16.195147+0200	symptomsd	L2 Metrics on en0: rssi: -52 [-1,-1] -> -52, snr: 34 (cca [wake/total] self/other/intf): [0,0]/[0,0]/[0,0]/7 (txFrames/txReTx/txFail): 0/0/0 -> (was/is) 0/0, txRate: 866.0, rxRate: 866.0\
+default	19:13:16.198647+0200	airportd	[corewifi] BEGIN REQ [GET BSSID] (pid=490 proc=symptomsd bundleID=com.apple.symptomsd codesignID=com.apple.symptomsd service=com.apple.private.corewifi-xpc qos=17 intf=(null) uuid=B9B66 info=(null))\
+default	19:13:16.201704+0200	airportd	[corewifi] END REQ [GET BSSID] took 0.002616625s (pid=490 proc=symptomsd bundleID=com.apple.symptomsd codesignID=com.apple.symptomsd service=com.apple.private.corewifi-xpc qos=17 intf=(null) uuid=B9B66 err=0 reply=\{\
+default	19:13:16.221856+0200	tccd	AUTHREQ_RESULT: msgID=704.19506, authValue=2, authReason=4, authVersion=1, desired_auth=0, error=(null),\
+default	19:13:16.223539+0200	replayd	 [INFO] -[RPClient hasScreenCaptureAccessWithAuditToken:fetchCurrentProcess:currentProcessShareableContentFilter:contentPickerFilter:error:]:2024 TCC Allow\
+default	19:13:16.234643+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d9540) windowID=216 windowTitle=com.apple.Spotlight windowOwner=<private> isOnScreen=1 isActive=1 frame=(596.000000,-1080.000000,32.000000,30.000000)\
+default	19:13:16.239711+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d81e0) windowID=189 windowTitle=com.apple.Spotlight windowOwner=<private> isOnScreen=1 isActive=1 frame=(2516.000000,-1080.000000,32.000000,30.000000)\
+default	19:13:16.502280+0200	OneMenu	GetAPFSVolumeRole error for <private>\
+default	19:13:16.505914+0200	OneMenu	GetAPFSVolumeRole error for <private>\
+default	19:13:16.506544+0200	OneMenu	GetAPFSVolumeRole error for <private>\
+default	19:13:16.507911+0200	OneMenu	GetAPFSVolumeRole error for <private>\
+default	19:13:16.513622+0200	OneMenu	com.apple.MAIL : 0\
+default	19:13:16.513629+0200	OneMenu	com.apple.cache_delete_app_container_caches : 352436224\
+default	19:13:16.513637+0200	OneMenu	com.apple.quicklook.ThumbnailsAgent.CacheDelete : 5978300\
+default	19:13:16.513643+0200	OneMenu	com.apple.cloudd.cache-delete : 0\
+default	19:13:16.513650+0200	OneMenu	com.apple.triald.cache-delete : 0\
+default	19:13:16.513658+0200	OneMenu	com.apple.VIDEO : 0\
+default	19:13:16.513664+0200	OneMenu	com.apple.TMCacheDelete : 0\
+default	19:13:16.513670+0200	OneMenu	com.apple.mobileassetd.cache-delete : 4581986816\
+default	19:13:16.513708+0200	OneMenu	com.apple.metadata.mds.cachedelete : 183066624\
+default	19:13:16.513715+0200	OneMenu	com.apple.cloudd.system.cache-delete : 0\
+default	19:13:16.513742+0200	OneMenu	com.apple.ibooks.CacheDeleteExtension : 0\
+default	19:13:16.513761+0200	OneMenu	com.apple.geod.cachedelete : 0\
+default	19:13:16.513777+0200	OneMenu	com.apple.idleassetsd.CacheDelete : 0\
+default	19:13:16.513803+0200	OneMenu	com.apple.corespotlightd.cachedelete : 0\
+default	19:13:16.513812+0200	OneMenu	com.apple.AssetCache.builtin.CacheDelete : 118784\
+default	19:13:16.513842+0200	OneMenu	com.apple.bird.cache-delete : 0\
+default	19:13:16.513851+0200	OneMenu	com.apple.Music.MusicCacheExtension : 0\
+default	19:13:16.513886+0200	OneMenu	com.apple.cache_delete_orphan_dir_handler : 0\
+default	19:13:16.513912+0200	OneMenu	com.apple.MailCacheDelete : 0\
+default	19:13:16.513921+0200	OneMenu	com.apple.TV.TVCacheExtension : 0\
+default	19:13:16.513946+0200	OneMenu	com.apple.appstoreagent.CacheDelete : 0\
+default	19:13:16.513964+0200	OneMenu	com.apple.wallpaper.CacheDelete : 0\
+default	19:13:16.513973+0200	OneMenu	com.apple.replayd-cache-delete : 64\
+default	19:13:16.513994+0200	OneMenu	com.apple.triald.system.cache-delete : 0\
+default	19:13:16.514003+0200	OneMenu	com.apple.MOVIE : 0\
+default	19:13:16.514012+0200	OneMenu	com.apple.MUSIC : 0\
+default	19:13:16.514027+0200	OneMenu	com.apple.logd.cachedelete : 0\
+    "com.apple.bird.cache-delete" = 7131136;\
+default	19:13:16.514086+0200	OneMenu	com.apple.Safari.CacheDeleteExtension : 0\
+default	19:13:16.514092+0200	OneMenu	com.apple.FileProvider.cache-delete : 0\
+default	19:13:16.514121+0200	OneMenu	com.apple.MAIL : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.deleted_helper";\
+default	19:13:16.514149+0200	OneMenu	com.apple.quicklook.ThumbnailsAgent.CacheDelete : \{\
+    "CACHE_DELETE_PROCNAME" = "com.apple.quicklook.ThumbnailsA";\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.quicklook.ThumbnailsAgent";\
+default	19:13:16.514166+0200	OneMenu	com.apple.cloudd.cache-delete : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.cloudd";\
+default	19:13:16.514182+0200	OneMenu	com.apple.triald.cache-delete : \{\
+    "CACHE_DELETE_PROCNAME" = triald;\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.triald";\
+default	19:13:16.514197+0200	OneMenu	com.apple.VIDEO : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.deleted_helper";\
+default	19:13:16.514210+0200	OneMenu	com.apple.TMCacheDelete : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.backupd-helper";\
+default	19:13:16.514225+0200	OneMenu	com.apple.mobileassetd.cache-delete : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.mobileassetd";\
+default	19:13:16.514239+0200	OneMenu	com.apple.metadata.mds.cachedelete : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.mds";\
+default	19:13:16.514252+0200	OneMenu	com.apple.cloudd.system.cache-delete : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.cloudd";\
+default	19:13:16.514266+0200	OneMenu	com.apple.ibooks.CacheDeleteExtension : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.deleted_helper";\
+default	19:13:16.514280+0200	OneMenu	com.apple.geod.cachedelete : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.geodMachServiceBridge";\
+default	19:13:16.514295+0200	OneMenu	com.apple.idleassetsd.CacheDelete : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.idleassetsd";\
+default	19:13:16.514309+0200	OneMenu	com.apple.corespotlightd.cachedelete : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.corespotlightd";\
+default	19:13:16.514323+0200	OneMenu	com.apple.AssetCache.builtin.CacheDelete : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.AssetCache";\
+default	19:13:16.514338+0200	OneMenu	com.apple.bird.cache-delete : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.bird";\
+default	19:13:16.514350+0200	OneMenu	com.apple.Music.MusicCacheExtension : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.Music.MusicCacheExtension";\
+default	19:13:16.514365+0200	OneMenu	com.apple.cache_delete_orphan_dir_handler : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.deleted_helper";\
+default	19:13:16.514379+0200	OneMenu	com.apple.MailCacheDelete : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.MailCacheDelete";\
+default	19:13:16.514394+0200	OneMenu	com.apple.TV.TVCacheExtension : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.TV.TVCacheExtension";\
+default	19:13:16.514408+0200	OneMenu	com.apple.appstoreagent.CacheDelete : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.appstoreagent";\
+default	19:13:16.514422+0200	OneMenu	com.apple.wallpaper.CacheDelete : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.wallpaper.agent";\
+default	19:13:16.514436+0200	OneMenu	com.apple.replayd-cache-delete : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.replayd";\
+default	19:13:16.514451+0200	OneMenu	com.apple.triald.system.cache-delete : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.triald.system";\
+default	19:13:16.514475+0200	OneMenu	com.apple.MOVIE : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.deleted_helper";\
+default	19:13:16.514487+0200	OneMenu	com.apple.MUSIC : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.deleted_helper";\
+default	19:13:16.514501+0200	OneMenu	com.apple.logd.cachedelete : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.logd";\
+default	19:13:16.514516+0200	OneMenu	com.apple.Safari.CacheDeleteExtension : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.Safari.CacheDeleteExtension";\
+default	19:13:16.514534+0200	OneMenu	com.apple.FileProvider.cache-delete : \{\
+    "CACHE_DELETE_SIGNING_ID" = "com.apple.fileproviderd";\

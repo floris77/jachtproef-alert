@@ -1,0 +1,200 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2859
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww28860\viewh16620\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 default	19:13:16.157399+0200	airportd	[corewifi] END REQ [GET INTF NAME] took 0.026841167s (pid=490 proc=symptomsd bundleID=com.apple.symptomsd codesignID=com.apple.symptomsd service=com.apple.private.corewifi-xpc qos=17 intf=(null) uuid=9D825 err=0 reply=\{\
+    Result = en0;\
+\}\
+default	19:13:16.195147+0200	symptomsd	L2 Metrics on en0: rssi: -52 [-1,-1] -> -52, snr: 34 (cca [wake/total] self/other/intf): [0,0]/[0,0]/[0,0]/7 (txFrames/txReTx/txFail): 0/0/0 -> (was/is) 0/0, txRate: 866.0, rxRate: 866.0\
+default	19:13:16.198647+0200	airportd	[corewifi] BEGIN REQ [GET BSSID] (pid=490 proc=symptomsd bundleID=com.apple.symptomsd codesignID=com.apple.symptomsd service=com.apple.private.corewifi-xpc qos=17 intf=(null) uuid=B9B66 info=(null))\
+default	19:13:16.198959+0200	airportd	[corewifi] [B9B66] Incoming QoS is less than 'default', promoting to 'default'\
+default	19:13:16.201704+0200	airportd	[corewifi] END REQ [GET BSSID] took 0.002616625s (pid=490 proc=symptomsd bundleID=com.apple.symptomsd codesignID=com.apple.symptomsd service=com.apple.private.corewifi-xpc qos=17 intf=(null) uuid=B9B66 err=0 reply=\{\
+    Result = "0c:51:01:e4:06:07";\
+\}\
+default	19:13:16.203016+0200	tccd	AUTHREQ_SUBJECT: msgID=704.19506, subject=com.displaylink.DisplayLinkUserAgent,\
+default	19:13:16.205212+0200	tccd	-[TCCDAccessIdentity staticCode]: static code for: identifier com.displaylink.DisplayLinkUserAgent, type: 0: 0x832cef000 at /Applications/DisplayLink Manager.app\
+default	19:13:16.210423+0200	trustd	Malformed anchor records, not an array\
+default	19:13:16.214891+0200	trustd	Malformed anchor records, not an array\
+default	19:13:16.218310+0200	trustd	Malformed anchor records, not an array\
+default	19:13:16.220419+0200	trustd	Malformed anchor records, not an array\
+default	19:13:16.221856+0200	tccd	AUTHREQ_RESULT: msgID=704.19506, authValue=2, authReason=4, authVersion=1, desired_auth=0, error=(null),\
+default	19:13:16.222033+0200	tccd	REPLY: (0) function=TCCAccessRequest, msgID=704.19506\
+default	19:13:16.223176+0200	replayd	[0x758caea80] invalidated after the last release of the connection object\
+default	19:13:16.223206+0200	tccd	[0x833109980] invalidated because the client process (pid 704) either cancelled the connection or exited\
+default	19:13:16.223539+0200	replayd	 [INFO] -[RPClient hasScreenCaptureAccessWithAuditToken:fetchCurrentProcess:currentProcessShareableContentFilter:contentPickerFilter:error:]:2024 TCC Allow\
+default	19:13:16.223987+0200	replayd	 [INFO] +[SCCaptureSession fetchShareableContentWithOption:windowID:currentProcessID:transactionID:withCompletionHandler:]:1339 currentProcessID=0\
+default	19:13:16.228147+0200	replayd	 [INFO] -[RPConnectionManager fetchShareableContentWithOption:windowID:currentProcess:transactionID:withCompletionHandler:]_block_invoke:1030 complete\
+default	19:13:16.231637+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaba40) processID=661\
+default	19:13:16.232072+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8db4d0) windowID=31 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(1295.000000,0.000000,42.000000,33.000000)\
+default	19:13:16.232414+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab280) processID=661\
+default	19:13:16.232429+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8db390) windowID=27 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(1337.000000,0.000000,135.000000,33.000000)\
+default	19:13:16.232724+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaaf40) processID=661\
+default	19:13:16.232742+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d8370) windowID=579 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(2044.000000,-1080.000000,32.000000,30.000000)\
+default	19:13:16.233191+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab7e0) processID=661\
+default	19:13:16.233221+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da170) windowID=234 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(351.000000,-1080.000000,29.000000,30.000000)\
+default	19:13:16.233391+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab320) processID=661\
+default	19:13:16.233407+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da3a0) windowID=212 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(380.000000,-1080.000000,33.000000,30.000000)\
+default	19:13:16.233555+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8aca8aa0) processID=661\
+default	19:13:16.233566+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da2b0) windowID=213 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(413.000000,-1080.000000,38.000000,30.000000)\
+default	19:13:16.233709+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab2a0) processID=661\
+default	19:13:16.233721+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d9950) windowID=217 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(451.000000,-1080.000000,35.000000,30.000000)\
+default	19:13:16.233877+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa480) processID=661\
+default	19:13:16.233895+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d9630) windowID=214 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(486.000000,-1080.000000,38.000000,30.000000)\
+default	19:13:16.234091+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa980) processID=661\
+default	19:13:16.234114+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d99a0) windowID=209 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(524.000000,-1080.000000,30.000000,30.000000)\
+default	19:13:16.234354+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa320) processID=661\
+default	19:13:16.234370+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d9ef0) windowID=208 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(554.000000,-1080.000000,42.000000,30.000000)\
+default	19:13:16.234566+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaab60) processID=661\
+default	19:13:16.234643+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d9540) windowID=216 windowTitle=com.apple.Spotlight windowOwner=<private> isOnScreen=1 isActive=1 frame=(596.000000,-1080.000000,32.000000,30.000000)\
+default	19:13:16.234663+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaad40) processID=403\
+default	19:13:16.234674+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d8dc0) windowID=231 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(653.000000,-1076.000000,10.000000,19.000000)\
+default	19:13:16.234688+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa240) processID=403\
+default	19:13:16.234697+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8db2f0) windowID=4 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(846.000000,162.000000,28.000000,40.000000)\
+default	19:13:16.234709+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8aca9ea0) processID=403\
+default	19:13:16.234719+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8dae90) windowID=232 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(2573.000000,-1076.000000,10.000000,19.000000)\
+default	19:13:16.234730+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaac20) processID=403\
+default	19:13:16.234740+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da1c0) windowID=230 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(1320.000000,6.000000,10.000000,18.000000)\
+default	19:13:16.234930+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab180) processID=661\
+default	19:13:16.234941+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8db250) windowID=578 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(124.000000,-1080.000000,32.000000,30.000000)\
+default	19:13:16.235085+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab080) processID=661\
+default	19:13:16.235097+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da580) windowID=218 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(156.000000,-1080.000000,34.000000,30.000000)\
+default	19:13:16.235239+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaac40) processID=661\
+default	19:13:16.235250+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8daf30) windowID=221 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(190.000000,-1080.000000,32.000000,30.000000)\
+default	19:13:16.235393+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa6e0) processID=661\
+default	19:13:16.235404+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d98b0) windowID=219 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(222.000000,-1080.000000,37.000000,30.000000)\
+default	19:13:16.235548+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa880) processID=661\
+default	19:13:16.235569+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8db160) windowID=222 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(259.000000,-1080.000000,36.000000,30.000000)\
+default	19:13:16.235694+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab1c0) processID=661\
+default	19:13:16.235716+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da5d0) windowID=220 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(295.000000,-1080.000000,56.000000,30.000000)\
+default	19:13:16.235960+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaabe0) processID=661\
+default	19:13:16.235974+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d8190) windowID=135 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(873.000000,0.000000,32.000000,33.000000)\
+default	19:13:16.236171+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaaa80) processID=661\
+default	19:13:16.236285+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d97c0) windowID=139 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(905.000000,0.000000,36.000000,33.000000)\
+default	19:13:16.236540+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab9e0) processID=661\
+default	19:13:16.236552+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d9c20) windowID=28 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(1045.000000,0.000000,33.000000,33.000000)\
+default	19:13:16.236726+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa2c0) processID=661\
+default	19:13:16.236741+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da760) windowID=215 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(628.000000,-1080.000000,42.000000,30.000000)\
+default	19:13:16.236885+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8aca9e80) processID=661\
+default	19:13:16.236896+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8daad0) windowID=210 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(670.000000,-1080.000000,135.000000,30.000000)\
+default	19:13:16.237035+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa1c0) processID=661\
+default	19:13:16.237049+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8db1b0) windowID=99 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(941.000000,0.000000,56.000000,33.000000)\
+default	19:13:16.237216+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa800) processID=661\
+default	19:13:16.237272+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da990) windowID=233 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(997.000000,0.000000,48.000000,33.000000)\
+default	19:13:16.237473+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaad20) processID=661\
+default	19:13:16.237487+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d85a0) windowID=29 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(1078.000000,0.000000,38.000000,33.000000)\
+default	19:13:16.237627+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acabf00) processID=661\
+default	19:13:16.237639+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da800) windowID=93 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(1116.000000,0.000000,35.000000,33.000000)\
+default	19:13:16.237803+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa9e0) processID=661\
+default	19:13:16.237826+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d8550) windowID=30 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(1151.000000,0.000000,38.000000,33.000000)\
+default	19:13:16.237984+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab2c0) processID=661\
+default	19:13:16.237998+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8daf80) windowID=26 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(1189.000000,0.000000,32.000000,33.000000)\
+default	19:13:16.238285+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa260) processID=661\
+default	19:13:16.238306+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8daa80) windowID=25 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(1221.000000,0.000000,42.000000,33.000000)\
+default	19:13:16.238466+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab940) processID=661\
+default	19:13:16.238487+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d9680) windowID=44 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(1263.000000,0.000000,32.000000,33.000000)\
+default	19:13:16.238616+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaac00) processID=661\
+default	19:13:16.238630+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d82d0) windowID=141 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(2179.000000,-1080.000000,36.000000,30.000000)\
+default	19:13:16.238907+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab580) processID=661\
+default	19:13:16.238920+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da710) windowID=195 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(2142.000000,-1080.000000,37.000000,30.000000)\
+default	19:13:16.239134+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acabb80) processID=661\
+default	19:13:16.239149+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d9590) windowID=235 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(2271.000000,-1080.000000,29.000000,30.000000)\
+default	19:13:16.239275+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8aca8a20) processID=661\
+default	19:13:16.239289+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d9ae0) windowID=193 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(2076.000000,-1080.000000,34.000000,30.000000)\
+default	19:13:16.239437+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab3c0) processID=661\
+default	19:13:16.239449+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d8870) windowID=138 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(2110.000000,-1080.000000,32.000000,30.000000)\
+default	19:13:16.239567+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa820) processID=661\
+default	19:13:16.239578+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da210) windowID=191 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(2371.000000,-1080.000000,35.000000,30.000000)\
+default	19:13:16.239697+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaaf80) processID=661\
+default	19:13:16.239711+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d81e0) windowID=189 windowTitle=com.apple.Spotlight windowOwner=<private> isOnScreen=1 isActive=1 frame=(2516.000000,-1080.000000,32.000000,30.000000)\
+default	19:13:16.239836+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab480) processID=661\
+default	19:13:16.239850+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d8500) windowID=187 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(2548.000000,-1080.000000,42.000000,30.000000)\
+default	19:13:16.239967+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa540) processID=661\
+default	19:13:16.239979+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d95e0) windowID=184 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(2406.000000,-1080.000000,38.000000,30.000000)\
+default	19:13:16.240091+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8aca8b00) processID=661\
+default	19:13:16.240103+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d9770) windowID=182 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(2333.000000,-1080.000000,38.000000,30.000000)\
+default	19:13:16.240214+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab820) processID=661\
+default	19:13:16.240226+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da620) windowID=180 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(2300.000000,-1080.000000,33.000000,30.000000)\
+default	19:13:16.240336+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa0a0) processID=661\
+default	19:13:16.240348+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d8640) windowID=178 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(2590.000000,-1080.000000,135.000000,30.000000)\
+default	19:13:16.240463+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaae60) processID=661\
+default	19:13:16.240474+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da670) windowID=173 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(2444.000000,-1080.000000,30.000000,30.000000)\
+default	19:13:16.240592+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa080) processID=661\
+default	19:13:16.240603+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d8af0) windowID=159 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(2474.000000,-1080.000000,42.000000,30.000000)\
+default	19:13:16.240715+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acabc80) processID=661\
+default	19:13:16.240725+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da9e0) windowID=104 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(2215.000000,-1080.000000,56.000000,30.000000)\
+default	19:13:16.240740+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab520) processID=403\
+default	19:13:16.240750+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da530) windowID=199 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(-1115.000000,-1080.000000,1920.000000,30.000000)\
+default	19:13:16.240762+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa9a0) processID=403\
+default	19:13:16.240772+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d9e50) windowID=197 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(0.000000,0.000000,1470.000000,33.000000)\
+default	19:13:16.240783+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab5c0) processID=403\
+default	19:13:16.240792+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8db110) windowID=144 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(805.000000,-1080.000000,1920.000000,30.000000)\
+default	19:13:16.240909+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaabc0) processID=15408\
+default	19:13:16.240921+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da080) windowID=824 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(481.000000,84.000000,802.000000,792.000000)\
+default	19:13:16.241031+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acabdc0) processID=651\
+default	19:13:16.241048+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8dab70) windowID=79 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(142.000000,34.000000,808.000000,922.000000)\
+default	19:13:16.241158+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acabd80) processID=14745\
+default	19:13:16.241170+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d8780) windowID=786 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(240.000000,101.000000,1024.000000,796.000000)\
+default	19:13:16.241281+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acabde0) processID=652\
+default	19:13:16.241292+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8db520) windowID=789 windowTitle=All iCloud windowOwner=<private> isOnScreen=1 isActive=1 frame=(287.000000,130.000000,1027.000000,656.000000)\
+default	19:13:16.241401+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa020) processID=14609\
+default	19:13:16.241413+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da350) windowID=769 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(409.000000,207.000000,1010.000000,693.000000)\
+default	19:13:16.241525+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa520) processID=646\
+default	19:13:16.241552+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8db200) windowID=254 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(28.000000,34.000000,1442.000000,922.000000)\
+default	19:13:16.241661+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8aca9f60) processID=2370\
+default	19:13:16.241672+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d9bd0) windowID=405 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(115.000000,251.000000,1219.000000,640.000000)\
+default	19:13:16.241803+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab7a0) processID=11678\
+default	19:13:16.241816+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da8f0) windowID=470 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(264.000000,34.000000,872.000000,918.000000)\
+default	19:13:16.241930+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab780) processID=9834\
+default	19:13:16.241941+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d8ff0) windowID=382 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(255.000000,100.000000,960.000000,660.000000)\
+default	19:13:16.242052+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab2e0) processID=736\
+default	19:13:16.242063+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d9d60) windowID=37 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(368.000000,476.000000,360.000000,180.000000)\
+default	19:13:16.242170+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa460) processID=736\
+default	19:13:16.242181+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d8fa0) windowID=36 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(8.000000,476.000000,180.000000,180.000000)\
+default	19:13:16.242296+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8aca9fa0) processID=736\
+default	19:13:16.242309+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8db070) windowID=35 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(368.000000,296.000000,360.000000,180.000000)\
+default	19:13:16.242491+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acabea0) processID=736\
+default	19:13:16.242521+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d9c70) windowID=34 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(728.000000,116.000000,360.000000,360.000000)\
+default	19:13:16.242638+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaac60) processID=736\
+default	19:13:16.242650+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8daa30) windowID=33 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(368.000000,116.000000,360.000000,180.000000)\
+default	19:13:16.242759+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa760) processID=736\
+default	19:13:16.242772+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d8320) windowID=32 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(8.000000,116.000000,360.000000,360.000000)\
+default	19:13:16.242785+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab760) processID=403\
+default	19:13:16.242794+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da8a0) windowID=200 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(-1115.000000,-1080.000000,1920.000000,91.000000)\
+default	19:13:16.242805+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa8a0) processID=403\
+default	19:13:16.242815+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da3f0) windowID=198 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(0.000000,0.000000,1470.000000,81.000000)\
+default	19:13:16.242846+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa340) processID=403\
+default	19:13:16.242856+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d9ea0) windowID=145 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(805.000000,-1080.000000,1920.000000,91.000000)\
+default	19:13:16.243093+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8aca9d60) processID=664\
+default	19:13:16.243104+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da850) windowID=52 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(0.000000,0.000000,1470.000000,956.000000)\
+default	19:13:16.243215+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8aca9e60) processID=664\
+default	19:13:16.243227+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d9810) windowID=107 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(805.000000,-1080.000000,1920.000000,1080.000000)\
+default	19:13:16.243334+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8aca8b20) processID=664\
+default	19:13:16.243345+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d85f0) windowID=174 windowTitle= windowOwner=<private> isOnScreen=1 isActive=1 frame=(-1115.000000,-1080.000000,1920.000000,1080.000000)\
+default	19:13:16.243451+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa2a0) processID=659\
+default	19:13:16.243460+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8db340) windowID=149 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(-1115.000000,-1080.000000,1920.000000,1080.000000)\
+default	19:13:16.243566+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acabda0) processID=659\
+default	19:13:16.243577+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da4e0) windowID=102 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(805.000000,-1080.000000,1920.000000,1080.000000)\
+default	19:13:16.243679+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8aca9da0) processID=659\
+default	19:13:16.243691+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d8d20) windowID=11 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(0.000000,0.000000,1470.000000,956.000000)\
+default	19:13:16.243820+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab9a0) processID=671\
+default	19:13:16.243832+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8db0c0) windowID=288 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(0.000000,0.000000,1470.000000,956.000000)\
+default	19:13:16.243935+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab1e0) processID=671\
+default	19:13:16.243946+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8daee0) windowID=186 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(805.000000,-1080.000000,1920.000000,1080.000000)\
+default	19:13:16.243958+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8aca9f20) processID=403\
+default	19:13:16.243968+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8da7b0) windowID=2 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(0.000000,0.000000,1470.000000,956.000000)\
+default	19:13:16.243978+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab0e0) processID=403\
+default	19:13:16.243987+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8d99f0) windowID=143 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(805.000000,-1080.000000,1920.000000,1080.000000)\
+default	19:13:16.243998+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab4e0) processID=403\
+default	19:13:16.244007+0200	DisplayLinkUserAgent	 [INFO] -[SCWindow initWithDict:]:56 (0xa8a8db480) windowID=196 windowTitle=<private> windowOwner=<private> isOnScreen=1 isActive=1 frame=(-1115.000000,-1080.000000,1920.000000,1080.000000)\
+default	19:13:16.244019+0200	DisplayLinkUserAgent	 [INFO] -[SCDisplay initWithDict:]:195 (0xa8ad78480) displayID=5 frame=(-1115.000000,-1080.000000,1920.000000,1080.000000) width=1920 height=1080\
+default	19:13:16.244029+0200	DisplayLinkUserAgent	 [INFO] -[SCDisplay initWithDict:]:195 (0xa8ad7a200) displayID=1 frame=(0.000000,0.000000,1470.000000,956.000000) width=1470 height=956\
+default	19:13:16.244038+0200	DisplayLinkUserAgent	 [INFO] -[SCDisplay initWithDict:]:195 (0xa8ad78100) displayID=4 frame=(805.000000,-1080.000000,1920.000000,1080.000000) width=1920 height=1080\
+default	19:13:16.244146+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8aca8ac0) processID=664\
+default	19:13:16.244259+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8aca9f80) processID=14609\
+default	19:13:16.244374+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa4a0) processID=15408\
+default	19:13:16.244386+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaaf20) processID=403\
+default	19:13:16.244496+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acab020) processID=661\
+default	19:13:16.244601+0200	DisplayLinkUserAgent	 [INFO] -[SCRunningApplication initWithPID:]:318 (0xa8acaa680) processID=651\

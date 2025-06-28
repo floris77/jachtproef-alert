@@ -1,0 +1,79 @@
+{
+  "identifier" : "12345678-1234-1234-1234-123456789012",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "3,99",
+      "familyShareable" : true,
+      "internalID" : "12345678-1234-1234-1234-123456789012",
+      "localizations" : [
+        {
+          "description" : "Get unlimited notifications, priority support, and advanced filtering features.",
+          "displayName" : "Premium Monthly",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Ontvang onbeperkte meldingen, prioriteitsondersteuning en geavanceerde filterfuncties.",
+          "displayName" : "Premium Maandelijks",
+          "locale" : "nl_NL"
+        }
+      ],
+      "productID" : "jachtproef_monthly_399",
+      "referenceName" : "Premium Monthly",
+      "subscriptionPeriod" : "P1M",
+      "type" : "RecurringSubscription"
+    },
+    {
+      "displayPrice" : "29,99",
+      "familyShareable" : true,
+      "internalID" : "87654321-4321-4321-4321-210987654321",
+      "localizations" : [
+        {
+          "description" : "Get all premium features for a full year, save 37% compared to monthly, and get early access to new features.",
+          "displayName" : "Premium Yearly",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Ontvang alle premium functies voor een heel jaar, bespaar 37% vergeleken met maandelijks, en krijg vroegtijdige toegang tot nieuwe functies.",
+          "displayName" : "Premium Jaarlijks",
+          "locale" : "nl_NL"
+        }
+      ],
+      "productID" : "jachtproef_yearly_2999",
+      "referenceName" : "Premium Yearly",
+      "subscriptionPeriod" : "P1Y",
+      "type" : "RecurringSubscription"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "1234567890",
+    "_developerTeamID" : "YOUR_TEAM_ID",
+    "_lastSynchronizedDate" : 1234567890.123456
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "12345678-1234-1234-1234-123456789012",
+      "localizations" : [
+        {
+          "displayName" : "Premium Subscriptions",
+          "locale" : "en_US"
+        },
+        {
+          "displayName" : "Premium Abonnementen",
+          "locale" : "nl_NL"
+        }
+      ],
+      "name" : "Premium",
+      "subscriptions" : [
+        "jachtproef_monthly_399",
+        "jachtproef_yearly_2999"
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 2,
+    "minor" : 0
+  }
+} 
