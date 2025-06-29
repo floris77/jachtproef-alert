@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -238,6 +239,8 @@ class _ProevenMainPageState extends State<ProevenMainPage> {
         type: BottomNavigationBarType.fixed,
         selectedItemColor: kMainColor,
         unselectedItemColor: Colors.grey,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
@@ -578,158 +581,360 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
     final isLargeScreen = screenWidth > 414;
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      body: NotificationListener<ScrollNotification>(
-        onNotification: (ScrollNotification notification) {
-          if (notification is ScrollUpdateNotification) {
-            // Updated scroll logic for hiding header
-            if (notification.metrics.pixels > _hideHeaderScrollPosition + _scrollBufferDistance) {
-              if (_showHeader) setState(() => _showHeader = false);
-              _hideHeaderScrollPosition = notification.metrics.pixels;
-            } else if (notification.metrics.pixels < _hideHeaderScrollPosition - _scrollBufferDistance || notification.metrics.pixels < _topThreshold) {
-              if (!_showHeader) setState(() => _showHeader = true);
-              _hideHeaderScrollPosition = notification.metrics.pixels;
-            }
-          }
-          return false;
-        },
+      body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Modern header with greeting
-            if (_showHeader) Container(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-              color: Colors.white,
-              child: Row(
+            // Custom App Bar
+            Padding(
+              padding: const EdgeInsets.only(top: 8, left: 0, right: 0, bottom: 0),
+              child: Stack(
+                alignment: Alignment.center,
                 children: [
-                  Text(
-                    'Hi, ${userName.isNotEmpty ? userName : 'there'} 👋',
-                    style: TextStyle(
-                      fontSize: isSmallScreen ? 20 : 24,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF535B22),
-                    ),
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.help_outline, color: Color(0xFF535B22)),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => const HelpScreen()),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-            
-            // Modern search and filter section
-            Container(
-              padding: const EdgeInsets.all(20),
-              color: Colors.white,
-              child: Column(
-                children: [
-                  // Search bar with modern styling
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Zoek proeven…',
-                        hintStyle: TextStyle(color: Colors.grey[600]),
-                        prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  Center(
+                    child: Text(
+                      'Proeven',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          searchQuery = value;
-                        });
+                    ),
+                  ),
+                  // iOS-style Help button
+                  Positioned(
+                    right: 20,
+                    child: CupertinoButton(
+                      padding: const EdgeInsets.all(8),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => const HelpScreen()),
+                        );
                       },
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  
-                  // Modern filter dropdown
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: selectedFilter,
-                        isExpanded: true,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        items: matchTypes.map((String type) {
-                          return DropdownMenuItem<String>(
-                            value: type,
-                            child: Text(type),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          if (newValue != null) {
-                            setState(() {
-                              selectedFilter = newValue;
-                              selectedTypes = [newValue];
-                            });
-                          }
-                        },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: kMainColor,
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              CupertinoIcons.question_circle,
+                              color: kMainColor,
+                              size: 16,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              'HELP',
+                              style: TextStyle(
+                                color: kMainColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            
-            // Modern tab bar with correct labels
-            Container(
-              color: Colors.white,
+            const SizedBox(height: 8),
+            // Greeting and subtitle
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildModernTabButton('Alle', selectedTab == 0),
-                  _buildModernTabButton('Inschrijven', selectedTab == 1),
-                  _buildModernTabButton('Binnenkort', selectedTab == 2),
-                  _buildModernTabButton('Gesloten', selectedTab == 3),
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      'Hi,  0${userName.isNotEmpty ? userName : 'there'} 👋',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w800,
+                        color: kMainColor,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      maxLines: 1,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Laten we samen je volgende proef vinden!',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.grey[400],
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
                 ],
               ),
             ),
-            
-            // Result count display
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              color: Colors.white,
-              child: FutureBuilder<List<Map<String, dynamic>>>(
-                future: MatchService.fetchMatches(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final matches = snapshot.data!;
-                    final filteredMatches = _getFilteredMatches(matches);
-                    return Text(
-                      '${filteredMatches.length} resultaten',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                        fontWeight: FontWeight.w500,
-                      ),
-                    );
-                  }
-                  return Text(
-                    '0 resultaten',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.w500,
+            const SizedBox(height: 18),
+            // Responsive Search and Filter Bar
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final isSmallScreen = constraints.maxWidth < 370;
+                if (isSmallScreen) {
+                  // Stack vertically on small screens
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Container(
+                          height: 48,
+                          margin: const EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                            color: CupertinoColors.systemGrey6,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: CupertinoColors.systemGrey4,
+                              width: 0.5,
+                            ),
+                          ),
+                          child: CupertinoTextField(
+                            placeholder: 'Zoeken',
+                            placeholderStyle: TextStyle(
+                              color: CupertinoColors.systemGrey,
+                              fontSize: 16,
+                            ),
+                            prefix: Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: Icon(
+                                CupertinoIcons.search,
+                                color: CupertinoColors.systemGrey,
+                                size: 20,
+                              ),
+                            ),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: CupertinoColors.label,
+                            ),
+                            decoration: null,
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                            onChanged: (value) {
+                              setState(() {
+                                searchQuery = value;
+                              });
+                            },
+                          ),
+                        ),
+                        Container(
+                          height: 48,
+                          margin: const EdgeInsets.only(bottom: 4),
+                          decoration: BoxDecoration(
+                            color: _isFilterActive() ? kMainColor.withOpacity(0.10) : CupertinoColors.systemGrey6,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: _isFilterActive() ? kMainColor : CupertinoColors.systemGrey4,
+                              width: _isFilterActive() ? 1.5 : 0.5,
+                            ),
+                          ),
+                          child: CupertinoButton(
+                            padding: const EdgeInsets.symmetric(horizontal: 18),
+                            onPressed: () {
+                              _showFilterPicker();
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    selectedFilter,
+                                    style: TextStyle(
+                                      color: _isFilterActive() ? kMainColor : CupertinoColors.label,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Icon(
+                                  CupertinoIcons.chevron_down,
+                                  color: _isFilterActive() ? kMainColor : CupertinoColors.systemGrey,
+                                  size: 16,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   );
+                } else {
+                  // Side by side on normal screens
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 160, // Fixed width for search bar
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: CupertinoColors.systemGrey6,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: CupertinoColors.systemGrey4,
+                              width: 0.5,
+                            ),
+                          ),
+                          child: CupertinoTextField(
+                            placeholder: 'Zoeken',
+                            placeholderStyle: TextStyle(
+                              color: CupertinoColors.systemGrey,
+                              fontSize: 16,
+                            ),
+                            prefix: Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: Icon(
+                                CupertinoIcons.search,
+                                color: CupertinoColors.systemGrey,
+                                size: 20,
+                              ),
+                            ),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: CupertinoColors.label,
+                            ),
+                            decoration: null,
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                            onChanged: (value) {
+                              setState(() {
+                                searchQuery = value;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 16), // More space between search and filter
+                        Expanded(
+                          child: Container(
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: _isFilterActive() ? kMainColor : Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: kMainColor,
+                                width: 1.5,
+                              ),
+                            ),
+                            child: CupertinoButton(
+                              padding: const EdgeInsets.symmetric(horizontal: 18),
+                              onPressed: () {
+                                _showFilterPicker();
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      selectedFilter,
+                                      style: TextStyle(
+                                        color: _isFilterActive() ? Colors.white : kMainColor,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Icon(
+                                    CupertinoIcons.chevron_down,
+                                    color: _isFilterActive() ? Colors.white : kMainColor,
+                                    size: 16,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
+            const SizedBox(height: 12),
+            // Apple-style Segmented Control (Cupertino) with no scrolling and no truncation
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: CupertinoSlidingSegmentedControl<int>(
+                groupValue: selectedTab,
+                backgroundColor: Colors.white,
+                thumbColor: kMainColor,
+                children: {
+                  0: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+                    child: Center(
+                      child: Text(
+                        'Alle',
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w600,
+                          color: selectedTab == 0 ? Colors.white : kMainColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                  1: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+                    child: Center(
+                      child: Text(
+                        'Inschrijven',
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w600,
+                          color: selectedTab == 1 ? Colors.white : kMainColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                  2: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+                    child: Center(
+                      child: Text(
+                        'Binnenkort',
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w600,
+                          color: selectedTab == 2 ? Colors.white : kMainColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                  3: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+                    child: Center(
+                      child: Text(
+                        'Gesloten',
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w600,
+                          color: selectedTab == 3 ? Colors.white : kMainColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                },
+                onValueChanged: (int? value) {
+                  if (value != null) {
+                    setState(() {
+                      selectedTab = value;
+                    });
+                  }
                 },
               ),
             ),
-            
-            // Content area with modern styling
+            const SizedBox(height: 18),
+            // Result count and Match list
             Expanded(
               child: FutureBuilder<List<Map<String, dynamic>>>(
                 future: MatchService.fetchMatches(),
@@ -737,82 +942,67 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   }
-
                   if (snapshot.hasError) {
                     return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.error_outline, size: 64, color: Colors.grey[400]),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Er is een probleem met het laden van proeven',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[700],
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Controleer je internetverbinding en probeer het opnieuw',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {}); // Re-runs the future builder
-                            },
-                            child: const Text('Opnieuw proberen'),
-                          ),
-                        ],
-                      ),
+                      child: Text('Fout bij laden van proeven'),
                     );
                   }
-
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.search_off, size: 64, color: Colors.grey[400]),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Geen proeven gevonden',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[700],
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Pas je zoekopdracht of filters aan, of probeer het later opnieuw',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {}); // Re-runs the future builder
-                            },
-                            child: const Text('Opnieuw proberen'),
-                          ),
-                        ],
-                      ),
-                    );
+                  final matches = snapshot.data ?? [];
+                  final filteredMatches = _getFilteredMatches(matches);
+                  // DEBUG: Print first 10 regText values (remove after debugging)
+                  final debugRegTexts = matches.take(10).map((match) {
+                    String regText = '';
+                    if (match['registration'] != null && match['registration']['text'] != null) {
+                      regText = match['registration']['text'].toString();
+                    } else if (match['regText'] != null) {
+                      regText = match['regText'].toString();
+                    } else if (match['registration_text'] != null) {
+                      regText = match['registration_text'].toString();
+                    } else if (match['raw'] != null && match['raw']['registration_text'] != null) {
+                      regText = match['raw']['registration_text'].toString();
+                    }
+                    return regText;
+                  }).toList();
+                  print('[REGTEXT_DEBUG] First 10 regText values: $debugRegTexts');
+                  // DEBUG: Print first match object (remove after debugging)
+                  if (matches.isNotEmpty) {
+                    print('[MATCH_OBJECT_DEBUG] First match object: \\n${matches.first}');
                   }
-
-                  return _buildModernMatchList(snapshot);
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text(
+                          ' ${filteredMatches.length} resultaten',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[400],
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Expanded(
+                        child: ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          itemCount: filteredMatches.length,
+                          itemBuilder: (context, index) {
+                            final match = filteredMatches[index];
+                            return ProefCard(
+                              proef: match,
+                              isFavorite: false,
+                              onTap: () {
+                                setState(() {
+                                  _selectedMatch = match;
+                                });
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  );
                 },
               ),
             ),
@@ -822,43 +1012,64 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
     );
   }
 
-  // Helper method to build modern tab buttons
-  Widget _buildModernTabButton(String label, bool isSelected) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          switch (label) {
-            case 'Alle':
-              selectedTab = 0;
-              break;
-            case 'Inschrijven':
-              selectedTab = 1;
-              break;
-            case 'Binnenkort':
-              selectedTab = 2;
-              break;
-            case 'Gesloten':
-              selectedTab = 3;
-              break;
-          }
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: isSelected ? const Color(0xFF535B22) : Colors.transparent,
-              width: 2,
-            ),
-          ),
+  // Helper method to determine if a filter is active
+  bool _isFilterActive() {
+    return selectedFilter != 'Alle proeven';
+  }
+
+  // iOS-style filter picker
+  void _showFilterPicker() {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => Container(
+        height: 300,
+        padding: const EdgeInsets.only(top: 6.0),
+        margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-            color: isSelected ? const Color(0xFF535B22) : Colors.grey[600],
+        color: CupertinoColors.systemBackground.resolveFrom(context),
+        child: SafeArea(
+          top: false,
+          child: Column(
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 8),
+                decoration: BoxDecoration(
+                  color: CupertinoColors.systemGrey4,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Expanded(
+                child: CupertinoPicker(
+                  magnification: 1.2,
+                  squeeze: 1.2,
+                  useMagnifier: true,
+                  itemExtent: 50,
+                  scrollController: FixedExtentScrollController(
+                    initialItem: matchTypes.indexOf(selectedFilter),
+                  ),
+                  onSelectedItemChanged: (int selectedIndex) {
+                    setState(() {
+                      selectedFilter = matchTypes[selectedIndex];
+                      selectedTypes = [matchTypes[selectedIndex]];
+                    });
+                  },
+                  children: List<Widget>.generate(matchTypes.length, (int index) {
+                    return Center(
+                      child: Text(
+                        matchTypes[index],
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -871,10 +1082,23 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
     List<Map<String, dynamic>> beschikbaar = [];
     List<Map<String, dynamic>> binnenkort = [];
     List<Map<String, dynamic>> gesloten = [];
+    List<Map<String, dynamic>> onbekend = [];
 
     for (final match in matches) {
-      final regText = (match['registration_text'] ?? match['raw']?['registration_text'] ?? '').toString().toLowerCase();
-      
+      // Use the correct field for registration text
+      String regText = '';
+      if (match['registration'] != null && match['registration']['text'] != null) {
+        regText = match['registration']['text'].toString();
+      } else if (match['regText'] != null) {
+        regText = match['regText'].toString();
+      } else if (match['registration_text'] != null) {
+        regText = match['registration_text'].toString();
+      } else if (match['raw'] != null && match['raw']['registration_text'] != null) {
+        regText = match['raw']['registration_text'].toString();
+      }
+      regText = regText.trim().toLowerCase();
+
+      // Use exact matching for categories
       if (regText == 'inschrijven') {
         beschikbaar.add(match);
       } else if (regText.startsWith('vanaf ')) {
@@ -882,9 +1106,11 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
       } else if (regText == 'niet mogelijk' || regText == 'niet meer mogelijk') {
         gesloten.add(match);
       } else {
-        gesloten.add(match);
+        onbekend.add(match);
       }
     }
+    // DEBUG: Print counts for each category (remove after debugging)
+    print('[MATCH_FILTER_DEBUG] beschikbaar: ${beschikbaar.length}, binnenkort: ${binnenkort.length}, gesloten: ${gesloten.length}, onbekend: ${onbekend.length}, total input: ${matches.length}');
 
     // Get matches for selected tab
     List<Map<String, dynamic>> tabMatches;
@@ -899,7 +1125,7 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
         tabMatches = gesloten;
         break;
       default:
-        tabMatches = [...beschikbaar, ...binnenkort, ...gesloten];
+        tabMatches = [...beschikbaar, ...binnenkort, ...gesloten, ...onbekend];
     }
 
     // Apply search and filter
@@ -907,7 +1133,6 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
       final title = match['title']?.toString().toLowerCase() ?? '';
       final organizer = match['organizer']?.toString().toLowerCase() ?? '';
       final type = match['type']?.toString().toLowerCase() ?? '';
-      
       // Search filter
       if (searchQuery.isNotEmpty) {
         final query = searchQuery.toLowerCase();
@@ -915,39 +1140,21 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
           return false;
         }
       }
-      
-      // Type filter
-      if (selectedTypes.isNotEmpty && !selectedTypes.contains('Alle proeven')) {
+      // Favorites filter
+      if (selectedTypes.contains('Favorieten')) {
+        // Only show matches whose type is in userFavoriteTypes
+        if (userFavoriteTypes.isEmpty) return false;
+        if (!userFavoriteTypes.any((favType) => type.contains(favType.toLowerCase()))) {
+          return false;
+        }
+      } else if (selectedTypes.isNotEmpty && !selectedTypes.contains('Alle proeven')) {
+        // Type filter
         if (!selectedTypes.any((selectedType) => type.contains(selectedType.toLowerCase()))) {
           return false;
         }
       }
-      
       return true;
     }).toList();
-  }
-
-  // Modern match list builder
-  Widget _buildModernMatchList(AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-    final matches = snapshot.data ?? [];
-    final filteredMatches = _getFilteredMatches(matches);
-
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      itemCount: filteredMatches.length,
-      itemBuilder: (context, index) {
-        final match = filteredMatches[index];
-        return ProefCard(
-          proef: match,
-          isFavorite: false, // TODO: Implement favorite functionality
-          onTap: () {
-            setState(() {
-              _selectedMatch = match;
-            });
-          },
-        );
-      },
-    );
   }
 }
 
@@ -1052,3 +1259,4 @@ class _ActionButton extends StatelessWidget {
     );
   }
 }
+
