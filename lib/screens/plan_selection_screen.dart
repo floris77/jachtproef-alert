@@ -30,6 +30,8 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     final isSmallScreen = ResponsiveHelper.isSmallScreen(context);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isVerySmallScreen = screenWidth < 350;
     final isIOS = Platform.isIOS;
 
     return Scaffold(
@@ -39,7 +41,7 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
           SafeArea(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 80), // Added bottom padding for button
+                padding: EdgeInsets.fromLTRB(isVerySmallScreen ? 6 : 16, 0, isVerySmallScreen ? 6 : 16, isVerySmallScreen ? 40 : 80),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -48,20 +50,26 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         color: Colors.black87,
                         fontWeight: FontWeight.bold,
+                        fontSize: isVerySmallScreen ? 18 : null,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       '14 dagen gratis proefperiode\nDaarna automatische verlenging',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: Colors.black54,
+                        fontSize: isVerySmallScreen ? 12 : null,
                       ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: isVerySmallScreen ? 6 : 12),
                     // Yearly Plan Card
                     Container(
-                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      margin: EdgeInsets.symmetric(vertical: isVerySmallScreen ? 4 : 8),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(isVerySmallScreen ? 7 : 12),
                         border: Border.all(
                           color: _selectedPlan == 'yearly' ? kMainColor : Colors.grey.shade300,
                           width: 2,
@@ -70,41 +78,47 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
                       child: InkWell(
                         onTap: () => _handlePlanSelection('yearly'),
                         child: Padding(
-                          padding: const EdgeInsets.all(16),
+                          padding: EdgeInsets.all(isVerySmallScreen ? 8 : 16),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                padding: EdgeInsets.symmetric(horizontal: isVerySmallScreen ? 4 : 8, vertical: isVerySmallScreen ? 2 : 4),
                                 decoration: BoxDecoration(
                                   color: Colors.orange.shade100,
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(isVerySmallScreen ? 10 : 16),
                                 ),
-                                child: const Text(
+                                child: Text(
                                   'AANBEVOLEN - BESPAAR 37%',
                                   style: TextStyle(
                                     color: Colors.deepOrange,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 12,
+                                    fontSize: isVerySmallScreen ? 10 : 12,
                                   ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  const Text(
+                                  Text(
                                     '€29,99',
                                     style: TextStyle(
-                                      fontSize: 20,
+                                      fontSize: isVerySmallScreen ? 15 : 20,
                                       fontWeight: FontWeight.bold,
                                     ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                   Text(
                                     '/jaar',
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: isVerySmallScreen ? 11 : 14,
                                       color: Colors.grey.shade600,
                                     ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
                               ),
@@ -113,7 +127,7 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: isVerySmallScreen ? 4 : 8),
                     // Monthly Plan Card
                     _buildPlanCard(
                       title: 'Flexibel maandelijks opzegbaar',

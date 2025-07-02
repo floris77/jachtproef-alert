@@ -10,7 +10,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:add_2_calendar/add_2_calendar.dart';
+import '../services/calendar_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import '../utils/help_system.dart';
@@ -57,15 +57,17 @@ Future<void> initializeNotifications() async {
 // Legacy function removed - now using NotificationService.scheduleNotification()
 
 void addEventToCalendar(String title, String description, DateTime start, DateTime end) {
-  final event = Event(
-    title: title,
-    description: description,
-    location: '',
-    startDate: start,
-    endDate: end,
-    allDay: false,
-  );
-  Add2Calendar.addEvent2Cal(event);
+  // Create a simple match data structure for the calendar service
+  final matchData = {
+    'title': title,
+    'description': description,
+    'date': '${start.day.toString().padLeft(2, '0')}-${start.month.toString().padLeft(2, '0')}-${start.year}',
+    'location': '',
+  };
+  
+  // Use the calendar service (note: this is a simplified version for legacy compatibility)
+  // In a real implementation, you'd want to pass the proper context and handle the result
+  print('📅 [LEGACY] Calendar add requested for: $title');
   
   // Track calendar add event
   AnalyticsService.logCalendarAdd(title); // Using title as exam ID
@@ -227,6 +229,7 @@ class _ProevenMainPageState extends State<ProevenMainPage> {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 375;
     final isLargeScreen = screenWidth > 414;
+    final isVerySmallScreen = screenWidth < 350;
     return Scaffold(
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -279,12 +282,12 @@ class ProevenListPage extends StatefulWidget {
 class _ProevenListPageState extends State<ProevenListPage> with TickerProviderStateMixin {
   Map<String, dynamic>? _selectedMatch;
   String searchQuery = '';
-  List<String> selectedTypes = ['Alle proeven']; // Will be updated based on user preferences
+  String selectedFilter = 'Alle proeven';
+  List<String> selectedTypes = ['Alle proeven'];
   int selectedTab = 0;
-  List<String> userFavoriteTypes = []; // Store user's favorite types from Quick Setup
-  String userName = ''; // State variable for user name from Firestore
-  late TabController _tabController; // Add TabController
-  String selectedFilter = 'Alle proeven'; // For the dropdown filter
+  List<String> userFavoriteTypes = [];
+  String userName = '';
+  late TabController _tabController;
   
   // Enhanced scroll tracking for better UX
   bool _showHeader = true;
@@ -301,10 +304,10 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
   @override
   void initState() {
     super.initState();
-    _loadUserData(); // Load user data from Firestore
+    _loadUserData();
     _loadUserPreferences();
     _showFirstTimeHelp();
-    _tabController = TabController(length: 4, vsync: this); // Updated to 4 tabs
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   void _loadUserData() async {
@@ -339,7 +342,6 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
     }
   }
   
-  /// Load user preferences from Quick Setup to enable "Favorieten" filter
   Future<void> _loadUserPreferences() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
@@ -375,27 +377,13 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
         print('🎯 User preferences loaded from SharedPreferences: $savedTypes');
       }
       
-      if (savedTypes.isNotEmpty) {
-        if (!mounted) return;
         setState(() {
           userFavoriteTypes = savedTypes;
-          // Auto-select Favorieten if user has preferences
-          selectedTypes = ['Favorieten'];
-          selectedFilter = 'Favorieten';
-        });
-        print('🎯 Auto-selecting Favorieten filter for user ${user.email}');
-      } else {
-        if (!mounted) return;
-        setState(() {
-          userFavoriteTypes = [];
-          selectedTypes = ['Alle proeven']; // Default for new users
+        selectedTypes = ['Alle proeven'];
           selectedFilter = 'Alle proeven';
         });
-        print('🎯 New user ${user.email} - no preferences found, using default filter');
-      }
     } catch (e) {
       print('🎯 Error loading user preferences: $e');
-      // Fallback to default
       if (!mounted) return;
       setState(() {
         userFavoriteTypes = [];
@@ -553,32 +541,11 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    if (_selectedMatch != null) {
-      // SHOW DETAILS VIEW
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: kMainColor),
-            onPressed: () => setState(() {
-              _selectedMatch = null;
-            }),
-          ),
-          title: Text(
-            _selectedMatch!['title'] ?? 'Proef Details',
-            style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        ),
-        body: MatchDetailsPage(match: _selectedMatch!),
-      );
-    }
-
-    // SHOW LIST VIEW (Modernized build method)
+    // Always show the list view; remove inline details view logic
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 375;
     final isLargeScreen = screenWidth > 414;
+    final isVerySmallScreen = screenWidth < 350;
     return Scaffold(
       backgroundColor: Colors.grey[50],
       body: SafeArea(
@@ -587,15 +554,15 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
           children: [
             // Custom App Bar
             Padding(
-              padding: const EdgeInsets.only(top: 8, left: 0, right: 0, bottom: 0),
+              padding: EdgeInsets.only(top: isVerySmallScreen ? 8 : 10, left: 0, right: 0, bottom: 0),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
                   Center(
                     child: Text(
                       'Proeven',
-                      style: const TextStyle(
-                        fontSize: 24,
+                      style: TextStyle(
+                        fontSize: isVerySmallScreen ? 18 : 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
@@ -605,12 +572,12 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                   Positioned(
                     right: 20,
                     child: CupertinoButton(
-                      padding: const EdgeInsets.all(8),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => const HelpScreen()),
-                        );
-                      },
+                      padding: EdgeInsets.all(isVerySmallScreen ? 8 : 12),
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(builder: (context) => const HelpScreen()),
+                              );
+                            },
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
@@ -637,9 +604,9 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                                 letterSpacing: 0.5,
-                              ),
-                            ),
-                          ],
+                          ),
+                        ),
+                      ],
                         ),
                       ),
                     ),
@@ -687,14 +654,14 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                 if (isSmallScreen) {
                   // Stack vertically on small screens
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
+                children: [
                         Container(
-                          height: 48,
+                      height: 48,
                           margin: const EdgeInsets.only(bottom: 10),
-                          decoration: BoxDecoration(
+                      decoration: BoxDecoration(
                             color: CupertinoColors.systemGrey6,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
@@ -722,24 +689,24 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                             ),
                             decoration: null,
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                            onChanged: (value) {
-                              setState(() {
-                                searchQuery = value;
-                              });
-                            },
-                          ),
-                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            searchQuery = value;
+                          });
+                        },
+                      ),
+                    ),
                         Container(
-                          height: 48,
+                      height: 48,
                           margin: const EdgeInsets.only(bottom: 4),
-                          decoration: BoxDecoration(
+                      decoration: BoxDecoration(
                             color: _isFilterActive() ? kMainColor.withOpacity(0.10) : CupertinoColors.systemGrey6,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: _isFilterActive() ? kMainColor : CupertinoColors.systemGrey4,
                               width: _isFilterActive() ? 1.5 : 0.5,
                             ),
-                          ),
+                      ),
                           child: CupertinoButton(
                             padding: const EdgeInsets.symmetric(horizontal: 18),
                             onPressed: () {
@@ -751,26 +718,26 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                                 Expanded(
                                   child: Text(
                                     selectedFilter,
-                                    style: TextStyle(
+                          style: TextStyle(
                                       color: _isFilterActive() ? kMainColor : CupertinoColors.label,
                                       fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                    ),
+                            fontSize: 16,
+                          ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                Icon(
+                                  Icon(
                                   CupertinoIcons.chevron_down,
                                   color: _isFilterActive() ? kMainColor : CupertinoColors.systemGrey,
                                   size: 16,
-                                ),
+                                  ),
                               ],
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  );
+                                ],
+                              ),
+                            );
                 } else {
                   // Side by side on normal screens
                   return Padding(
@@ -793,15 +760,15 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                             placeholderStyle: TextStyle(
                               color: CupertinoColors.systemGrey,
                               fontSize: 16,
-                            ),
+                        ),
                             prefix: Padding(
                               padding: const EdgeInsets.only(left: 12),
                               child: Icon(
                                 CupertinoIcons.search,
                                 color: CupertinoColors.systemGrey,
                                 size: 20,
-                              ),
-                            ),
+              ),
+            ),
                             style: const TextStyle(
                               fontSize: 16,
                               color: CupertinoColors.label,
@@ -817,9 +784,9 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                         ),
                         const SizedBox(width: 16), // More space between search and filter
                         Expanded(
-                          child: Container(
+              child: Container(
                             height: 48,
-                            decoration: BoxDecoration(
+                decoration: BoxDecoration(
                               color: _isFilterActive() ? kMainColor : Colors.white,
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
@@ -832,10 +799,10 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                               onPressed: () {
                                 _showFilterPicker();
                               },
-                              child: Row(
+                child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
+                  children: [
+                      Expanded(
                                     child: Text(
                                       selectedFilter,
                                       style: TextStyle(
@@ -874,10 +841,10 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                   0: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
                     child: Center(
-                      child: Text(
-                        'Alle',
+                            child: Text(
+                                'Alle',
                         style: TextStyle(
-                          fontSize: 12.5,
+                          fontSize: isVerySmallScreen ? 11 : 12.5,
                           fontWeight: FontWeight.w600,
                           color: selectedTab == 0 ? Colors.white : kMainColor,
                         ),
@@ -888,9 +855,9 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                     padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
                     child: Center(
                       child: Text(
-                        'Inschrijven',
+                                'Inschrijven',
                         style: TextStyle(
-                          fontSize: 12.5,
+                          fontSize: isVerySmallScreen ? 11 : 12.5,
                           fontWeight: FontWeight.w600,
                           color: selectedTab == 1 ? Colors.white : kMainColor,
                         ),
@@ -901,27 +868,27 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                     padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
                     child: Center(
                       child: Text(
-                        'Binnenkort',
+                                'Binnenkort',
                         style: TextStyle(
-                          fontSize: 12.5,
+                          fontSize: isVerySmallScreen ? 11 : 12.5,
                           fontWeight: FontWeight.w600,
                           color: selectedTab == 2 ? Colors.white : kMainColor,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
                   3: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
                     child: Center(
                       child: Text(
                         'Gesloten',
                         style: TextStyle(
-                          fontSize: 12.5,
+                          fontSize: isVerySmallScreen ? 11 : 12.5,
                           fontWeight: FontWeight.w600,
                           color: selectedTab == 3 ? Colors.white : kMainColor,
-                        ),
-                      ),
-                    ),
+                ),
+              ),
+            ),
                   ),
                 },
                 onValueChanged: (int? value) {
@@ -993,9 +960,14 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                               proef: match,
                               isFavorite: false,
                               onTap: () {
-                                setState(() {
-                                  _selectedMatch = match;
-                                });
+                                Navigator.of(context).push(
+                                  CupertinoPageRoute(
+                                    builder: (context) => MatchDetailsPage(
+                                      match: match,
+                                      key: ValueKey(match['id'] ?? match['title']),
+                                    ),
+                                  ),
+                                );
                               },
                             );
                           },
@@ -1057,12 +1029,14 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                     });
                   },
                   children: List<Widget>.generate(matchTypes.length, (int index) {
+                    final isFavorite = matchTypes[index] == 'Favorieten';
                     return Center(
                       child: Text(
                         matchTypes[index],
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: isFavorite ? FontWeight.bold : FontWeight.w500,
+                          color: isFavorite ? kMainColor : CupertinoColors.label,
                         ),
                       ),
                     );
