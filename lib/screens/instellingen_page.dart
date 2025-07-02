@@ -22,9 +22,30 @@ import 'account_check_screen.dart';
 import 'proeven_main_page.dart';
 import 'debug_settings_screen.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/cupertino.dart';
+import '../../core/theme/app_text_styles.dart';
 
 // Define the color constants at the top
 const kMainColor = Color(0xFF2E7D32);
+const bool kShowDebug = false; // Set to true for debug/test users
+
+// Place these at the top of the file, after imports:
+const sectionHeaderStyle = TextStyle(
+  color: CupertinoColors.systemGrey,
+  fontWeight: FontWeight.w600,
+  fontSize: 14,
+  letterSpacing: 1.2,
+);
+const mainActionStyle = TextStyle(
+  color: Colors.black,
+  fontWeight: FontWeight.bold,
+  fontSize: 17,
+);
+const descriptionStyle = TextStyle(
+  color: CupertinoColors.systemGrey,
+  fontWeight: FontWeight.normal,
+  fontSize: 14,
+);
 
 class InstellingenPage extends StatefulWidget {
   const InstellingenPage({Key? key}) : super(key: key);
@@ -64,6 +85,7 @@ class _InstellingenPageState extends State<InstellingenPage> {
     _loadUserPreferences();
     _loadAnalyticsSettings();
     _loadEmailNotificationSetting();
+    _loadNotificationTimingPreferences();
   }
 
   void _loadUserData() async {
@@ -436,6 +458,15 @@ class _InstellingenPageState extends State<InstellingenPage> {
 
   Future<void> _updatePreferences() async {
     try {
+      final user = context.read<AuthService>().currentUser;
+      if (user == null) return;
+      
+      // Save to SharedPreferences for offline access
+      final prefs = await SharedPreferences.getInstance();
+      final userKey = user.uid;
+      await prefs.setBool('notifications_enabled_$userKey', notificationsEnabled);
+      await prefs.setBool('push_notifications_$userKey', pushNotifications);
+      
       // Save to AuthService for backward compatibility
       await context.read<AuthService>().updateUserProfile(
         preferences: {
@@ -447,17 +478,14 @@ class _InstellingenPageState extends State<InstellingenPage> {
       );
       
       // Also save notification times directly to Firestore for email scheduling
-      final user = context.read<AuthService>().currentUser;
-      if (user != null) {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .set({
-          'notificationTimes': notificationTimes,
-        }, SetOptions(merge: true));
-        
-        print('✅ Notification timing preferences saved to Firestore');
-      }
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .set({
+        'notificationTimes': notificationTimes,
+      }, SetOptions(merge: true));
+      
+      print('✅ Notification preferences saved to Firebase and SharedPreferences');
     } catch (e) {
       print('❌ Error saving notification preferences: $e');
     }
@@ -684,174 +712,407 @@ class _InstellingenPageState extends State<InstellingenPage> {
     );
   }
 
+  Future<void> _loadNotificationTimingPreferences() async {
+    try {
+      final user = context.read<AuthService>().currentUser;
+      if (user == null) return;
+      
+      // Try to load from Firestore first
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      
+      if (userDoc.exists && userDoc.data() != null) {
+        final data = userDoc.data()!;
+        
+        // Load notification timing preferences
+        final timings = data['notificationTimes'] as List<dynamic>?;
+        if (timings != null && timings.length >= 5) {
+          setState(() {
+            notificationTimes = timings.cast<bool>();
+          });
+          print('✅ Notification timing preferences loaded from Firebase: $notificationTimes');
+        }
+        
+        // Load general notification settings
+        final preferences = data['preferences'] as Map<String, dynamic>?;
+        if (preferences != null) {
+          setState(() {
+            notificationsEnabled = preferences['notifications'] ?? true;
+            pushNotifications = preferences['pushNotifications'] ?? true;
+          });
+          print('✅ General notification settings loaded from Firebase: notifications=$notificationsEnabled, push=$pushNotifications');
+        }
+        
+        return;
+      }
+      
+      // Fallback to SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      final userKey = user.uid;
+      
+      // Load notification timing preferences
+      final savedTimes = prefs.getString('notification_times_$userKey');
+      if (savedTimes != null) {
+        final indices = savedTimes.split(',').map((e) => int.tryParse(e)).where((e) => e != null).cast<int>().toList();
+        final times = List<bool>.filled(5, false);
+        for (int i = 0; i < 5; i++) {
+          times[i] = indices.contains(i);
+        }
+        setState(() {
+          notificationTimes = times;
+        });
+        print('✅ Notification timing preferences loaded from SharedPreferences: $notificationTimes');
+      }
+      
+      // Load general notification settings
+      final notificationsEnabledPref = prefs.getBool('notifications_enabled_$userKey');
+      final pushNotificationsPref = prefs.getBool('push_notifications_$userKey');
+      
+      if (notificationsEnabledPref != null) {
+        setState(() {
+          notificationsEnabled = notificationsEnabledPref;
+        });
+        print('✅ General notification settings loaded from SharedPreferences: notifications=$notificationsEnabled');
+      }
+      
+      if (pushNotificationsPref != null) {
+        setState(() {
+          pushNotifications = pushNotificationsPref;
+        });
+        print('✅ Push notification setting loaded from SharedPreferences: push=$pushNotifications');
+      }
+      
+      if (savedTimes == null && notificationsEnabledPref == null && pushNotificationsPref == null) {
+        print('ℹ️ No saved notification preferences found, using defaults');
+      }
+    } catch (e) {
+      print('❌ Error loading notification preferences: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 375;
     final isLargeScreen = screenWidth > 414;
     
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: const Text('Instellingen', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-        centerTitle: true,
-        iconTheme: const IconThemeData(color: kMainColor),
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: const Text('Instellingen', style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: CupertinoColors.systemGrey6,
+        border: null,
       ),
-      body: ListView(
-        padding: EdgeInsets.symmetric(
-          vertical: 8, 
-          horizontal: isSmallScreen ? 8 : 0
-        ),
-        children: [
-          // Profile section
-          _SettingsSection(
-            title: 'PROFIEL',
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: isSmallScreen ? 24 : 28,
-                      backgroundColor: kMainColor,
-                      child: Icon(
-                        Icons.person, 
-                        color: Colors.white, 
-                        size: isSmallScreen ? 28 : 32
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          userName, 
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold, 
-                            fontSize: isSmallScreen ? 18 : (isLargeScreen ? 22 : 20)
-                          )
+      child: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+          children: [
+            // DEBUG: Confirm ListView is rendering
+            const Text('Hello', style: TextStyle(fontSize: 24, color: Colors.red)),
+            // Profile section
+            _SettingsSection(
+              title: 'PROFIEL',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: isSmallScreen ? 24 : 28,
+                        backgroundColor: kMainColor,
+                        child: Icon(
+                            CupertinoIcons.person_solid,
+                          color: Colors.white, 
+                            size: isSmallScreen ? 28 : 32,
                         ),
-                        SizedBox(height: 4),
-                        Text(
-                          userEmail, 
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: isSmallScreen ? 15 : 16,
-                            fontWeight: FontWeight.w500,
-                          )
+                      ),
+                      const SizedBox(width: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            userName, 
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold, 
+                                fontSize: isSmallScreen ? 18 : (isLargeScreen ? 22 : 20),
+                                overflow: TextOverflow.ellipsis,
+                            ),
+                            ),
+                          const SizedBox(height: 4),
+                          Text(
+                            userEmail, 
+                            style: TextStyle(
+                                color: CupertinoColors.systemGrey,
+                              fontSize: isSmallScreen ? 15 : 16,
+                              fontWeight: FontWeight.w500,
+                                overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: _editProfileDialog,
+                    child: Row(
+                      children: [
+                        Icon(CupertinoIcons.pencil, color: kMainColor),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Profiel Bewerken',
+                            style: mainActionStyle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                          ),
+                        ),
+                        const Spacer(),
+                        Icon(CupertinoIcons.right_chevron, color: CupertinoColors.systemGrey, size: 18),
+                      ],
+                    ),
+                  ),
+                  CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: _logout,
+                    child: Row(
+                      children: [
+                        Icon(CupertinoIcons.square_arrow_right, color: CupertinoColors.destructiveRed),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Uitloggen',
+                            style: mainActionStyle.copyWith(color: CupertinoColors.destructiveRed),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                          ),
                         ),
                       ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                ListTile(
-                  leading: const Icon(Icons.edit, color: kMainColor),
-                  title: const Text('Profiel Bewerken', style: TextStyle(fontWeight: FontWeight.bold)),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: _editProfileDialog,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.red),
-                  title: const Text('Uitloggen', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-                  onTap: _logout,
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
-          ),
 
-          // Debug section (for testing authentication flow)
-          _SettingsSection(
-            title: 'DEBUG (TESTING)',
-            child: Column(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.bug_report, color: Colors.orange),
-                  title: const Text('Debug Instellingen', style: TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: const Text('Geavanceerde debug opties'),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const DebugSettingsScreen()),
-                    );
-                  },
-                  contentPadding: EdgeInsets.zero,
-                ),
-                ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.red),
-                  title: const Text('Force Sign Out (Test Auth)', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-                  subtitle: const Text('Test de volledige inlog flow'),
-                  onTap: () async {
-                    try {
-                      await context.read<AuthService>().signOut();
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Uitgelogd! Je kunt nu de volledige inlog flow testen.'),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                        // Navigate back to main app to trigger AuthWrapper
-                        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+            // Debug section (for testing authentication flow)
+            if (kShowDebug)
+            _SettingsSection(
+              title: 'DEBUG (TESTING)',
+              child: Column(
+                children: [
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const DebugSettingsScreen()),
+                      );
+                    },
+                      child: Row(
+                        children: [
+                            Icon(CupertinoIcons.exclamationmark_triangle, color: Colors.orange, size: 22),
+                          const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Debug Instellingen',
+                              style: mainActionStyle,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          const Spacer(),
+                          const Text('Geavanceerde debug opties', style: TextStyle(color: CupertinoColors.systemGrey, fontSize: 12)),
+                            Icon(CupertinoIcons.right_chevron, color: CupertinoColors.systemGrey, size: 18),
+                        ],
+                      ),
+                    ),
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: () async {
+                      try {
+                        await context.read<AuthService>().signOut();
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Uitgelogd! Je kunt nu de volledige inlog flow testen.'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                          // Navigate back to main app to trigger AuthWrapper
+                          Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                        }
+                      } catch (e) {
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Fout bij uitloggen: $e'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
                       }
-                    } catch (e) {
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Fout bij uitloggen: $e'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
-                    }
-                  },
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ],
+                    },
+                      child: Row(
+                        children: [
+                            Icon(CupertinoIcons.square_arrow_right, color: CupertinoColors.destructiveRed, size: 22),
+                          const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Force Sign Out (Test Auth)',
+                                style: TextStyle(color: CupertinoColors.destructiveRed, fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis),
+                              ),
+                            ),
+                          const Spacer(),
+                          const Text('Test de volledige inlog flow', style: TextStyle(color: CupertinoColors.systemGrey, fontSize: 12)),
+                        ],
+                      ),
+                  ),
+                ],
+              ),
             ),
-          ),
 
-          // Community section
-          _SettingsSection(
-            title: 'COMMUNITY',
-            child: Column(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.group, color: Colors.blue),
-                  title: const Text('Facebook Groep', style: TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: const Text('Sluit je aan bij onze community'),
-                  trailing: const Icon(Icons.open_in_new, color: kMainColor),
-                  onTap: _openFacebookGroup,
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ],
+            // Community section
+            _SettingsSection(
+              title: 'COMMUNITY',
+              child: Column(
+                children: [
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: _openFacebookGroup,
+                      child: Row(
+                        children: [
+                        Icon(CupertinoIcons.person_3, color: kMainColor, size: 22),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Facebook Groep',
+                            style: mainActionStyle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            ),
+                          ),
+                          Icon(CupertinoIcons.arrow_up_right_square, color: kMainColor, size: 18),
+                        ],
+                      ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          // Preferences section
-          _SettingsSection(
-            title: 'VOORKEUREN',
-            child: Column(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.favorite, color: kMainColor),
-                  title: const Text('Favoriete Proef Types', style: TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: selectedProefTypes.isEmpty 
-                    ? const Text('Geen voorkeuren ingesteld - alle proeven worden getoond')
-                    : Text('${selectedProefTypes.length} type(s) geselecteerd: ${selectedProefTypes.map((type) => proefTypeTranslations[type] ?? type).join(', ')}'),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: _showPreferencesDialog,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                if (selectedProefTypes.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 40, top: 4, bottom: 8),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: TextButton(
+
+            // Preferences section
+            _SettingsSection(
+              title: 'VOORKEUREN',
+             child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                   children: [ 
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: _showPreferencesDialog,
+                      child: Row(
+                        children: [
+                          Icon(CupertinoIcons.heart, color: kMainColor, size: 22),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Favoriete Proef Types',
+                            style: mainActionStyle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Flexible(
+                            child: Text(
+                              selectedProefTypes.isEmpty 
+                                ? 'Geen voorkeuren ingesteld'
+                                : '${selectedProefTypes.length} type(s) geselecteerd',
+                              style: const TextStyle(color: CupertinoColors.systemGrey, fontSize: 12),
+                              textAlign: TextAlign.right,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Icon(CupertinoIcons.right_chevron, color: CupertinoColors.systemGrey, size: 18),
+                        ],
+                      ),
+                  ),
+                  if (selectedProefTypes.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 40, top: 8, bottom: 8),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            ...selectedProefTypes.take(5).map((type) => Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: kMainColor.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(color: kMainColor.withValues(alpha: 0.3)),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      CupertinoIcons.heart_fill,
+                                      size: 12,
+                                      color: kMainColor,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      type,
+                                      style: TextStyle(
+                                        color: kMainColor,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )),
+                            if (selectedProefTypes.length > 5)
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      CupertinoIcons.ellipsis,
+                                      size: 12,
+                                      color: Colors.grey[600],
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      '+${selectedProefTypes.length - 5}',
+                                      style: TextStyle(
+                                        color: Colors.grey[600],
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ), 
+                  if (selectedProefTypes.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 40, bottom: 4, top: 4),
+                      child: CupertinoButton(
+                        padding: EdgeInsets.zero,
                         onPressed: () async {
                           await _saveUserPreferences([]);
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -861,287 +1122,445 @@ class _InstellingenPageState extends State<InstellingenPage> {
                             ),
                           );
                         },
-                        child: const Text(
-                          'Alle voorkeuren wissen',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.orange,
-                            fontWeight: FontWeight.w500,
-                          ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              CupertinoIcons.trash,
+                              size: 12,
+                              color: Colors.orange,
+                            ),
+                            const SizedBox(width: 4),
+                            const Text(
+                              'Alle voorkeuren wissen',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.orange,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
+                ],
+              ),
+            ),
+
+            // Notification toggles
+            _SettingsSection(
+              title: 'MELDINGEN',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                    _CupertinoSwitchTile(
+                      icon: CupertinoIcons.bell,
+                    iconColor: kMainColor,
+                    title: 'Meldingen Inschakelen',
+                    value: notificationsEnabled,
+                    onChanged: (val) {
+                      setState(() => notificationsEnabled = val);
+                      _updatePreferences();
+                    },
                   ),
-              ],
-            ),
-          ),
-          // Notification toggles
-          _SettingsSection(
-            title: 'MELDINGEN',
-            child: Column(
-              children: [
-                _CustomSwitchTile(
-                  icon: Icons.notifications,
-                  iconColor: kMainColor,
-                  title: 'Meldingen Inschakelen',
-                  value: notificationsEnabled,
-                  onChanged: (val) {
-                    setState(() => notificationsEnabled = val);
-                    _updatePreferences();
-                  },
-                ),
-                _CustomSwitchTile(
-                  icon: Icons.email,
-                  iconColor: kMainColor,
-                  title: 'E-mail Meldingen',
-                  subtitle: 'Ontvang emails voor jouw specifieke proeven',
-                  value: emailNotifications,
-                  enabled: true,
-                  onChanged: (val) async {
-                    setState(() => emailNotifications = val);
-                    await _updatePreferences();
-                    await _updateEmailNotificationSetting(val);
-                  },
-                ),
-                _CustomSwitchTile(
-                  icon: Icons.phone_android,
-                  iconColor: kMainColor,
-                  title: 'Push Meldingen',
-                  value: pushNotifications,
-                  onChanged: (val) {
-                    setState(() => pushNotifications = val);
-                    _updatePreferences();
-                  },
-                ),
-              ],
-            ),
-          ),
-          // Notification times
-          _SettingsSection(
-            title: 'MELDINGSTIJDEN',
-            child: Column(
-              children: [
-                _NotificationTimeRow(
-                  icon: Icons.calendar_today,
-                  iconColor: kMainColor,
-                  label: '7 dagen van tevoren',
-                  value: notificationTimes[0],
-                  onChanged: (val) {
-                    setState(() => notificationTimes[0] = val);
-                    _updatePreferences();
-                  },
-                ),
-                _NotificationTimeRow(
-                  icon: Icons.access_time_filled,
-                  iconColor: Colors.green,
-                  label: '1 dag van tevoren',
-                  value: notificationTimes[1],
-                  onChanged: (val) {
-                    setState(() => notificationTimes[1] = val);
-                    _updatePreferences();
-                  },
-                ),
-                _NotificationTimeRow(
-                  icon: Icons.alarm,
-                  iconColor: kMainColor,
-                  label: '1 uur van tevoren',
-                  value: notificationTimes[2],
-                  onChanged: (val) {
-                    setState(() => notificationTimes[2] = val);
-                    _updatePreferences();
-                  },
-                ),
-                _NotificationTimeRow(
-                  icon: Icons.timer,
-                  iconColor: kMainColor,
-                  label: '10 minuten van tevoren',
-                  value: notificationTimes[3],
-                  onChanged: (val) {
-                    setState(() => notificationTimes[3] = val);
-                    _updatePreferences();
-                  },
-                ),
-                _NotificationTimeRow(
-                  icon: Icons.notification_add,
-                  iconColor: Colors.blue,
-                  label: '15 minuten na inschrijving opent',
-                  value: notificationTimes[4],
-                  onChanged: (val) {
-                    setState(() => notificationTimes[4] = val);
-                    _updatePreferences();
-                  },
-                ),
-              ],
-            ),
-          ),
-          // Subscription section
-          FutureBuilder<Map<String, dynamic>>(
-            future: _getSubscriptionStatus(),
-            builder: (context, snapshot) {
-              final data = snapshot.data ?? {};
-              final hasSubscription = data['hasSubscription'] ?? false;
-              final isInTrial = data['isInTrial'] ?? false;
-              final trialDaysRemaining = data['trialDaysRemaining'] ?? 0;
-              
-              String title;
-              String subtitle;
-              IconData icon;
-              Color iconColor;
-              
-              if (hasSubscription) {
-                title = 'Premium Actief';
-                subtitle = 'Je hebt toegang tot alle premium functies';
-                icon = Icons.verified;
-                iconColor = Colors.green;
-              } else if (isInTrial) {
-                title = 'Gratis Proefperiode';
-                subtitle = 'Nog $trialDaysRemaining dagen gratis toegang';
-                icon = Icons.timer;
-                iconColor = Colors.blue;
-              } else {
-                title = 'Start Gratis Proefperiode';
-                subtitle = '14 dagen gratis, dan €3.99/maand of €29,99/jaar';
-                icon = Icons.star;
-                iconColor = Colors.blue;
-              }
-              
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    child: ListTile(
-                      leading: Icon(icon, color: iconColor),
-                      title: Text(
-                        title,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Text(subtitle),
-                      trailing: hasSubscription 
-                        ? const Icon(Icons.check_circle, color: Colors.green)
-                        : const Icon(Icons.arrow_forward_ios, color: kMainColor),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const PlanSelectionScreen(),
-                          ),
-                        );
-                      },
-                      contentPadding: EdgeInsets.zero,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 40, bottom: 8),
+                    child: Text(
+                      'Schakel meldingen in om herinneringen te ontvangen voor je favoriete proeven.',
+                      style: AppTextStyles.rowSubtitle,
                     ),
                   ),
-                ),
-              );
-            },
-          ),
-          // App section
-          _SettingsSection(
-            title: 'APP',
-            child: Column(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.tour, color: kMainColor),
-                  title: const Text('Interactieve Rondleiding', style: TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: const Text('Leer de app gebruiken met een stap-voor-stap tour'),
-                  onTap: () => HelpSystem.showSimpleTour(context),
-                  contentPadding: EdgeInsets.zero,
-                ),
-                ListTile(
-                  leading: const Icon(Icons.menu_book, color: kMainColor),
-                  title: const Text('Bekijk App Uitleg', style: TextStyle(fontWeight: FontWeight.bold)),
-                  onTap: _showOnboarding,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                ListTile(
-                  leading: const Icon(Icons.share, color: kMainColor),
-                  title: const Text('App delen', style: TextStyle(fontWeight: FontWeight.bold)),
-                  onTap: _shareApp,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                ListTile(
-                  leading: const Icon(Icons.settings, color: kMainColor),
-                  title: const Text('Versie', style: TextStyle(fontWeight: FontWeight.bold)),
-                  trailing: const Text('10.3.0', style: TextStyle(color: kMainColor, fontWeight: FontWeight.bold)),
-                  contentPadding: EdgeInsets.zero,
-                ),
-                _CustomSwitchTile(
-                  icon: Icons.analytics_outlined,
-                  iconColor: kMainColor,
-                  title: 'App Analytics',
-                  subtitle: 'Help ons de app te verbeteren door anonieme gebruiksgegevens te verzamelen',
-                  value: _analyticsEnabled,
-                  onChanged: _toggleAnalytics,
-                ),
-                ListTile(
-                  leading: const Icon(Icons.bug_report, color: kMainColor),
-                  title: const Text('Debug Instellingen', style: TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: const Text('Bekijk logs en debug informatie voor TestFlight'),
-                  trailing: const Icon(Icons.arrow_forward_ios, color: kMainColor),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const DebugSettingsScreen(),
-                      ),
-                    );
-                  },
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ],
-            ),
-          ),
-          // Support section
-          _SettingsSection(
-            title: 'SUPPORT',
-            child: Column(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.email, color: kMainColor),
-                  title: const Text('E-mail Support', style: TextStyle(fontWeight: FontWeight.bold)),
-                  trailing: const Icon(Icons.open_in_new, color: kMainColor),
-                  onTap: _emailSupport,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                ListTile(
-                  leading: const Icon(Icons.chat, color: kMainColor),
-                  title: const Text('WhatsApp Support', style: TextStyle(fontWeight: FontWeight.bold)),
-                  trailing: const Icon(Icons.open_in_new, color: kMainColor),
-                  onTap: _whatsappSupport,
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ],
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.lock, color: kMainColor),
-            title: const Text('Wachtwoord wijzigen'),
-            onTap: _changePasswordDialog,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            child: ElevatedButton.icon(
-              icon: const Icon(Icons.delete, color: Colors.white),
-              label: const Text('Account Verwijderen', style: TextStyle(fontWeight: FontWeight.bold)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-                minimumSize: const Size.fromHeight(48),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                elevation: 0,
+                  Divider(height: 1, color: CupertinoColors.systemGrey4),
+                    _CupertinoSwitchTile(
+                      icon: CupertinoIcons.mail,
+                    iconColor: kMainColor,
+                    title: 'E-mail Meldingen',
+                    value: emailNotifications,
+                    enabled: true,
+                    onChanged: (val) async {
+                      setState(() => emailNotifications = val);
+                      await _updatePreferences();
+                      await _updateEmailNotificationSetting(val);
+                    },
+                  ),
+                    _CupertinoSwitchTile(
+                      icon: CupertinoIcons.device_phone_portrait,
+                    iconColor: kMainColor,
+                    title: 'Push Meldingen',
+                    value: pushNotifications,
+                    onChanged: (val) {
+                      setState(() => pushNotifications = val);
+                      _updatePreferences();
+                    },
+                  ),
+                ],
               ),
-              onPressed: _deleteAccount,
             ),
+
+            // Notification times
+            _SettingsSection(
+              title: 'MELDINGSTIJDEN',
+              child: Column(
+                children: [
+                    _CupertinoNotificationTimeRow(
+                      icon: CupertinoIcons.calendar,
+                    iconColor: kMainColor,
+                    label: '7 dagen van tevoren',
+                    value: notificationTimes[0],
+                    onChanged: (val) {
+                      setState(() => notificationTimes[0] = val);
+                      _updatePreferences();
+                    },
+                  ),
+                    _CupertinoNotificationTimeRow(
+                      icon: CupertinoIcons.clock,
+                    iconColor: Colors.green,
+                    label: '1 dag van tevoren',
+                    value: notificationTimes[1],
+                    onChanged: (val) {
+                      setState(() => notificationTimes[1] = val);
+                      _updatePreferences();
+                    },
+                  ),
+                    _CupertinoNotificationTimeRow(
+                      icon: CupertinoIcons.alarm,
+                    iconColor: kMainColor,
+                    label: '1 uur van tevoren',
+                    value: notificationTimes[2],
+                    onChanged: (val) {
+                      setState(() => notificationTimes[2] = val);
+                      _updatePreferences();
+                    },
+                  ),
+                    _CupertinoNotificationTimeRow(
+                      icon: CupertinoIcons.timer,
+                    iconColor: kMainColor,
+                    label: '10 minuten van tevoren',
+                    value: notificationTimes[3],
+                    onChanged: (val) {
+                      setState(() => notificationTimes[3] = val);
+                      _updatePreferences();
+                    },
+                  ),
+                    _CupertinoNotificationTimeRow(
+                      icon: CupertinoIcons.bell,
+                    iconColor: Colors.blue,
+                    label: '15 minuten na inschrijving opent',
+                    value: notificationTimes[4],
+                    onChanged: (val) {
+                      setState(() => notificationTimes[4] = val);
+                      _updatePreferences();
+                    },
+                  ),
+                ],
+              ),
+            ),
+
+            // Subscription section
+            FutureBuilder<Map<String, dynamic>>(
+              future: _getSubscriptionStatus(),
+              builder: (context, snapshot) {
+                final data = snapshot.data ?? {};
+                final hasSubscription = data['hasSubscription'] ?? false;
+                final isInTrial = data['isInTrial'] ?? false;
+                final trialDaysRemaining = data['trialDaysRemaining'] ?? 0;
+                
+                String title;
+                String subtitle;
+                IconData icon;
+                Color iconColor;
+                
+                if (hasSubscription) {
+                  title = 'Premium Actief';
+                  subtitle = 'Je hebt toegang tot alle premium functies';
+                    icon = CupertinoIcons.checkmark_seal_fill;
+                  iconColor = Colors.green;
+                } else if (isInTrial) {
+                  title = 'Gratis Proefperiode';
+                  subtitle = 'Nog $trialDaysRemaining dagen gratis toegang';
+                    icon = CupertinoIcons.timer;
+                  iconColor = Colors.blue;
+                } else {
+                  title = 'Start Gratis Proefperiode';
+                  subtitle = '14 dagen gratis, dan €3.99/maand of €29,99/jaar';
+                    icon = CupertinoIcons.star_fill;
+                  iconColor = Colors.blue;
+                }
+                
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        child: CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const PlanSelectionScreen(),
+                            ),
+                          );
+                        },
+                          child: Row(
+                            children: [
+                              Icon(icon, color: iconColor, size: 22),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      title,
+                                    style: mainActionStyle,
+                                    ),
+                                    Text(
+                                      subtitle,
+                                      style: AppTextStyles.rowSubtitle,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              hasSubscription 
+                                ? Icon(CupertinoIcons.checkmark_circle_fill, color: Colors.green)
+                                : Icon(CupertinoIcons.right_chevron, color: kMainColor, size: 18),
+                            ],
+                          ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+
+            // App section
+            _SettingsSection(
+              title: 'APP',
+              child: Column(
+                children: [
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: () => HelpSystem.showSimpleTour(context),
+                      child: Row(
+                        children: [
+                          Icon(CupertinoIcons.arrow_up_right_square, color: kMainColor, size: 22),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Interactieve Rondleiding',
+                            style: mainActionStyle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: _showOnboarding,
+                      child: Row(
+                        children: [
+                          Icon(CupertinoIcons.book, color: kMainColor, size: 22),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Bekijk App Uitleg',
+                            style: mainActionStyle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: _shareApp,
+                      child: Row(
+                        children: [
+                          Icon(CupertinoIcons.square_arrow_up, color: kMainColor, size: 22),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'App delen',
+                            style: mainActionStyle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            ),
+                          ),
+                        ],
+                      ),
+                  ),
+                    Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(CupertinoIcons.settings, color: kMainColor, size: 22),
+                        const SizedBox(width: 8),
+                        Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Versie', style: mainActionStyle),
+                            Text('10.3.0', style: TextStyle(color: CupertinoColors.systemGrey, fontSize: 13, fontWeight: FontWeight.normal)),
+                          ],
+                        ),
+                      ),
+                      ],
+                  ),
+                    _CupertinoSwitchTile(
+                      icon: CupertinoIcons.chart_bar,
+                    iconColor: kMainColor,
+                    title: 'App Analytics',
+                    value: _analyticsEnabled,
+                    onChanged: _toggleAnalytics,
+                  ),
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const DebugSettingsScreen(),
+                        ),
+                      );
+                    },
+                      child: Row(
+                        children: [
+                          Icon(CupertinoIcons.exclamationmark_triangle, color: kMainColor, size: 22),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Debug Instellingen',
+                            style: mainActionStyle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const Spacer(),
+                          Icon(CupertinoIcons.right_chevron, color: kMainColor, size: 18),
+                        ],
+                      ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Support section
+            _SettingsSection(
+              title: 'SUPPORT',
+              child: Column(
+                children: [
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: _emailSupport,
+                      child: Row(
+                        children: [
+                          Icon(CupertinoIcons.mail, color: kMainColor, size: 22),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'E-mail Support',
+                            style: mainActionStyle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            ),
+                          ),
+                          const Spacer(),
+                          Icon(CupertinoIcons.arrow_up_right_square, color: kMainColor, size: 18),
+                        ],
+                      ),
+                    ),
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: _whatsappSupport,
+                      child: Row(
+                        children: [
+                          Icon(CupertinoIcons.chat_bubble, color: kMainColor, size: 22),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'WhatsApp Support',
+                            style: mainActionStyle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            ),
+                          ),
+                          const Spacer(),
+                          Icon(CupertinoIcons.arrow_up_right_square, color: kMainColor, size: 18),
+                ],
+              ),
+            ),
+          ],
+        ),
+            ),
+
+            // Account section
+            _SettingsSection(
+              title: 'ACCOUNT',
+              child: Column(
+                children: [
+        CupertinoButton(
+          padding: EdgeInsets.zero,
+          onPressed: _changePasswordDialog,
+          child: Row(
+            children: [
+              Icon(CupertinoIcons.lock, color: kMainColor, size: 22),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Wachtwoord wijzigen',
+                            style: mainActionStyle,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
-  }
+        ),
+                ],
+              ),
+            ),
+
+            // Delete account section
+        Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
+            child: CupertinoButton(
+              color: CupertinoColors.destructiveRed,
+            onPressed: _deleteAccount,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                Icon(CupertinoIcons.delete, color: Colors.white, size: 22),
+                  const SizedBox(width: 8),
+                    Text(
+                      'Account verwijderen',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                  ),
+                      textAlign: TextAlign.center,
+                ),
+                ],
+              ),
+          ),
+        ),
+      ],
+        ),
+    ),
+  );
+}
 }
 
 class _SettingsSection extends StatelessWidget {
@@ -1158,7 +1577,7 @@ class _SettingsSection extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 8, bottom: 4),
-            child: Text(title, style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+            child: Text(title, style: sectionHeaderStyle.copyWith(letterSpacing: 2, fontSize: 13)),
           ),
           Container(
             width: double.infinity,
@@ -1177,13 +1596,13 @@ class _SettingsSection extends StatelessWidget {
   }
 }
 
-class _NotificationTimeRow extends StatelessWidget {
+class _CupertinoNotificationTimeRow extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
   final String label;
   final bool value;
   final ValueChanged<bool> onChanged;
-  const _NotificationTimeRow({required this.icon, required this.iconColor, required this.label, required this.value, required this.onChanged, Key? key}) : super(key: key);
+  const _CupertinoNotificationTimeRow({required this.icon, required this.iconColor, required this.label, required this.value, required this.onChanged, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -1193,14 +1612,12 @@ class _NotificationTimeRow extends StatelessWidget {
         children: [
           Icon(icon, color: iconColor),
           const SizedBox(width: 16),
-          Expanded(child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold))),
-          Switch(
+          Expanded(child: Text(label, style: AppTextStyles.rowTitle)),
+          CupertinoSwitch(
             value: value, 
             onChanged: onChanged,
-            activeColor: Colors.white,
-            activeTrackColor: Colors.green,
-            inactiveThumbColor: Colors.white,
-            inactiveTrackColor: Colors.grey[300],
+            activeTrackColor: kMainColor,
+            inactiveTrackColor: CupertinoColors.systemGrey4,
           ),
         ],
       ),
@@ -1208,7 +1625,7 @@ class _NotificationTimeRow extends StatelessWidget {
   }
 }
 
-class _CustomSwitchTile extends StatelessWidget {
+class _CupertinoSwitchTile extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
   final String title;
@@ -1216,7 +1633,7 @@ class _CustomSwitchTile extends StatelessWidget {
   final bool value;
   final bool enabled;
   final ValueChanged<bool> onChanged;
-  const _CustomSwitchTile({
+  const _CupertinoSwitchTile({
     required this.icon, 
     required this.iconColor, 
     required this.title, 
@@ -1241,28 +1658,23 @@ class _CustomSwitchTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(title, style: AppTextStyles.rowTitle),
                   if (subtitle != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 2),
                       child: Text(
                         subtitle!,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
+                        style: AppTextStyles.rowSubtitle,
                       ),
                     ),
                 ],
               ),
             ),
-            Switch(
+            CupertinoSwitch(
               value: value, 
               onChanged: enabled ? onChanged : null,
-              activeColor: Colors.white,
-              activeTrackColor: Colors.green,
-              inactiveThumbColor: Colors.white,
-              inactiveTrackColor: Colors.grey[300],
+              activeTrackColor: kMainColor,
+              inactiveTrackColor: CupertinoColors.systemGrey4,
             ),
           ],
         ),
