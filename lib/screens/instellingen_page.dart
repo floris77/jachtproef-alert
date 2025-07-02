@@ -2,24 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'plan_selection_screen.dart';
 import '../services/auth_service.dart';
 import '../services/payment_service.dart';
-import '../services/notification_service.dart';
 import '../services/analytics_service.dart';
-import '../services/email_notification_service.dart';
 import '../utils/constants.dart';
 import '../utils/help_system.dart';
-import '../utils/responsive_helper.dart';
-import '../utils/responsive_dialogs.dart';
-import 'quick_setup_screen.dart';
-import 'help_screen.dart';
-import 'welcome_trial_screen.dart';
-import 'account_check_screen.dart';
-import 'proeven_main_page.dart';
 import 'debug_settings_screen.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
@@ -59,6 +47,7 @@ class _InstellingenPageState extends State<InstellingenPage> {
   String userEmail = '';
   List<String> selectedProefTypes = [];
   bool _analyticsEnabled = true;
+  String? _chipTapped; // For chip animation
 
   // Proef type translations map
   final Map<String, String> proefTypeTranslations = {
@@ -985,24 +974,28 @@ class _InstellingenPageState extends State<InstellingenPage> {
                       onPressed: _openFacebookGroup,
                       child: Row(
                         children: [
-                        Icon(CupertinoIcons.person_3, color: kMainColor, size: 22),
+                          Semantics(
+                            label: 'Facebook Groep',
+                            child: Icon(CupertinoIcons.person_3, color: kMainColor, size: 22),
+                          ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               'Facebook Groep',
-                            style: mainActionStyle,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            softWrap: true,
+                              style: mainActionStyle,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
                             ),
                           ),
                           Icon(CupertinoIcons.arrow_up_right_square, color: kMainColor, size: 18),
                         ],
                       ),
-                  ),
+                    ),
                 ],
               ),
             ),
+            Divider(height: 32, thickness: 1, color: CupertinoColors.systemGrey4),
 
             // Preferences section
             _SettingsSection(
@@ -1048,31 +1041,42 @@ class _InstellingenPageState extends State<InstellingenPage> {
                           children: [
                             ...selectedProefTypes.take(5).map((type) => Padding(
                               padding: const EdgeInsets.only(right: 8),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: kMainColor.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(color: kMainColor.withValues(alpha: 0.3)),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      CupertinoIcons.heart_fill,
-                                      size: 12,
-                                      color: kMainColor,
+                              child: GestureDetector(
+                                onTapDown: (details) => setState(() => _chipTapped = type),
+                                onTapUp: (details) => setState(() => _chipTapped = null),
+                                onTapCancel: () => setState(() => _chipTapped = null),
+                                child: AnimatedScale(
+                                  scale: _chipTapped == type ? 0.95 : 1.0,
+                                  duration: const Duration(milliseconds: 120),
+                                  curve: Curves.easeOut,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: kMainColor.withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(16),
+                                      border: Border.all(color: kMainColor.withValues(alpha: 0.3)),
                                     ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      type,
-                                      style: TextStyle(
-                                        color: kMainColor,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          CupertinoIcons.heart_fill,
+                                          size: 12,
+                                          color: kMainColor,
+                                          semanticLabel: 'Favoriete type',
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          type,
+                                          style: TextStyle(
+                                            color: kMainColor,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             )),
@@ -1114,13 +1118,32 @@ class _InstellingenPageState extends State<InstellingenPage> {
                       child: CupertinoButton(
                         padding: EdgeInsets.zero,
                         onPressed: () async {
-                          await _saveUserPreferences([]);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Voorkeuren gewist - alle proeven worden nu getoond'),
-                              backgroundColor: Colors.orange,
+                          final shouldClear = await showDialog<bool>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Weet je het zeker?'),
+                              content: const Text('Wil je echt al je favoriete proef types wissen?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(false),
+                                  child: const Text('Annuleren'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(true),
+                                  child: const Text('Wissen', style: TextStyle(color: Colors.red)),
+                                ),
+                              ],
                             ),
                           );
+                          if (shouldClear == true) {
+                            await _saveUserPreferences([]);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Voorkeuren gewist - alle proeven worden nu getoond'),
+                                backgroundColor: Colors.orange,
+                              ),
+                            );
+                          }
                         },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -1146,6 +1169,7 @@ class _InstellingenPageState extends State<InstellingenPage> {
                 ],
               ),
             ),
+            Divider(height: 32, thickness: 1, color: CupertinoColors.systemGrey4),
 
             // Notification toggles
             _SettingsSection(
@@ -1196,6 +1220,7 @@ class _InstellingenPageState extends State<InstellingenPage> {
                 ],
               ),
             ),
+            Divider(height: 32, thickness: 1, color: CupertinoColors.systemGrey4),
 
             // Notification times
             _SettingsSection(
@@ -1255,6 +1280,7 @@ class _InstellingenPageState extends State<InstellingenPage> {
                 ],
               ),
             ),
+            Divider(height: 32, thickness: 1, color: CupertinoColors.systemGrey4),
 
             // Subscription section
             FutureBuilder<Map<String, dynamic>>(
@@ -1337,6 +1363,7 @@ class _InstellingenPageState extends State<InstellingenPage> {
                 );
               },
             ),
+            Divider(height: 32, thickness: 1, color: CupertinoColors.systemGrey4),
 
             // App section
             _SettingsSection(
@@ -1453,6 +1480,7 @@ class _InstellingenPageState extends State<InstellingenPage> {
                 ],
               ),
             ),
+            Divider(height: 32, thickness: 1, color: CupertinoColors.systemGrey4),
 
             // Support section
             _SettingsSection(
@@ -1501,9 +1529,7 @@ class _InstellingenPageState extends State<InstellingenPage> {
                 ],
               ),
             ),
-          ],
-        ),
-            ),
+            Divider(height: 32, thickness: 1, color: CupertinoColors.systemGrey4),
 
             // Account section
             _SettingsSection(
@@ -1531,6 +1557,7 @@ class _InstellingenPageState extends State<InstellingenPage> {
                 ],
               ),
             ),
+            Divider(height: 32, thickness: 1, color: CupertinoColors.systemGrey4),
 
             // Delete account section
         Padding(
