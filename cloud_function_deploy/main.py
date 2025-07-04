@@ -23,7 +23,6 @@ from firebase_admin import credentials, firestore
 from datetime import datetime, timedelta
 import re
 import os
-import functions_framework
 
 # ORWEJA CREDENTIALS for protected calendar access
 ORWEJA_USERNAME = "Jacqueline vd Hart-Snelle"
@@ -38,7 +37,6 @@ except Exception as e:
     print(f"Firebase initialization error: {e}")
     db = None
 
-@functions_framework.http
 def main(request):
     """
     Main Cloud Function for Orweja scraper
@@ -218,7 +216,12 @@ def mark_missing_matches_as_closed(scraped_matches):
         print(f"❌ Error marking matches as closed: {e}")
 
 if __name__ == "__main__":
-    print("🔧 Running scraper locally for testing...")
+    print("[Local Debug] Scraping ORWEJA matches...")
     matches = scrape_orweja_matches()
-    uploaded = upload_matches_to_firestore(matches)
-    print(f"✅ Test completed: {uploaded} matches processed")
+    for i, match in enumerate(matches):
+        print(f"Match {i+1}:")
+        for k, v in match.items():
+            print(f"  {k}: {v}")
+        if 'registration_text' not in match or not match['registration_text']:
+            print("  [WARNING] registration_text is missing or empty! This match will be ONBEKEND in the app.")
+        print()

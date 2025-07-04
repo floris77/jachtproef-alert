@@ -62,7 +62,7 @@ class _MatchDetailsPageContentState extends State<_MatchDetailsPageContent> with
   @override
   void initState() {
     super.initState();
-    debugPrint('[DETAILS_DEBUG] initState called for match: ${widget.match['id'] ?? widget.match['title']}');
+
     CalendarService.initialize();
     _loadActionStates();
     _noteController = TextEditingController();
@@ -409,7 +409,6 @@ Gedeeld via JachtProef Alert 📱''';
     super.build(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final isVerySmallScreen = screenWidth < 350;
-    debugPrint('[DETAILS_DEBUG] build() called. widget.match: ${widget.match}');
     
     // Use local state variables for immediate UI updates
     // These are updated optimistically when buttons are tapped
@@ -419,8 +418,6 @@ Gedeeld via JachtProef Alert 📱''';
     final matchDate = _getMatchDate(match);
     final enrollmentDate = _getEnrollmentOpeningDate(match);
     final hasValidDate = matchDate != null;
-
-    debugPrint('[DETAILS_DEBUG] Displaying details for match: $match');
     
     return Scaffold(
       appBar: AppBar(
@@ -633,18 +630,13 @@ Gedeeld via JachtProef Alert 📱''';
     final canEnableNotifications = enrollmentDate != null && enrollmentDate.isAfter(now);
     final matchDate = _getMatchDate(match);
     final canAddToAgenda = matchDate != null;
-    // Debug prints for notification enabling
+    // Get registration text for notification enabling
     String regText = match['registration']?['text']?.toString() ?? match['registration_text']?.toString() ?? match['raw']?['registration_text']?.toString() ?? '';
-    print('[DEBUG] regText: "$regText"');
-    print('[DEBUG] Parsed enrollmentDate: $enrollmentDate, canEnableNotifications: $canEnableNotifications');
     // Determine registration status
     regText = regText.trim().toLowerCase();
     // Only disable for 'Binnenkort' (not yet open)
     final canEnroll = !regText.startsWith('vanaf ');
-    // Debug output for agenda button
-    // ignore: avoid_print
-    print('[DEBUG] matchDate for agenda button: '
-      'raw date: \\${match['date']} | parsed: \\${matchDate}');
+
     return Column(
       children: [
         AbsorbPointer(
@@ -1059,7 +1051,7 @@ Gedeeld via JachtProef Alert 📱''';
     final rawDate = match['date'] ?? match['raw']?['date'];
     // Debug output for date parsing
     // ignore: avoid_print
-    print('[DEBUG] _getMatchDate raw: \\${rawDate}');
+
     return _parseDate(rawDate);
   }
 
@@ -1089,7 +1081,7 @@ Gedeeld via JachtProef Alert 📱''';
           }
         }
       } catch (e) {
-        print('[DEBUG] Failed to parse enrollment date: $e');
+  
       }
     }
     return null;

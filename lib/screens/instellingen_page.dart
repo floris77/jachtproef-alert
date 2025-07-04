@@ -3,18 +3,23 @@ import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 import '../services/auth_service.dart';
 import '../services/payment_service.dart';
 import '../services/analytics_service.dart';
+import '../services/email_notification_service.dart';
 import '../utils/constants.dart';
 import '../utils/help_system.dart';
+import '../utils/responsive_helper.dart';
 import 'debug_settings_screen.dart';
+import 'plan_selection_screen.dart';
+import 'help_screen.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../utils/constants.dart';
 
-// Define the color constants at the top
-const kMainColor = Color(0xFF2E7D32);
 const bool kShowDebug = false; // Set to true for debug/test users
 
 // Place these at the top of the file, after imports:
@@ -795,10 +800,10 @@ class _InstellingenPageState extends State<InstellingenPage> {
       ),
       child: SafeArea(
         child: ListView(
+          physics: const BouncingScrollPhysics(),
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
           children: [
-            // DEBUG: Confirm ListView is rendering
-            const Text('Hello', style: TextStyle(fontSize: 24, color: Colors.red)),
             // Profile section
             _SettingsSection(
               title: 'PROFIEL',
@@ -827,7 +832,7 @@ class _InstellingenPageState extends State<InstellingenPage> {
                                 fontSize: isSmallScreen ? 18 : (isLargeScreen ? 22 : 20),
                                 overflow: TextOverflow.ellipsis,
                             ),
-                            ),
+                          ),
                           const SizedBox(height: 4),
                           Text(
                             userEmail, 
@@ -888,8 +893,8 @@ class _InstellingenPageState extends State<InstellingenPage> {
             ),
 
             // Debug section (for testing authentication flow)
-            if (kShowDebug)
-            _SettingsSection(
+            if (kShowDebug) ...[
+              _SettingsSection(
               title: 'DEBUG (TESTING)',
               child: Column(
                 children: [
@@ -963,6 +968,7 @@ class _InstellingenPageState extends State<InstellingenPage> {
                 ],
               ),
             ),
+            ],
 
             // Community section
             _SettingsSection(
@@ -1323,9 +1329,9 @@ class _InstellingenPageState extends State<InstellingenPage> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        child: CupertinoButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: () {
+                      child: CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -1333,30 +1339,30 @@ class _InstellingenPageState extends State<InstellingenPage> {
                             ),
                           );
                         },
-                          child: Row(
-                            children: [
-                              Icon(icon, color: iconColor, size: 22),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      title,
+                        child: Row(
+                          children: [
+                            Icon(icon, color: iconColor, size: 22),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    title,
                                     style: mainActionStyle,
-                                    ),
-                                    Text(
-                                      subtitle,
-                                      style: AppTextStyles.rowSubtitle,
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                  Text(
+                                    subtitle,
+                                    style: AppTextStyles.rowSubtitle,
+                                  ),
+                                ],
                               ),
-                              hasSubscription 
-                                ? Icon(CupertinoIcons.checkmark_circle_fill, color: Colors.green)
-                                : Icon(CupertinoIcons.right_chevron, color: kMainColor, size: 18),
-                            ],
-                          ),
+                            ),
+                            hasSubscription 
+                              ? Icon(CupertinoIcons.checkmark_circle_fill, color: Colors.green)
+                              : Icon(CupertinoIcons.right_chevron, color: kMainColor, size: 18),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -1526,6 +1532,9 @@ class _InstellingenPageState extends State<InstellingenPage> {
                           ),
                           const Spacer(),
                           Icon(CupertinoIcons.arrow_up_right_square, color: kMainColor, size: 18),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -1560,34 +1569,34 @@ class _InstellingenPageState extends State<InstellingenPage> {
             Divider(height: 32, thickness: 1, color: CupertinoColors.systemGrey4),
 
             // Delete account section
-        Padding(
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
-            child: CupertinoButton(
-              color: CupertinoColors.destructiveRed,
-            onPressed: _deleteAccount,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                Icon(CupertinoIcons.delete, color: Colors.white, size: 22),
-                  const SizedBox(width: 8),
+              child: CupertinoButton(
+                color: CupertinoColors.destructiveRed,
+                onPressed: _deleteAccount,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(CupertinoIcons.delete, color: Colors.white, size: 22),
+                    const SizedBox(width: 8),
                     Text(
                       'Account verwijderen',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 17,
-                  ),
+                      ),
                       textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-                ],
               ),
-          ),
+            ),
+          ],
         ),
-      ],
-        ),
-    ),
-  );
-}
+      ),
+    );
+  }
 }
 
 class _SettingsSection extends StatelessWidget {

@@ -9,8 +9,7 @@ import '../utils/help_system.dart';
 import 'proeven_main_page.dart';
 import '../utils/responsive_helper.dart';
 import '../utils/responsive_dialogs.dart';
-
-const Color kMainColor = Color(0xFF535B22);
+import '../utils/constants.dart';
 
 class QuickSetupScreen extends StatefulWidget {
   const QuickSetupScreen({super.key});

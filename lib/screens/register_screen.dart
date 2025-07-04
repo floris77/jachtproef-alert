@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_service.dart';
 import 'proeven_main_page.dart';
@@ -31,12 +32,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _register() async {
-    // Only set debug message initially, not the user status message
-    setState(() {
-      _debugMessage = '[DEBUG] Register button pressed with email: \u001b[32m${_emailController.text.trim()}\u001b[0m, name: ${_nameController.text.trim()}';
-    });
-    
-    // Validate form first - if this fails, don't show "Account aanmaken..." message
+    // Validate form first
     if (!_formKey.currentState!.validate()) {
       setState(() {
         _userStatusMessage = 'Controleer de ingevoerde gegevens en probeer opnieuw.';
@@ -44,7 +40,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    // Only now show that we're creating the account
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -57,20 +52,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _passwordController.text,
         _nameController.text.trim(),
       );
+      
       setState(() {
-        _debugMessage = '[DEBUG] Registration successful for email: \u001b[32m${_emailController.text.trim()}\u001b[0m';
         _userStatusMessage = 'Account succesvol aangemaakt! U wordt automatisch ingelogd...';
       });
+      
       if (mounted) {
         await Future.delayed(const Duration(seconds: 1));
-        // Navigate to plan selection for new users
         Navigator.pushNamedAndRemoveUntil(context, '/plan-selection', (route) => false);
       }
     } catch (e) {
+      final errorMessage = _getUserFriendlyErrorMessage(e.toString());
       setState(() {
-        _debugMessage = '[DEBUG] Registration error: \u001b[31m$e\u001b[0m';
-        _userStatusMessage = 'Er is een fout opgetreden bij het aanmaken van uw account. Probeer het opnieuw.';
-        _errorMessage = e.toString();
+        _userStatusMessage = errorMessage['title'];
+        _errorMessage = errorMessage['details'];
       });
     } finally {
       if (mounted) {
@@ -81,15 +76,51 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  Map<String, String> _getUserFriendlyErrorMessage(String error) {
+    final errorLower = error.toLowerCase();
+    
+    if (errorLower.contains('internetverbinding') || errorLower.contains('network')) {
+      return {
+        'title': 'Geen internetverbinding',
+        'details': 'Controleer uw wifi of mobiele data en probeer het opnieuw.',
+      };
+    } else if (errorLower.contains('email-already-in-use') || errorLower.contains('al in gebruik')) {
+      return {
+        'title': 'Email adres al in gebruik',
+        'details': 'Dit email adres is al geregistreerd. Probeer in te loggen of gebruik een ander email adres.',
+      };
+    } else if (errorLower.contains('weak-password') || errorLower.contains('te zwak')) {
+      return {
+        'title': 'Wachtwoord te zwak',
+        'details': 'Kies een wachtwoord van minimaal 6 karakters met letters en cijfers.',
+      };
+    } else if (errorLower.contains('invalid-email') || errorLower.contains('ongeldig email')) {
+      return {
+        'title': 'Ongeldig email adres',
+        'details': 'Vul een geldig email adres in (bijvoorbeeld: naam@email.nl).',
+      };
+    } else if (errorLower.contains('too-many-requests')) {
+      return {
+        'title': 'Te veel pogingen',
+        'details': 'Wacht even en probeer het over een paar minuten opnieuw.',
+      };
+    } else {
+      return {
+        'title': 'Account aanmaken mislukt',
+        'details': 'Er ging iets mis. Controleer uw gegevens en probeer het opnieuw.',
+      };
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Registreren'),
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: const Text('Registreren'),
+        backgroundColor: CupertinoColors.systemGrey6,
+        border: null,
       ),
-      body: SafeArea(
+      child: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(24.0),
@@ -105,17 +136,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                         decoration: BoxDecoration(
                           color: _userStatusMessage!.contains('Controleer de ingevoerde gegevens') 
-                              ? Colors.red[50]
+                              ? CupertinoColors.systemRed.withOpacity(0.1)
                               : _userStatusMessage!.contains('succesvol') 
-                                  ? Colors.green[50]
-                                  : Colors.blue[50],
+                                  ? CupertinoColors.systemGreen.withOpacity(0.1)
+                                  : CupertinoColors.systemBlue.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                             color: _userStatusMessage!.contains('Controleer de ingevoerde gegevens') 
-                                ? Colors.red
+                                ? CupertinoColors.systemRed
                                 : _userStatusMessage!.contains('succesvol') 
-                                    ? Colors.green
-                                    : Colors.blue, 
+                                    ? CupertinoColors.systemGreen
+                                    : CupertinoColors.systemBlue, 
                             width: 1
                           ),
                         ),
@@ -123,15 +154,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           children: [
                             Icon(
                               _userStatusMessage!.contains('Controleer de ingevoerde gegevens') 
-                                  ? Icons.error
+                                  ? CupertinoIcons.exclamationmark_triangle
                                   : _userStatusMessage!.contains('succesvol') 
-                                      ? Icons.check_circle
-                                      : Icons.info, 
+                                      ? CupertinoIcons.checkmark_circle
+                                      : CupertinoIcons.info_circle, 
                               color: _userStatusMessage!.contains('Controleer de ingevoerde gegevens') 
-                                  ? Colors.red
+                                  ? CupertinoColors.systemRed
                                   : _userStatusMessage!.contains('succesvol') 
-                                      ? Colors.green
-                                      : Colors.blue
+                                      ? CupertinoColors.systemGreen
+                                      : CupertinoColors.systemBlue
                             ),
                             const SizedBox(width: 8),
                             Expanded(
@@ -139,10 +170,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 _userStatusMessage!,
                                 style: TextStyle(
                                   color: _userStatusMessage!.contains('Controleer de ingevoerde gegevens') 
-                                      ? Colors.red[900]
+                                      ? CupertinoColors.systemRed
                                       : _userStatusMessage!.contains('succesvol') 
-                                          ? Colors.green[900]
-                                          : Colors.blue[900], 
+                                          ? CupertinoColors.systemGreen
+                                          : CupertinoColors.systemBlue, 
                                   fontWeight: FontWeight.bold
                                 ),
                               ),
@@ -169,176 +200,74 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      hintText: 'Naam',
-                      filled: true,
-                      fillColor: Colors.grey[100],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Vul uw naam in';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      hintText: 'Email',
-                      filled: true,
-                      fillColor: Colors.grey[100],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Vul uw email in';
-                      }
-                      if (!value.contains('@')) {
-                        return 'Vul een geldig email adres in';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      hintText: 'Wachtwoord',
-                      filled: true,
-                      fillColor: Colors.grey[100],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Vul een wachtwoord in';
-                      }
-                      if (value.length < 6) {
-                        return 'Wachtwoord moet minimaal 6 tekens bevatten';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _confirmPasswordController,
-                    decoration: InputDecoration(
-                      hintText: 'Bevestig wachtwoord',
-                      filled: true,
-                      fillColor: Colors.grey[100],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Bevestig uw wachtwoord';
-                      }
-                      if (value != _passwordController.text) {
-                        return 'Wachtwoorden komen niet overeen';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: _isLoading ? null : _register,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size(0, 56),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                    child: _isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          )
-                        : const Text('Registreren', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  ),
-                  const SizedBox(height: 24),
-                  // Back to login - more prominent button
                   Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.blue[50],
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.blue[200]!, width: 2),
+                    margin: const EdgeInsets.only(bottom: 16),
+                    child: CupertinoTextField(
+                    controller: _nameController,
+                      placeholder: 'Naam',
+                      decoration: BoxDecoration(
+                        color: CupertinoColors.systemGrey6,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: CupertinoColors.systemGrey4),
                     ),
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.login,
-                          color: Colors.blue[700],
-                          size: 32.0,
-                        ),
-                        const SizedBox(height: 8.0),
-                        Text(
-                          'Al een account?',
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    child: CupertinoTextField(
+                    controller: _emailController,
+                      placeholder: 'Email',
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: BoxDecoration(
+                        color: CupertinoColors.systemGrey6,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: CupertinoColors.systemGrey4),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    child: CupertinoTextField(
+                    controller: _passwordController,
+                      placeholder: 'Wachtwoord',
+                      obscureText: true,
+                      decoration: BoxDecoration(
+                        color: CupertinoColors.systemGrey6,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: CupertinoColors.systemGrey4),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 24),
+                    child: CupertinoTextField(
+                    controller: _confirmPasswordController,
+                      placeholder: 'Bevestig wachtwoord',
+                      obscureText: true,
+                      decoration: BoxDecoration(
+                        color: CupertinoColors.systemGrey6,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: CupertinoColors.systemGrey4),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
+                  ),
+                  CupertinoButton(
+                    color: const Color(0xFF2E7D32),
+                    borderRadius: BorderRadius.circular(12),
+                    onPressed: _isLoading ? null : _register,
+                    child: _isLoading
+                        ? const CupertinoActivityIndicator(color: Colors.white)
+                        : const Text(
+                            'Account Aanmaken',
                           style: TextStyle(
-                            fontSize: 16,
+                              color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            color: Colors.blue[900],
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 4.0),
-                        Text(
-                          'Log in met uw bestaande account',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.blue[700],
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 12.0),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 48,
-                          child: ElevatedButton.icon(
-                            icon: const Icon(
-                              Icons.login,
-                              size: 20.0,
-                            ),
-                            label: const Text(
-                              'Ga naar Inloggen',
-                              style: TextStyle(
                                 fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue[600],
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            ),
-                            onPressed: _isLoading ? null : () {
-                              Navigator.pop(context);
-                            },
-                          ),
                         ),
-                      ],
                     ),
                   ),
                 ],

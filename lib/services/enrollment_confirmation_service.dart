@@ -121,6 +121,12 @@ class EnrollmentConfirmationService {
   
   /// Generate a consistent match key from match data
   static String generateMatchKey(Map<String, dynamic> match) {
+    // Prefer unique ID if available
+    final id = match['id']?.toString() ?? match['key']?.toString();
+    if (id != null && id.isNotEmpty) {
+      return id;
+    }
+    // Fallback to old logic
     final title = match['title']?.toString() ?? 
                  match['organizer']?.toString() ?? 
                  match['raw']?['title']?.toString() ?? 

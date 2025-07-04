@@ -5,6 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'welcome_email_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:in_app_purchase/in_app_purchase.dart';
+import 'payment_service.dart';
+import 'dart:io';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -122,65 +125,142 @@ class AuthService {
     }
   }
 
-  // Sign in with email and password - Original method for explicit login (kept for backwards compatibility)
-  Future<UserCredential> signInWithEmailAndPasswordOnly(String email, String password) async {
+  /// Network connectivity check
+  Future<bool> hasNetworkConnectivity() async {
     try {
-      return await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } on FirebaseAuthException catch (e) {
-      throw Exception(_getErrorMessage(e));
-    } catch (e) {
-      throw Exception('Er is een fout opgetreden bij het inloggen');
+      final result = await InternetAddress.lookup('google.com').timeout(const Duration(seconds: 5));
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } catch (_) {
+      return false;
     }
   }
 
-  // Register with email and password
+  /// Registration with network check and retry
   Future<UserCredential> registerWithEmailAndPassword(
     String email,
     String password,
     String name,
   ) async {
-    try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+    int attempts = 0;
+    const maxAttempts = 2;
+    while (true) {
+      attempts++;
+      if (!await hasNetworkConnectivity()) {
+        throw Exception('Geen internetverbinding. Controleer uw netwerk en probeer opnieuw.');
+      }
+      try {
+        UserCredential result = await _auth.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+        await _firestore.collection('users').doc(result.user!.uid).set({
+          'name': name,
+          'email': email,
+          'createdAt': FieldValue.serverTimestamp(),
+          'preferences': {
+            'notifications': true,
+            'emailUpdates': true,
+            'favoriteTypes': [],
+            'favoriteLocations': [],
+          },
+        });
+        _sendWelcomeEmailAsync(email, name);
+        return result;
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'network-request-failed' && attempts < maxAttempts) {
+          await Future.delayed(const Duration(seconds: 2));
+          continue;
+        }
+        throw Exception(_getErrorMessage(e));
+      } catch (e) {
+        if (attempts < maxAttempts) {
+          await Future.delayed(const Duration(seconds: 2));
+          continue;
+        }
+        throw Exception('Er is een fout opgetreden bij het registreren');
+      }
+    }
+  }
 
-      // Create user document in Firestore
-      await _firestore.collection('users').doc(result.user!.uid).set({
-        'name': name,
-        'email': email,
-        'createdAt': FieldValue.serverTimestamp(),
-        'preferences': {
-          'notifications': true,
-          'emailUpdates': true,
-          'favoriteTypes': [],
-          'favoriteLocations': [],
-        },
-      });
-
-      // Send welcome email (non-blocking - don't fail registration if email fails)
-      _sendWelcomeEmailAsync(email, name);
-
-      return result;
-    } on FirebaseAuthException catch (e) {
-      throw Exception(_getErrorMessage(e));
-    } catch (e) {
-      throw Exception('Er is een fout opgetreden bij het registreren');
+  /// Login with network check and retry
+  Future<UserCredential> signInWithEmailAndPasswordOnly(String email, String password) async {
+    int attempts = 0;
+    const maxAttempts = 2;
+    while (true) {
+      attempts++;
+      if (!await hasNetworkConnectivity()) {
+        throw Exception('Geen internetverbinding. Controleer uw netwerk en probeer opnieuw.');
+      }
+      try {
+        return await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'network-request-failed' && attempts < maxAttempts) {
+          await Future.delayed(const Duration(seconds: 2));
+          continue;
+        }
+        throw Exception(_getErrorMessage(e));
+      } catch (e) {
+        if (attempts < maxAttempts) {
+          await Future.delayed(const Duration(seconds: 2));
+          continue;
+        }
+        throw Exception('Er is een fout opgetreden bij het inloggen');
+      }
     }
   }
 
   // Sign out
   Future<void> signOut() async {
-    await _auth.signOut();
+    try {
+      print('🔥 Starting comprehensive logout cleanup...');
     
     // Clear cached user data
     _cachedUserData = null;
     _cachedUserDataUid = null;
     _lastUserDataFetch = null;
-    print('🔥 User data cache cleared on sign out');
+      print('🔥 User data cache cleared');
+      
+      // Clear all SharedPreferences data for the current user
+      final user = currentUser;
+      if (user != null) {
+        final userId = user.uid;
+        print('🔥 Clearing SharedPreferences for user: $userId');
+        
+        // Clear user-specific preferences
+        await _prefs.remove('quick_setup_completed_$userId');
+        await _prefs.remove('selected_proef_types_$userId');
+        await _prefs.remove('notifications_enabled_$userId');
+        await _prefs.remove('notification_times_$userId');
+        await _prefs.remove('notification_permission_status_$userId');
+        await _prefs.remove('analytics_enabled_$userId');
+        
+        print('🔥 User-specific preferences cleared');
+      }
+      
+      // Clear device-level payment state
+      try {
+        print('🔥 Clearing device payment state...');
+        // Clear payment service state
+        await PaymentService().clearDevicePaymentState();
+        // Don't call InAppPurchase directly - let PaymentService handle it
+        print('🔥 Device payment state cleared');
+      } catch (e) {
+        print('⚠️ Could not clear device payment state: $e');
+      }
+      
+      // Finally, sign out from Firebase Auth
+      await _auth.signOut();
+      print('🔥 Firebase Auth sign out completed');
+      
+      print('✅ Comprehensive logout cleanup completed');
+    } catch (e) {
+      print('❌ Error during logout cleanup: $e');
+      // Still try to sign out even if cleanup fails
+      await _auth.signOut();
+    }
   }
 
   // Update user profile
@@ -486,5 +566,15 @@ class AuthService {
       print('❌ Error sending welcome email: $e');
       // Don't throw - this is non-blocking
     }
+  }
+
+  /// Diagnostics for registration/login
+  Future<Map<String, dynamic>> getAuthDiagnostics() async {
+    final hasNetwork = await hasNetworkConnectivity();
+    return {
+      'network': hasNetwork,
+      'firebaseUser': _auth.currentUser?.uid,
+      'prefsReady': _prefs != null,
+    };
   }
 } 

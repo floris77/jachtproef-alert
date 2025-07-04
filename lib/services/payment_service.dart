@@ -13,9 +13,44 @@ import 'plan_abandonment_service.dart';
 import 'email_notification_service.dart';
 import 'debug_logging_service.dart';
 import 'package:flutter/foundation.dart';
+import '../utils/constants.dart';
+
+const bool kShowDebug = false; // Set to true for debug/test users
+
+/// Development mode flag - set to true to force Apple payment dialog in development
+const bool kForcePaymentDialogInDevelopment = true;
 
 /// Payment Service that handles 14-day free trial and subscription management
 /// 
+/// =================================================================================
+/// CRITICAL INITIALIZATION FIX - READ BEFORE MODIFYING
+/// =================================================================================
+/// 
+/// ISSUE RESOLVED: Apple payment dialog not appearing on iOS
+/// 
+/// ROOT CAUSE: PaymentService was being reset after successful initialization
+/// 
+/// The problem was in main.dart:
+/// 1. PaymentService initializes successfully (_isAvailable = true, products loaded)
+/// 2. _clearDeviceStateOnStartup() calls cleanupOldDormantPayments()
+/// 3. cleanupOldDormantPayments() resets PaymentService state:
+///    - _isAvailable = false
+///    - _products.clear()
+///    - _inAppPurchase = null
+/// 4. Payment flow fails with "payment_not_available" error
+/// 
+/// SOLUTION:
+/// - Removed _clearDeviceStateOnStartup() call from main() startup
+/// - Added comprehensive warnings to cleanupOldDormantPayments()
+/// - Use ChangeNotifierProvider.value() to ensure same instance is used
+/// 
+/// CRITICAL RULES:
+/// - NEVER call cleanupOldDormantPayments() during normal app startup
+/// - ONLY call it for debugging/testing via debug settings
+/// - PaymentService uses singleton pattern - ensure same instance is used
+/// - If PaymentService needs refresh, use forceRefreshPaymentService() instead
+/// 
+/// =================================================================================
 /// PLATFORM SEPARATION:
 /// - iOS: Uses separate product IDs (jachtproef_monthly_399, jachtproef_yearly_2999)
 /// - Android: Uses single subscription ID with base plans (jachtproef_premium)
@@ -37,6 +72,9 @@ class PaymentService extends ChangeNotifier {
   static bool? _isChromebook;
   static String? _deviceInfo;
 
+  // Flag to prevent multiple simultaneous initializations
+  static bool _isInitializing = false;
+
   /// Detect if running on Chromebook
   static Future<bool> isChromebook() async {
     if (_isChromebook != null) return _isChromebook!;
@@ -46,10 +84,8 @@ class PaymentService extends ChangeNotifier {
       _deviceInfo = '${deviceInfo.brand} ${deviceInfo.model}';
       _isChromebook = deviceInfo.brand.toLowerCase().contains('chromebook') ||
                      deviceInfo.model.toLowerCase().contains('chromebook');
-      print('🔍 CHROMEBOOK DETECTION: $_deviceInfo -> isChromebook: $_isChromebook');
       } catch (e) {
         _isChromebook = false;
-      print('🔍 CHROMEBOOK DETECTION: Error detecting Chromebook: $e');
       }
       return _isChromebook!;
   }
@@ -117,206 +153,211 @@ class PaymentService extends ChangeNotifier {
 
   /// Initialize the payment service
   Future<void> initialize() async {
-    print('🚀 PAYMENT INIT: Starting payment service initialization...');
-    print('🚀 PAYMENT INIT: Platform: ${Platform.operatingSystem}');
-    print('🚀 PAYMENT INIT: Product IDs: ${_productIds.toList()}');
+    print('🔍 Initialize: Starting payment service initialization');
     
     if (_isAvailable) {
-      print('🚀 PAYMENT INIT: Already initialized, skipping...');
+      print('🔍 Initialize: Already available, skipping');
       return;
     }
-      
+    
+    if (_isInitializing) {
+      print('🔍 Initialize: Initialization already in progress, waiting...');
+      // Wait for the current initialization to complete
+      while (_isInitializing) {
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+      print('🔍 Initialize: Initialization completed by another call');
+      return;
+    }
+    
+    _isInitializing = true;
+    
     try {
-      print('🚀 PAYMENT INIT: Setting up Firebase...');
       // Ensure Firebase is initialized
       _firestore = FirebaseFirestore.instance;
       
-      print('🚀 PAYMENT INIT: Setting up InAppPurchase instance...');
       // Initialize InAppPurchase instance
       _inAppPurchase = InAppPurchase.instance;
       
-      print('🚀 PAYMENT INIT: Checking if InAppPurchase is available...');
-      _isAvailable = await InAppPurchase.instance.isAvailable();
-      if (!_isAvailable) {
-        print('❌ PAYMENT INIT: In-app purchases not available on this device');
-        return;
-      }
-
-      print('✅ PAYMENT INIT: In-app purchases available');
-        
-      print('🚀 PAYMENT INIT: Loading products...');
-      // Load products
-          await _loadProducts();
+      // Enhanced availability check with retry logic for real devices
+      bool isAvailable = false;
+      int retryCount = 0;
+      const maxRetries = 3;
       
-      print('🚀 PAYMENT INIT: Setting up purchase listener...');
-      // Set up purchase listener
-      _subscription = InAppPurchase.instance.purchaseStream.listen((purchaseDetailsList) {
-        // Check if user is authenticated before processing any purchases
-        final User? currentUser = FirebaseAuth.instance.currentUser;
-        if (currentUser == null) {
-          print('🔒 Purchase event received but user is not authenticated - ignoring');
-          return;
+      while (!isAvailable && retryCount < maxRetries) {
+        try {
+          isAvailable = await InAppPurchase.instance.isAvailable();
+          print('🔍 Initialize: InAppPurchase available (attempt ${retryCount + 1}): $isAvailable');
+          
+          if (!isAvailable && retryCount < maxRetries - 1) {
+            print('🔍 Initialize: IAP not available, retrying in 2 seconds...');
+            await Future.delayed(const Duration(seconds: 2));
+          }
+        } catch (e) {
+          print('⚠️ Initialize: Error checking IAP availability (attempt ${retryCount + 1}): $e');
+          if (retryCount < maxRetries - 1) {
+            await Future.delayed(const Duration(seconds: 2));
+          }
         }
-        
-        print('🔍 Processing ${purchaseDetailsList.length} purchase(s) for authenticated user: ${currentUser.uid}');
-        
-        for (final PurchaseDetails purchaseDetails in purchaseDetailsList) {
-          _handlePurchaseUpdate(purchaseDetails);
-        }
-      });
-
-      print('✅ PAYMENT INIT: Payment service initialized successfully');
-    } catch (e) {
-      print('❌ PAYMENT INIT: Error initializing payment service: $e');
-      print('❌ PAYMENT INIT: Error type: ${e.runtimeType}');
-      if (e is PlatformException) {
-        print('❌ PAYMENT INIT: PlatformException details: code=${e.code}, message=${e.message}, details=${e.details}');
+        retryCount++;
       }
+      
+      // Platform-specific availability handling
+      if (Platform.isIOS) {
+        final isSimulator = await _isRunningOnSimulator();
+        final isTestFlightMac = await _isRunningOnTestFlightMac();
+        
+        if (isSimulator) {
+          print('🔍 Initialize: iOS Simulator detected, forcing IAP available');
+          _isAvailable = true;
+        } else if (isTestFlightMac) {
+          print('🧪 Initialize: TestFlight on Mac detected, forcing IAP available');
+          _isAvailable = true;
+        } else if (!isAvailable) {
+          // Real iOS device but IAP not available - this could be due to:
+          // 1. Device restrictions (Screen Time, parental controls)
+          // 2. App Store account issues
+          // 3. Network connectivity issues
+          // 4. App not properly installed via TestFlight/App Store
+          print('⚠️ Initialize: Real iOS device detected but IAP not available');
+          print('🔍 Initialize: This could be due to device restrictions, App Store issues, or network problems');
+          print('🔍 Initialize: Attempting to proceed anyway for better user experience...');
+          
+          // Try to proceed anyway and let the purchase flow handle errors gracefully
+          _isAvailable = true;
+        } else {
+          _isAvailable = isAvailable;
+        }
+      } else {
+        _isAvailable = isAvailable;
+      }
+      
+      // CRITICAL: Set up purchase stream listener only if not already set up
+      if (_isAvailable && _subscription == null) {
+        print('🔍 Initialize: Setting up purchase stream listener');
+        _subscription = InAppPurchase.instance.purchaseStream.listen(
+          (List<PurchaseDetails> purchaseDetailsList) {
+            print('🔍 Purchase Stream: Received ${purchaseDetailsList.length} purchase updates');
+            for (final PurchaseDetails purchaseDetails in purchaseDetailsList) {
+              print('🔍 Purchase Stream: Processing purchase for ${purchaseDetails.productID} - Status: ${purchaseDetails.status}');
+              _handlePurchaseUpdate(purchaseDetails);
+            }
+          },
+          onDone: () {
+            print('🔍 Purchase Stream: Stream completed');
+          },
+          onError: (error) {
+            print('❌ Purchase Stream: Error in purchase stream: $error');
+          },
+        );
+        print('✅ Initialize: Purchase stream listener set up successfully');
+      }
+      
+      // Load products after successful initialization
+      if (_isAvailable) {
+        print('🔍 Initialize: Loading products...');
+        await _loadProducts();
+        print('🔍 Initialize: Products loaded: ${_products.length}');
+      }
+      
+      print('🔍 Initialize: Initialization complete - Available: $_isAvailable, Products: ${_products.length}');
+      
+    } catch (e) {
+      print('❌ Initialize: Error during initialization: $e');
       _isAvailable = false;
+    } finally {
+      _isInitializing = false;
+    }
+  }
+
+  /// Ensure purchase stream listener is set up
+  Future<void> _ensurePurchaseStreamListener() async {
+    if (_subscription == null && _isAvailable && _inAppPurchase != null) {
+      print('🔍 Ensure Purchase Stream: Setting up missing purchase stream listener');
+      _subscription = InAppPurchase.instance.purchaseStream.listen(
+        (List<PurchaseDetails> purchaseDetailsList) {
+          print('🔍 Purchase Stream: Received ${purchaseDetailsList.length} purchase updates');
+          for (final PurchaseDetails purchaseDetails in purchaseDetailsList) {
+            print('🔍 Purchase Stream: Processing purchase for ${purchaseDetails.productID} - Status: ${purchaseDetails.status}');
+            _handlePurchaseUpdate(purchaseDetails);
+          }
+        },
+        onDone: () {
+          print('🔍 Purchase Stream: Stream completed');
+        },
+        onError: (error) {
+          print('❌ Purchase Stream: Error in purchase stream: $error');
+        },
+      );
+      print('✅ Ensure Purchase Stream: Purchase stream listener set up successfully');
     }
   }
 
   /// Load available products from the store with platform-specific handling
   Future<void> _loadProducts() async {
     try {
-      if (_inAppPurchase == null) return;
+      print('🔍 Load Products: Starting product load');
       
-      print('🔍 PAYMENT DEBUG: Starting product load...');
-      print('🔍 PAYMENT DEBUG: Platform: ${Platform.operatingSystem}');
-      print('🔍 PAYMENT DEBUG: Product IDs to request:');
-      for (String id in _productIds) {
-        print('   - $id');
+      if (_inAppPurchase == null) {
+        print('❌ Load Products: InAppPurchase is null');
+        return;
       }
       
-      print('🔍 PAYMENT DEBUG: Product IDs requested: ${_productIds}');
-      final ProductDetailsResponse response = await _inAppPurchase!.queryProductDetails(_productIds);
-      print('🔍 PAYMENT DEBUG: Full ProductDetailsResponse: error=${response.error}, notFoundIDs=${response.notFoundIDs}, productDetails=${response.productDetails}');
+      print('🔍 Load Products: Querying products for IDs: $_productIds');
+      
+      // Add retry logic for product loading
+      int attempts = 0;
+      const maxAttempts = 3;
+      ProductDetailsResponse? response;
+      
+      while (attempts < maxAttempts) {
+        attempts++;
+        try {
+          response = await _inAppPurchase!.queryProductDetails(_productIds);
+          print('🔍 Load Products: Response received (attempt $attempts) - Found: ${response.productDetails.length}, Not Found: ${response.notFoundIDs}');
+          
+          if (response.error == null && response.productDetails.isNotEmpty) {
+            break; // Success, exit retry loop
+          }
+          
+          if (attempts < maxAttempts) {
+            print('⚠️ Load Products: Attempt $attempts failed, retrying in 2 seconds...');
+            await Future.delayed(const Duration(seconds: 2));
+          }
+        } catch (e) {
+          print('❌ Load Products: Error on attempt $attempts: $e');
+          if (attempts < maxAttempts) {
+            await Future.delayed(const Duration(seconds: 2));
+          }
+        }
+      }
+      
+      if (response == null) {
+        print('❌ Load Products: All attempts failed');
+        return;
+      }
       
       if (response.notFoundIDs.isNotEmpty) {
-        print('❌ PAYMENT ERROR: Products not found in store:');
-        for (String id in response.notFoundIDs) {
-          print('   - $id');
-        }
+        print('⚠️ Load Products: Some products not found: ${response.notFoundIDs}');
+      }
         
-        // Platform-specific troubleshooting
-        _logPlatformSpecificTroubleshooting();
+      if (response.error != null) {
+        print('❌ Load Products: Response error: ${response.error}');
       }
       
       _products = response.productDetails;
-      print('✅ PAYMENT DEBUG: Successfully loaded ${_products.length} products');
+      print('🔍 Load Products: Loaded ${_products.length} products');
       
-      // Platform-specific product verification
-      _verifyPlatformSpecificProducts();
+      for (final product in _products) {
+        print('🔍 Load Products: Product - ID: ${product.id}, Title: ${product.title}, Price: ${product.price}');
+      }
       
     } catch (e) {
-      print('❌ PAYMENT ERROR: Failed to load products: $e');
-      print('🔍 PAYMENT ERROR: Error type: ${e.runtimeType}');
-      if (e is PlatformException) {
-        print('🔍 PAYMENT ERROR: PlatformException details: code=${e.code}, message=${e.message}, details=${e.details}');
-      }
+      print('❌ Load Products: Error loading products: $e');
     }
   }
 
-  /// Log platform-specific troubleshooting information
-  void _logPlatformSpecificTroubleshooting() {
-        if (Platform.isIOS) {
-          print('💡 iOS TROUBLESHOOTING:');
-          print('   1. Check if products are approved in App Store Connect');
-          print('   2. Verify products are in "Ready to Submit" or "Approved" status');
-          print('   3. Check if products have 14-day trial offers configured');
-          print('   4. Verify app version matches TestFlight/App Store version');
-          print('   5. Check if products are available in your region');
-          print('   6. Ensure you\'re testing with a real device (not simulator)');
-          print('   7. Verify your Apple ID has access to the products');
-        } else if (Platform.isAndroid) {
-          print('💡 ANDROID TROUBLESHOOTING:');
-          print('   1. Check if products are published in Play Console');
-          print('   2. Verify app signing key matches Play Console');
-          print('   3. Check if products are active and available in your region');
-          print('   4. Verify app version matches uploaded APK/AAB');
-          print('   5. Check if Play Store account matches country/region');
-          print('   6. Ensure Play Store app is up to date');
-          print('   7. Verify subscription ID "jachtproef_premium" exists in Play Console');
-          print('   8. Check if base plans "monthly" and "yearly" are configured');
-          print('   9. Verify product IDs "jachtproef_premium:monthly" and "jachtproef_premium:yearly" are available');
-        }
-      }
-      
-  /// Verify platform-specific products are loaded correctly
-  void _verifyPlatformSpecificProducts() {
-      // Detailed product verification
-      for (ProductDetails product in _products) {
-        print('   ✅ ${product.id}: ${product.title} - ${product.price}');
-        
-      // Platform-specific product verification
-      if (Platform.isIOS) {
-        _verifyIOSProduct(product);
-      } else if (Platform.isAndroid) {
-        _verifyAndroidProduct(product);
-      }
-    }
-    
-    // Platform-specific availability checks
-    if (Platform.isIOS) {
-      _verifyIOSProductAvailability();
-    } else if (Platform.isAndroid) {
-      _verifyAndroidProductAvailability();
-    }
-  }
 
-  /// Verify iOS-specific product details
-  void _verifyIOSProduct(ProductDetails product) {
-    if (product.id == 'jachtproef_monthly_399') {
-          print('🔍 iOS MONTHLY PRODUCT VERIFICATION:');
-          print('   - Product ID: ${product.id}');
-          print('   - Title: ${product.title}');
-          print('   - Description: ${product.description}');
-          print('   - Price: ${product.price}');
-          print('   - Raw Price: ${product.rawPrice}');
-          print('   - Currency Code: ${product.currencyCode}');
-    }
-        }
-        
-  /// Verify Android-specific product details
-  void _verifyAndroidProduct(ProductDetails product) {
-    if (product.id == 'jachtproef_premium') {
-          print('🔍 GOOGLE SUPPORT VERIFICATION: ProductDetails for jachtproef_premium:');
-          print('   - Title: ${product.title}');
-          print('   - Description: ${product.description}');
-          print('   - Price: ${product.price}');
-          print('   - Raw Price: ${product.rawPrice}');
-          print('   - Currency Code: ${product.currencyCode}');
-          print('   - Product ID: ${product.id}');
-        }
-      }
-      
-  /// Verify iOS product availability
-  void _verifyIOSProductAvailability() {
-        final hasMonthlyProduct = _products.any((p) => p.id == 'jachtproef_monthly_399');
-        final hasYearlyProduct = _products.any((p) => p.id == 'jachtproef_yearly_2999');
-        
-        if (hasMonthlyProduct) {
-          print('✅ iOS VERIFICATION: jachtproef_monthly_399 product found and loaded successfully');
-        } else {
-          print('❌ iOS VERIFICATION: jachtproef_monthly_399 product NOT found - this is why monthly plan doesn\'t work!');
-        }
-        
-        if (hasYearlyProduct) {
-          print('✅ iOS VERIFICATION: jachtproef_yearly_2999 product found and loaded successfully');
-        } else {
-          print('❌ iOS VERIFICATION: jachtproef_yearly_2999 product NOT found');
-        }
-  }
-
-  /// Verify Android product availability
-  void _verifyAndroidProductAvailability() {
-        final hasPremiumProduct = _products.any((p) => p.id == 'jachtproef_premium');
-        if (hasPremiumProduct) {
-          print('✅ GOOGLE SUPPORT VERIFICATION: jachtproef_premium product found and loaded successfully');
-        } else {
-          print('❌ GOOGLE SUPPORT VERIFICATION: jachtproef_premium product NOT found - this is the issue!');
-    }
-  }
 
   /// Get available subscription products
   List<ProductDetails> get availableProducts => _products;
@@ -327,8 +368,6 @@ class PaymentService extends ChangeNotifier {
   /// Diagnostic method to check payment service status
   Future<Map<String, dynamic>> getDiagnosticInfo() async {
     try {
-      print('🔍 PAYMENT DIAGNOSTIC: Starting diagnostic check...');
-      
       final diagnostic = <String, dynamic>{
         'isAvailable': _isAvailable,
         'inAppPurchaseInitialized': _inAppPurchase != null,
@@ -342,77 +381,64 @@ class PaymentService extends ChangeNotifier {
         }).toList(),
       };
       
-      // Test InAppPurchase availability
+      // Enhanced iOS-specific diagnostics
+      if (Platform.isIOS) {
+        final isSimulator = await _isRunningOnSimulator();
+        final isTestFlightMac = await _isRunningOnTestFlightMac();
+        
+        diagnostic['iosEnvironment'] = {
+          'isSimulator': isSimulator,
+          'isTestFlightMac': isTestFlightMac,
+          'isRealDevice': !isSimulator && !isTestFlightMac,
+        };
+      }
+      
+      // Test InAppPurchase availability with detailed error info
       try {
         final iapAvailable = await InAppPurchase.instance.isAvailable();
         diagnostic['iapAvailable'] = iapAvailable;
-        print('🔍 PAYMENT DIAGNOSTIC: InAppPurchase.instance.isAvailable() = $iapAvailable');
+        diagnostic['iapAvailableTest'] = 'success';
       } catch (e) {
         diagnostic['iapAvailable'] = false;
         diagnostic['iapError'] = e.toString();
-        print('❌ PAYMENT DIAGNOSTIC: InAppPurchase.instance.isAvailable() failed: $e');
+        diagnostic['iapAvailableTest'] = 'failed';
       }
       
       // Test product loading if not already loaded
       if (_products.isEmpty && _inAppPurchase != null) {
-        print('🔍 PAYMENT DIAGNOSTIC: Attempting to load products...');
         try {
           final response = await _inAppPurchase!.queryProductDetails(_productIds);
           diagnostic['productLoadResponse'] = {
             'error': response.error?.toString(),
             'notFoundIDs': response.notFoundIDs,
             'productDetailsCount': response.productDetails.length,
+            'testResult': response.error == null ? 'success' : 'failed',
           };
-          print('🔍 PAYMENT DIAGNOSTIC: Product load response: ${diagnostic['productLoadResponse']}');
         } catch (e) {
           diagnostic['productLoadError'] = e.toString();
-          print('❌ PAYMENT DIAGNOSTIC: Product loading failed: $e');
+          diagnostic['productLoadTest'] = 'failed';
         }
       }
       
-      print('🔍 PAYMENT DIAGNOSTIC: Complete diagnostic info: $diagnostic');
+      // Add network connectivity check
+      try {
+        final hasNetwork = await _checkNetworkConnectivity();
+        diagnostic['networkConnectivity'] = hasNetwork;
+      } catch (e) {
+        diagnostic['networkConnectivity'] = false;
+        diagnostic['networkError'] = e.toString();
+      }
+      
       return diagnostic;
     } catch (e) {
-      print('❌ PAYMENT DIAGNOSTIC: Diagnostic failed: $e');
-      return {
-        'error': e.toString(),
-        'isAvailable': _isAvailable,
-        'productsLoaded': _products.length,
-      };
+      return {'error': e.toString()};
     }
   }
 
   /// Purchase a subscription with platform-specific handling
   Future<bool> purchaseSubscription(String productId, {String? planType}) async {
-    print('🟢 [DEBUG] purchaseSubscription called for productId: $productId, planType: $planType');
-    print('🟢 [DEBUG] Platform: ${Platform.operatingSystem}');
-    
-    DebugLoggingService().info('💳 Starting purchase attempt', tag: 'PAYMENT', data: {
-      'product_id': productId,
-      'plan_type': planType,
-      'platform': Platform.operatingSystem,
-      'iap_available': _isAvailable,
-      'products_loaded': _products.length,
-    });
-    
-    final isChromebookDevice = await isChromebook();
-    DebugLoggingService().info('💳 Device check', tag: 'PAYMENT', data: {
-      'is_chromebook': isChromebookDevice,
-      'device_info': _deviceInfo,
-    });
-    
     if (!_isAvailable || _inAppPurchase == null) {
-      final error = 'In-app purchases not available on ${isChromebookDevice ? "CHROMEBOOK" : Platform.operatingSystem}';
-      print('🔴 [DEBUG] purchaseSubscription: Not available, error: $error');
-      DebugLoggingService().error('💳 Purchase failed: $error', tag: 'PAYMENT');
-      if (isChromebookDevice) {
-        DebugLoggingService().warn('💳 Chromebook detected - limited payment support', tag: 'PAYMENT');
-        throw Exception('Betalingen zijn beperkt beschikbaar op Chromebooks.\n\n' +
-                       'Voor de beste ervaring:\n' +
-                       '• Gebruik een Android telefoon of tablet\n' +
-                       '• Of gebruik een iPhone/iPad\n' +
-                       '• Of probeer via een webbrowser op jachtproefalert.nl');
-      }
+      final error = 'In-app purchases not available on ${Platform.operatingSystem}';
       throw Exception('In-app purchases not available');
     }
     
@@ -428,19 +454,23 @@ class PaymentService extends ChangeNotifier {
 
   /// iOS-specific subscription purchase
   Future<bool> _purchaseSubscriptionIOS(String productId, {String? planType}) async {
-    print('🍎 [DEBUG] iOS purchase flow for productId: $productId');
+    print('🔍 iOS Purchase: Starting purchase for product: $productId');
+    print('🔍 iOS Purchase: Available products: ${_products.map((p) => p.id).toList()}');
+    
+    // Ensure products are loaded
+    if (_products.isEmpty) {
+      print('🔍 iOS Purchase: No products loaded, attempting to load...');
+      await _loadProducts();
+      print('🔍 iOS Purchase: Products loaded: ${_products.length}');
+    }
     
     ProductDetails? product;
     try {
       product = _products.firstWhere((p) => p.id == productId);
-      print('🟢 [DEBUG] iOS: Product found: ${product.id}');
-      DebugLoggingService().info('💳 iOS Product found', tag: 'PAYMENT', data: {
-        'product_id': product.id,
-        'product_title': product.title,
-        'product_price': product.price,
-      });
+      print('🔍 iOS Purchase: Found product: ${product.id} - ${product.title}');
     } catch (e) {
-      print('🔴 [DEBUG] iOS: Product not found for $productId');
+      print('❌ iOS Purchase: Product not found: $productId');
+      print('❌ iOS Purchase: Available products: ${_products.map((p) => p.id).toList()}');
       throw Exception('Product niet gevonden: $productId');
     }
     
@@ -449,10 +479,11 @@ class PaymentService extends ChangeNotifier {
     _pendingPurchaseCompleters[productId] = completer;
     
     try {
+      print('🔍 iOS Purchase: Creating purchase param for product: ${product.id}');
       final purchaseParam = PurchaseParam(productDetails: product!);
-      print('🟢 [DEBUG] iOS: About to call buyNonConsumable for $productId');
+      print('🔍 iOS Purchase: Calling buyNonConsumable...');
       final bool success = await _inAppPurchase!.buyNonConsumable(purchaseParam: purchaseParam);
-      print('🟢 [DEBUG] iOS: buyNonConsumable called, success: $success');
+      print('🔍 iOS Purchase: buyNonConsumable returned: $success');
       
       if (!success) {
         _pendingPurchaseCompleters.remove(productId);
@@ -460,28 +491,20 @@ class PaymentService extends ChangeNotifier {
       }
       
       // iOS-specific: Wait for purchase completion with timeout
-      print('🟡 [DEBUG] iOS: Waiting for purchase completion...');
-      print('🟡 [DEBUG] iOS: Apple payment dialog should appear now');
-      
       try {
-        // Wait for the purchase to complete with a 30-second timeout
         final result = await completer.future.timeout(
           const Duration(seconds: 30),
           onTimeout: () {
-            print('🚨 CRITICAL: iOS purchase timeout - Apple payment dialog did not appear or complete');
-            print('🚨 This indicates a serious issue with the iOS payment flow');
             _pendingPurchaseCompleters.remove(productId);
             throw Exception('Apple payment dialog did not appear. Please try again or contact support.');
           },
         );
         return result;
       } catch (e) {
-        print('🔴 [DEBUG] iOS: Error during purchase completion: $e');
         _pendingPurchaseCompleters.remove(productId);
         rethrow;
       }
     } catch (e) {
-      print('🔴 [DEBUG] iOS: Error during buyNonConsumable: $e');
       _pendingPurchaseCompleters.remove(productId);
       throw Exception('Aankoop mislukt: $e');
     }
@@ -489,20 +512,10 @@ class PaymentService extends ChangeNotifier {
 
   /// Android-specific subscription purchase
   Future<bool> _purchaseSubscriptionAndroid(String productId, {String? planType}) async {
-    print('🤖 [DEBUG] Android purchase flow for productId: $productId, planType: $planType');
-    
     ProductDetails? product;
     try {
       product = _products.firstWhere((p) => p.id == productId);
-      print('🟢 [DEBUG] Android: Product found: ${product.id}');
-      DebugLoggingService().info('💳 Android Product found', tag: 'PAYMENT', data: {
-        'product_id': product.id,
-        'product_title': product.title,
-        'product_price': product.price,
-        'plan_type': planType,
-      });
     } catch (e) {
-      print('🔴 [DEBUG] Android: Product not found for $productId');
       throw Exception('Product niet gevonden: $productId');
     }
     
@@ -512,9 +525,7 @@ class PaymentService extends ChangeNotifier {
     
     try {
       final purchaseParam = PurchaseParam(productDetails: product!);
-      print('🟢 [DEBUG] Android: About to call buyNonConsumable for $productId');
       final bool success = await _inAppPurchase!.buyNonConsumable(purchaseParam: purchaseParam);
-      print('🟢 [DEBUG] Android: buyNonConsumable called, success: $success');
       
       if (!success) {
         _pendingPurchaseCompleters.remove(productId);
@@ -522,28 +533,20 @@ class PaymentService extends ChangeNotifier {
       }
       
       // Android-specific: Wait for purchase completion with timeout
-      print('🟡 [DEBUG] Android: Waiting for purchase completion...');
-      print('🟡 [DEBUG] Android: Google Play payment dialog should appear now');
-      
       try {
-        // Wait for the purchase to complete with a 30-second timeout
         final result = await completer.future.timeout(
           const Duration(seconds: 30),
           onTimeout: () {
-            print('🚨 CRITICAL: Android purchase timeout - Google Play payment dialog did not appear or complete');
-            print('🚨 This indicates a serious issue with the Android payment flow');
             _pendingPurchaseCompleters.remove(productId);
             throw Exception('Google Play payment dialog did not appear. Please try again or contact support.');
           },
         );
         return result;
     } catch (e) {
-        print('🔴 [DEBUG] Android: Error during purchase completion: $e');
         _pendingPurchaseCompleters.remove(productId);
         rethrow;
       }
     } catch (e) {
-      print('🔴 [DEBUG] Android: Error during buyNonConsumable: $e');
       _pendingPurchaseCompleters.remove(productId);
       throw Exception('Aankoop mislukt: $e');
     }
@@ -551,41 +554,52 @@ class PaymentService extends ChangeNotifier {
 
   /// Handle purchase updates with platform-specific logic
   void _handlePurchaseUpdate(PurchaseDetails purchaseDetails) async {
-    print('🔍 [DEBUG] Processing purchase update for platform: ${Platform.operatingSystem}');
-    print('🔍 [DEBUG] Product ID: ${purchaseDetails.productID}');
-    print('🔍 [DEBUG] Status: ${purchaseDetails.status}');
-    print('🔍 [DEBUG] pendingCompletePurchase: ${purchaseDetails.pendingCompletePurchase}');
-    
-      // CHROMEBOOK DEBUG: Enhanced error logging
-      final isChromebookDevice = await isChromebook();
-    
     // Platform-specific purchase handling
     if (Platform.isIOS) {
-      _handlePurchaseUpdateIOS(purchaseDetails, isChromebookDevice);
+      _handlePurchaseUpdateIOS(purchaseDetails);
     } else if (Platform.isAndroid) {
-      _handlePurchaseUpdateAndroid(purchaseDetails, isChromebookDevice);
+      _handlePurchaseUpdateAndroid(purchaseDetails);
     } else {
-      print('❌ [DEBUG] Unsupported platform for purchase handling');
     }
   }
 
   /// iOS-specific purchase update handling
-  void _handlePurchaseUpdateIOS(PurchaseDetails purchaseDetails, bool isChromebookDevice) {
-    print('🍎 [DEBUG] iOS purchase update handling');
+  void _handlePurchaseUpdateIOS(PurchaseDetails purchaseDetails) async {
+    print('🔍 iOS Purchase Update: Processing ${purchaseDetails.productID} - Status: ${purchaseDetails.status}');
+    print('🔍 iOS Purchase Update: Pending complete: ${purchaseDetails.pendingCompletePurchase}');
+    print('🔍 iOS Purchase Update: Error: ${purchaseDetails.error}');
+    print('🔍 iOS Purchase Update: Transaction date: ${purchaseDetails.transactionDate}');
     
     if (purchaseDetails.status == PurchaseStatus.purchased ||
         purchaseDetails.status == PurchaseStatus.restored) {
       
-      // iOS-specific: Handle TestFlight auto-approval and normal App Store purchases
-      if (purchaseDetails.pendingCompletePurchase == true) {
-        print('✅ iOS: Purchase confirmed and needs completion: ${purchaseDetails.productID}');
-      } else {
-        print('🟡 iOS: TestFlight auto-approval detected: ${purchaseDetails.productID}');
-        print('🟡 iOS: This is normal TestFlight behavior - purchase was auto-approved');
-      }
+      print('🔍 iOS Purchase Update: Handling purchased/restored purchase');
       
-      // Handle successful purchase (both TestFlight auto-approval and normal purchases)
-      _handleSuccessfulPurchase(purchaseDetails);
+      // Check environment to determine how to handle the purchase
+      final isXcodeBuild = await _isRunningFromXcode();
+      final isTestFlightMac = await _isRunningOnTestFlightMac();
+      
+      if (isXcodeBuild && kForcePaymentDialogInDevelopment) {
+        // For Xcode builds with forced payment dialog, treat as real purchase
+        print('🔍 iOS Purchase Update: Xcode build detected, treating as real purchase');
+        _handleSuccessfulPurchase(purchaseDetails);
+      } else if (isTestFlightMac) {
+        // TestFlight on Mac: Treat as real purchase (payment dialog should have appeared)
+        print('🔍 iOS Purchase Update: TestFlight on Mac detected, treating as real purchase');
+        _handleSuccessfulPurchase(purchaseDetails);
+      } else {
+        // Normal TestFlight/App Store behavior
+        if (purchaseDetails.pendingCompletePurchase == true) {
+          // This is a real purchase that requires user confirmation
+          print('🔍 iOS Purchase Update: Pending complete purchase, treating as real purchase');
+          _handleSuccessfulPurchase(purchaseDetails);
+        } else {
+          // For TestFlight auto-approval, we should NOT grant premium access
+          // This is just for testing the purchase flow
+          print('🔍 iOS Purchase Update: TestFlight auto-approval, not granting premium access');
+          _handleTestFlightAutoApproval(purchaseDetails);
+        }
+      }
       
       // Complete pending purchase with success
       final completer = _pendingPurchaseCompleters.remove(purchaseDetails.productID);
@@ -593,30 +607,23 @@ class PaymentService extends ChangeNotifier {
         completer.complete(true);
       }
     } else if (purchaseDetails.status == PurchaseStatus.error) {
-      _handlePurchaseErrorIOS(purchaseDetails, isChromebookDevice);
+      print('🔍 iOS Purchase Update: Error status detected');
+      _handlePurchaseErrorIOS(purchaseDetails);
     } else if (purchaseDetails.status == PurchaseStatus.canceled) {
-      _handlePurchaseCancellationIOS(purchaseDetails, isChromebookDevice);
+      print('🔍 iOS Purchase Update: Canceled status detected');
+      _handlePurchaseCancellationIOS(purchaseDetails);
     }
 
     // Complete the purchase if needed
     if (purchaseDetails.pendingCompletePurchase) {
-      _completePurchaseIOS(purchaseDetails, isChromebookDevice);
+      _completePurchaseIOS(purchaseDetails);
     }
   }
 
   /// Android-specific purchase update handling
-  void _handlePurchaseUpdateAndroid(PurchaseDetails purchaseDetails, bool isChromebookDevice) {
-    print('🤖 [DEBUG] Android purchase update handling');
-    
+  void _handlePurchaseUpdateAndroid(PurchaseDetails purchaseDetails) {
     if (purchaseDetails.status == PurchaseStatus.purchased ||
         purchaseDetails.status == PurchaseStatus.restored) {
-      
-      // Android-specific: Handle Google Play purchases
-      if (purchaseDetails.pendingCompletePurchase == true) {
-        print('✅ Android: Purchase confirmed and needs completion: ${purchaseDetails.productID}');
-      } else {
-        print('🟡 Android: Purchase already completed: ${purchaseDetails.productID}');
-      }
       
       // Handle successful purchase
       _handleSuccessfulPurchase(purchaseDetails);
@@ -627,28 +634,24 @@ class PaymentService extends ChangeNotifier {
         completer.complete(true);
       }
     } else if (purchaseDetails.status == PurchaseStatus.error) {
-      _handlePurchaseErrorAndroid(purchaseDetails, isChromebookDevice);
+      _handlePurchaseErrorAndroid(purchaseDetails);
     } else if (purchaseDetails.status == PurchaseStatus.canceled) {
-      _handlePurchaseCancellationAndroid(purchaseDetails, isChromebookDevice);
+      _handlePurchaseCancellationAndroid(purchaseDetails);
     }
 
     // Complete the purchase if needed
     if (purchaseDetails.pendingCompletePurchase) {
-      _completePurchaseAndroid(purchaseDetails, isChromebookDevice);
+      _completePurchaseAndroid(purchaseDetails);
     }
   }
 
   /// Handle iOS-specific purchase errors
-  void _handlePurchaseErrorIOS(PurchaseDetails purchaseDetails, bool isChromebookDevice) {
+  void _handlePurchaseErrorIOS(PurchaseDetails purchaseDetails) {
         final errorCode = purchaseDetails.error?.code;
         final errorMessage = purchaseDetails.error?.message;
         
+    if (Platform.isIOS) {
     print('❌ iOS: Purchase error: $errorCode - $errorMessage');
-        
-        if (isChromebookDevice) {
-      print('🚨 iOS CHROMEBOOK ERROR DETECTED:');
-      print('   Device: $_deviceInfo');
-      print('   This error might be Chromebook-specific!');
     }
     
     // Complete pending purchase with error
@@ -659,25 +662,12 @@ class PaymentService extends ChangeNotifier {
   }
 
   /// Handle Android-specific purchase errors
-  void _handlePurchaseErrorAndroid(PurchaseDetails purchaseDetails, bool isChromebookDevice) {
+  void _handlePurchaseErrorAndroid(PurchaseDetails purchaseDetails) {
     final errorCode = purchaseDetails.error?.code;
     final errorMessage = purchaseDetails.error?.message;
     
+    if (Platform.isAndroid) {
     print('❌ Android: Purchase error: $errorCode - $errorMessage');
-    
-    if (isChromebookDevice) {
-      print('🚨 Android CHROMEBOOK ERROR DETECTED:');
-          print('   Device: $_deviceInfo');
-          print('   This error might be Chromebook-specific!');
-          
-          // Log specific Chromebook error patterns
-          if (errorCode == 'BillingResponseCode.BILLING_UNAVAILABLE') {
-            print('💡 CHROMEBOOK: Google Play Billing might not be properly configured');
-          } else if (errorCode == 'BillingResponseCode.ITEM_UNAVAILABLE') {
-            print('💡 CHROMEBOOK: Subscription products might not be available on this device');
-          } else if (errorCode == 'BillingResponseCode.DEVELOPER_ERROR') {
-            print('💡 CHROMEBOOK: App signing or configuration issue');
-          }
         }
         
         // Complete pending purchase with error
@@ -688,10 +678,9 @@ class PaymentService extends ChangeNotifier {
   }
 
   /// Handle iOS-specific purchase cancellations
-  void _handlePurchaseCancellationIOS(PurchaseDetails purchaseDetails, bool isChromebookDevice) {
+  void _handlePurchaseCancellationIOS(PurchaseDetails purchaseDetails) {
+    if (Platform.isIOS) {
     print('🚫 iOS: Purchase canceled by user: ${purchaseDetails.productID}');
-    if (isChromebookDevice) {
-      print('🔍 iOS CHROMEBOOK: User canceled - check if payment UI is working properly');
     }
         
     // Complete pending purchase with cancellation
@@ -702,10 +691,9 @@ class PaymentService extends ChangeNotifier {
   }
 
   /// Handle Android-specific purchase cancellations
-  void _handlePurchaseCancellationAndroid(PurchaseDetails purchaseDetails, bool isChromebookDevice) {
+  void _handlePurchaseCancellationAndroid(PurchaseDetails purchaseDetails) {
+    if (Platform.isAndroid) {
     print('🚫 Android: Purchase canceled by user: ${purchaseDetails.productID}');
-        if (isChromebookDevice) {
-      print('🔍 Android CHROMEBOOK: User canceled - check if payment UI is working properly');
         }
         
         // Complete pending purchase with cancellation
@@ -716,60 +704,62 @@ class PaymentService extends ChangeNotifier {
       }
 
   /// Complete iOS purchase
-  void _completePurchaseIOS(PurchaseDetails purchaseDetails, bool isChromebookDevice) {
+  void _completePurchaseIOS(PurchaseDetails purchaseDetails) {
         try {
       InAppPurchase.instance.completePurchase(purchaseDetails);
-      print('✅ iOS: Purchase completed successfully');
         } catch (e) {
+      if (Platform.isIOS) {
       print('❌ iOS: Error completing purchase: $e');
-          if (isChromebookDevice) {
-        print('🚨 iOS CHROMEBOOK: Error in completePurchase() - this might be the root cause!');
           }
         }
       }
 
   /// Complete Android purchase
-  void _completePurchaseAndroid(PurchaseDetails purchaseDetails, bool isChromebookDevice) {
+  void _completePurchaseAndroid(PurchaseDetails purchaseDetails) {
     try {
       InAppPurchase.instance.completePurchase(purchaseDetails);
-      print('✅ Android: Purchase completed successfully');
     } catch (e) {
+      if (Platform.isAndroid) {
       print('❌ Android: Error completing purchase: $e');
-      if (isChromebookDevice) {
-        print('🚨 Android CHROMEBOOK: Error in completePurchase() - this might be the root cause!');
       }
     }
   }
 
   /// Handle successful purchase with platform-specific logic
   Future<void> _handleSuccessfulPurchase(PurchaseDetails purchaseDetails) async {
+    print('🔍 Handle Successful Purchase: Starting for ${purchaseDetails.productID}');
+    
     try {
       final User? user = FirebaseAuth.instance.currentUser;
-      if (user == null || _firestore == null) return;
-
-      print('✅ Purchase successful: ${purchaseDetails.productID}');
-      print('✅ Platform: ${Platform.operatingSystem}');
+      if (user == null || _firestore == null) {
+        print('❌ Handle Successful Purchase: User or Firestore is null');
+        return;
+      }
+      
+      print('🔍 Handle Successful Purchase: User found, processing platform-specific logic');
       
       // Platform-specific successful purchase handling
       if (Platform.isIOS) {
+        print('🔍 Handle Successful Purchase: Processing iOS purchase');
         await _handleSuccessfulPurchaseIOS(purchaseDetails, user);
       } else if (Platform.isAndroid) {
+        print('🔍 Handle Successful Purchase: Processing Android purchase');
         await _handleSuccessfulPurchaseAndroid(purchaseDetails, user);
       } else {
-        print('❌ [DEBUG] Unsupported platform for successful purchase handling');
+        print('🔍 Handle Successful Purchase: Unsupported platform');
       }
 
       // Track purchase completion for abandonment analysis
       await PlanAbandonmentService.trackPurchaseCompletion();
+      
+      print('🔍 Handle Successful Purchase: Completed successfully');
     } catch (e) {
-      print('Error handling successful purchase: $e');
+      print('❌ Handle Successful Purchase: Error: $e');
     }
   }
 
   /// iOS-specific successful purchase handling
   Future<void> _handleSuccessfulPurchaseIOS(PurchaseDetails purchaseDetails, User user) async {
-    print('🍎 [DEBUG] iOS successful purchase handling');
-      
     // Check if this is a trial purchase for iOS
     final bool isTrialPurchase = purchaseDetails.productID == 'jachtproef_monthly_399' || 
                                  purchaseDetails.productID == 'jachtproef_yearly_2999';
@@ -779,20 +769,15 @@ class PaymentService extends ChangeNotifier {
       final String planType = purchaseDetails.productID == 'jachtproef_monthly_399' ? 'monthly' : 'yearly';
       
       await _setupTrialDataIOS(user.uid, planType, purchaseDetails.productID, 'ios');
-      print('✅ iOS: Trial setup completed for plan: $planType');
       
-      // Navigate to Quick Setup after successful trial setup (new trial only)
-      // Only call this for new purchases, not restored purchases
-      if (purchaseDetails.status == PurchaseStatus.purchased) {
-        _navigateToQuickSetup();
-      }
+      // CRITICAL FIX: Navigate to Quick Setup for BOTH new purchases AND restored purchases
+      // This prevents users from getting stuck on the payment screen when they already own the subscription
+      _navigateToQuickSetup();
     }
   }
 
   /// Android-specific successful purchase handling
   Future<void> _handleSuccessfulPurchaseAndroid(PurchaseDetails purchaseDetails, User user) async {
-    print('🤖 [DEBUG] Android successful purchase handling');
-    
     // Check if this is a trial purchase for Android
     final bool isTrialPurchase = purchaseDetails.productID == 'jachtproef_premium';
     
@@ -802,13 +787,10 @@ class PaymentService extends ChangeNotifier {
       final String planType = 'monthly'; // Default fallback - this should be improved
       
       await _setupTrialDataAndroid(user.uid, planType, purchaseDetails.productID, 'android');
-      print('✅ Android: Trial setup completed for plan: $planType');
       
-      // Navigate to Quick Setup after successful trial setup (new trial only)
-      // Only call this for new purchases, not restored purchases
-      if (purchaseDetails.status == PurchaseStatus.purchased) {
-        _navigateToQuickSetup();
-      }
+      // CRITICAL FIX: Navigate to Quick Setup for BOTH new purchases AND restored purchases
+      // This prevents users from getting stuck on the payment screen when they already own the subscription
+      _navigateToQuickSetup();
     }
   }
 
@@ -833,8 +815,6 @@ class PaymentService extends ChangeNotifier {
         'autoRenewDate': Timestamp.fromDate(DateTime.now().add(const Duration(days: 14))),
           },
         }, SetOptions(merge: true));
-
-    print('✅ iOS: Trial started with plan: $planType - Subscription will auto-charge after 14 days');
   }
 
   /// Android-specific trial data setup
@@ -858,8 +838,6 @@ class PaymentService extends ChangeNotifier {
         'autoRenewDate': Timestamp.fromDate(DateTime.now().add(const Duration(days: 14))),
       },
     }, SetOptions(merge: true));
-
-    print('✅ Android: Trial started with plan: $planType - Subscription will auto-charge after 14 days');
   }
 
   /// Legacy method for backward compatibility - now delegates to platform-specific methods
@@ -875,17 +853,21 @@ class PaymentService extends ChangeNotifier {
   
   /// Navigate to Quick Setup screen
   void _navigateToQuickSetup() {
+    print('🔍 Navigate to Quick Setup: Method called');
+    
     if (_shouldNavigateToQuickSetup) {
-      print('🔍 Navigation already in progress, skipping duplicate call');
+      print('🔍 Navigate to Quick Setup: Already set, returning');
       return;
     }
-    print('🔍 DEBUG: _navigateToQuickSetup called - this should only happen after successful trial setup');
-    print('🔍 DEBUG: Stack trace: ${StackTrace.current}');
-    print('🔍 Setting navigation flag for Quick Setup...');
+    
+    print('🔍 Navigate to Quick Setup: Setting navigation flag for Quick Setup...');
     _shouldNavigateToQuickSetup = true;
     notifyListeners();
+    
+    print('🔍 Navigate to Quick Setup: Navigation flag set, notifying listeners');
+    
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      print('🔍 Navigation flag set, AuthWrapper will handle navigation');
+      print('🔍 Navigate to Quick Setup: Post frame callback executed');
     });
   }
   
@@ -904,37 +886,427 @@ class PaymentService extends ChangeNotifier {
   Future<bool> _isRunningOnSimulator() async {
     try {
       if (Platform.isIOS) {
-        // Check if we're running on macOS (TestFlight on Mac)
-        if (Platform.operatingSystem == 'macos') {
-          print('🟡 [DEBUG] Running on macOS (TestFlight) - NOT a simulator');
-          return false;
-        }
-        
         // Check for simulator environment variables
         final isSimulator = Platform.environment.containsKey('SIMULATOR_DEVICE_NAME') ||
                            Platform.environment.containsKey('SIMULATOR_HOST_HOME') ||
                            Platform.environment.containsKey('SIMULATOR_DEVICE_FAMILY');
         
-        print('🟡 [DEBUG] iOS environment check - isSimulator: $isSimulator');
         return isSimulator;
       }
       return false;
     } catch (e) {
-      print('Error checking simulator: $e');
       return false;
     }
   }
 
-  /// Restore purchases
-  Future<void> restorePurchases() async {
-    if (!_isAvailable || _inAppPurchase == null) return;
-
+  /// Check if running on TestFlight on Mac
+  Future<bool> _isRunningOnTestFlightMac() async {
     try {
-      await _inAppPurchase!.restorePurchases();
+      print('🔍 TestFlight Mac Detection: Platform.isIOS = ${Platform.isIOS}, Platform.operatingSystem = ${Platform.operatingSystem}');
+      
+      if (Platform.isIOS && Platform.operatingSystem == 'macos') {
+        // Additional checks to confirm this is TestFlight on Mac
+        final hasTestFlight = Platform.environment.containsKey('TESTFLIGHT');
+        final hasSandbox = Platform.environment.containsKey('SANDBOX');
+        final hasXcodePreview = Platform.environment.containsKey('XCODE_RUNNING_FOR_PREVIEWS');
+        
+        print('🔍 TestFlight Mac Detection: TESTFLIGHT = $hasTestFlight, SANDBOX = $hasSandbox, XCODE_RUNNING_FOR_PREVIEWS = $hasXcodePreview');
+        
+        final isTestFlight = hasTestFlight || hasSandbox || !hasXcodePreview;
+        
+        print('🔍 TestFlight Mac Detection: Final result = $isTestFlight');
+        return isTestFlight;
+      }
+      
+      print('🔍 TestFlight Mac Detection: Not iOS or not macOS, returning false');
+      return false;
     } catch (e) {
-      print('Error restoring purchases: $e');
+      print('🔍 TestFlight Mac Detection: Error = $e');
+      return false;
     }
   }
+
+  /// Check if running from Xcode development build
+  Future<bool> _isRunningFromXcode() async {
+    try {
+      if (Platform.isIOS) {
+        // Check for Xcode development environment indicators
+        final isXcodeBuild = Platform.environment.containsKey('XCODE_RUNNING_FOR_PREVIEWS') ||
+                            Platform.environment.containsKey('XCODE_VERSION_ACTUAL') ||
+                            Platform.environment.containsKey('CONFIGURATION') && 
+                            Platform.environment['CONFIGURATION'] == 'Debug';
+        
+        return isXcodeBuild;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Restore purchases with comprehensive error handling and retry logic
+  Future<Map<String, dynamic>> restorePurchases() async {
+    print('🔍 Restore Purchases: Starting comprehensive restore process');
+    
+    final result = <String, dynamic>{
+      'success': false,
+      'restoredPurchases': false,
+      'navigatedToQuickSetup': false,
+      'error': null,
+      'details': <String, dynamic>{},
+    };
+
+    try {
+      // Step 1: Validate prerequisites
+      if (!_isAvailable || _inAppPurchase == null) {
+        final error = 'In-app purchases not available on ${Platform.operatingSystem}';
+        print('❌ Restore Purchases: $error');
+        result['error'] = error;
+        return result;
+      }
+
+      // Step 2: Ensure user is authenticated
+      final User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        final error = 'User not authenticated';
+        print('❌ Restore Purchases: $error');
+        result['error'] = error;
+        return result;
+      }
+
+      result['details']['userId'] = user.uid;
+      result['details']['platform'] = Platform.operatingSystem;
+
+      // Step 3: Initialize payment service if needed
+      if (!_isAvailable) {
+        print('🔍 Restore Purchases: Initializing payment service');
+        await initialize();
+        if (!_isAvailable) {
+          final error = 'Failed to initialize payment service';
+          print('❌ Restore Purchases: $error');
+          result['error'] = error;
+          return result;
+        }
+      }
+
+      // Step 4: Ensure purchase stream listener is set up
+      print('🔍 Restore Purchases: Ensuring purchase stream listener is set up');
+      await _ensurePurchaseStreamListener();
+      
+      if (_subscription == null) {
+        final error = 'Failed to set up purchase stream listener';
+        print('❌ Restore Purchases: $error');
+        result['error'] = error;
+        return result;
+      }
+
+      // Step 5: Check current user state before restore
+      final currentState = await _getCurrentUserPaymentState(user.uid);
+      result['details']['currentState'] = currentState;
+      
+      if (currentState['hasPaymentSetup']) {
+        print('🔍 Restore Purchases: User already has payment setup, navigating to Quick Setup');
+        _navigateToQuickSetup();
+        result['success'] = true;
+        result['navigatedToQuickSetup'] = true;
+        result['details']['reason'] = 'existing_payment_setup';
+        return result;
+      }
+
+      // Step 6: Perform restore with timeout and retry logic
+      print('🔍 Restore Purchases: Calling InAppPurchase restore method');
+      bool restoreCompleted = false;
+      int retryCount = 0;
+      const maxRetries = 2;
+      const timeoutDuration = Duration(seconds: 10);
+
+      while (!restoreCompleted && retryCount <= maxRetries) {
+        try {
+          if (retryCount > 0) {
+            print('🔍 Restore Purchases: Retry attempt $retryCount of $maxRetries');
+            await Future.delayed(Duration(seconds: retryCount * 2)); // Exponential backoff
+          }
+
+          // Call restore with timeout
+          await _inAppPurchase!.restorePurchases().timeout(
+            timeoutDuration,
+            onTimeout: () {
+              throw TimeoutException('Restore operation timed out after ${timeoutDuration.inSeconds} seconds');
+            },
+          );
+
+          restoreCompleted = true;
+          print('🔍 Restore Purchases: Restore method completed successfully');
+          
+        } catch (e) {
+          retryCount++;
+          print('⚠️ Restore Purchases: Attempt $retryCount failed: $e');
+          
+          if (retryCount > maxRetries) {
+            print('❌ Restore Purchases: All retry attempts failed');
+            result['error'] = 'Restore failed after $maxRetries attempts: $e';
+            return result;
+          }
+        }
+      }
+
+      // Step 7: Wait for purchase stream updates and check for restored purchases
+      print('🔍 Restore Purchases: Waiting for purchase stream updates');
+      final restoreResult = await _waitForRestoreCompletion(user.uid, currentState);
+      result['details']['restoreResult'] = restoreResult;
+
+      if (restoreResult['restoredPurchases']) {
+        print('🔍 Restore Purchases: Purchases were restored successfully');
+        result['success'] = true;
+        result['restoredPurchases'] = true;
+        result['navigatedToQuickSetup'] = true;
+        _navigateToQuickSetup();
+        return result;
+      }
+
+      // Step 8: Fallback check - verify if user has any valid subscription
+      print('🔍 Restore Purchases: Performing fallback subscription check');
+      final fallbackCheck = await _performFallbackSubscriptionCheck(user.uid);
+      result['details']['fallbackCheck'] = fallbackCheck;
+
+      if (fallbackCheck['hasValidSubscription']) {
+        print('🔍 Restore Purchases: Valid subscription found in fallback check');
+        result['success'] = true;
+        result['restoredPurchases'] = true;
+        result['navigatedToQuickSetup'] = true;
+        _navigateToQuickSetup();
+        return result;
+      }
+
+      // Step 9: Final state check
+      final finalState = await _getCurrentUserPaymentState(user.uid);
+      result['details']['finalState'] = finalState;
+
+      if (finalState['hasPaymentSetup']) {
+        print('🔍 Restore Purchases: Payment setup found in final check');
+        result['success'] = true;
+        result['navigatedToQuickSetup'] = true;
+        _navigateToQuickSetup();
+        return result;
+      }
+
+      // No purchases found to restore
+      print('🔍 Restore Purchases: No purchases found to restore');
+      result['success'] = true; // This is still a successful operation
+      result['details']['reason'] = 'no_purchases_found';
+      return result;
+
+    } catch (e) {
+      print('❌ Restore Purchases: Unexpected error: $e');
+      result['error'] = 'Unexpected error: $e';
+      return result;
+    }
+  }
+
+  /// Get current user payment state
+  Future<Map<String, dynamic>> _getCurrentUserPaymentState(String userId) async {
+    try {
+      if (_firestore == null) return {'hasPaymentSetup': false, 'error': 'Firestore not initialized'};
+
+      final DocumentSnapshot doc = await _firestore!.collection('users').doc(userId).get();
+      if (!doc.exists) return {'hasPaymentSetup': false, 'reason': 'user_document_not_found'};
+
+      final data = doc.data() as Map<String, dynamic>?;
+      final bool paymentSetupCompleted = data?['paymentSetupCompleted'] ?? false;
+      final bool isPremium = data?['isPremium'] ?? false;
+      final subscription = data?['subscription'] as Map<String, dynamic>?;
+
+      return {
+        'hasPaymentSetup': paymentSetupCompleted,
+        'isPremium': isPremium,
+        'subscription': subscription,
+        'timestamp': DateTime.now().toIso8601String(),
+      };
+    } catch (e) {
+      return {'hasPaymentSetup': false, 'error': e.toString()};
+    }
+  }
+
+  /// Wait for restore completion with timeout
+  Future<Map<String, dynamic>> _waitForRestoreCompletion(String userId, Map<String, dynamic> initialState) async {
+    const maxWaitTime = Duration(seconds: 8);
+    const checkInterval = Duration(milliseconds: 500);
+    final startTime = DateTime.now();
+    
+    print('🔍 Wait for Restore: Starting wait with timeout of ${maxWaitTime.inSeconds} seconds');
+
+    while (DateTime.now().difference(startTime) < maxWaitTime) {
+      await Future.delayed(checkInterval);
+      
+      final currentState = await _getCurrentUserPaymentState(userId);
+      
+      // Check if payment setup was completed during the wait
+      if (currentState['hasPaymentSetup'] && !initialState['hasPaymentSetup']) {
+        print('🔍 Wait for Restore: Payment setup completed during wait');
+        return {
+          'restoredPurchases': true,
+          'reason': 'payment_setup_completed',
+          'waitTime': DateTime.now().difference(startTime).inMilliseconds,
+        };
+      }
+
+      // Check if premium status changed
+      if (currentState['isPremium'] && !initialState['isPremium']) {
+        print('🔍 Wait for Restore: Premium status activated during wait');
+        return {
+          'restoredPurchases': true,
+          'reason': 'premium_activated',
+          'waitTime': DateTime.now().difference(startTime).inMilliseconds,
+        };
+      }
+    }
+
+    print('🔍 Wait for Restore: Timeout reached, no changes detected');
+    return {
+      'restoredPurchases': false,
+      'reason': 'timeout_no_changes',
+      'waitTime': maxWaitTime.inMilliseconds,
+    };
+  }
+
+  /// Perform fallback subscription check
+  Future<Map<String, dynamic>> _performFallbackSubscriptionCheck(String userId) async {
+    try {
+      print('🔍 Fallback Check: Performing comprehensive subscription check');
+      
+      // Check if user has any subscription data
+      final currentState = await _getCurrentUserPaymentState(userId);
+      
+      if (currentState['subscription'] != null) {
+        final subscription = currentState['subscription'] as Map<String, dynamic>;
+        final status = subscription['status'] as String?;
+        final platform = subscription['platform'] as String?;
+        
+        print('🔍 Fallback Check: Found subscription - Status: $status, Platform: $platform');
+        
+        // Consider any subscription as valid for navigation
+        if (status != null && (status == 'active' || status == 'trial')) {
+          return {
+            'hasValidSubscription': true,
+            'subscriptionStatus': status,
+            'platform': platform,
+            'reason': 'existing_subscription_found',
+          };
+        }
+      }
+
+      // Check if user has premium access
+      if (currentState['isPremium'] == true) {
+        print('🔍 Fallback Check: User has premium access');
+        return {
+          'hasValidSubscription': true,
+          'reason': 'premium_access_found',
+        };
+      }
+
+      return {
+        'hasValidSubscription': false,
+        'reason': 'no_valid_subscription_found',
+      };
+      
+    } catch (e) {
+      print('❌ Fallback Check: Error during fallback check: $e');
+      return {
+        'hasValidSubscription': false,
+        'error': e.toString(),
+      };
+    }
+  }
+
+  /// Check network connectivity for restore operations
+  Future<bool> _checkNetworkConnectivity() async {
+    try {
+      // Try multiple endpoints in case one is blocked
+      final endpoints = [
+        'https://www.apple.com',
+        'https://www.google.com',
+        'https://httpbin.org/get',
+      ];
+      
+      for (final endpoint in endpoints) {
+        try {
+          final response = await http.get(Uri.parse(endpoint)).timeout(
+            const Duration(seconds: 3),
+            onTimeout: () {
+              throw TimeoutException('Network connectivity check timed out');
+            },
+          );
+          if (response.statusCode == 200) {
+            print('✅ Network connectivity check passed using: $endpoint');
+            return true;
+          }
+        } catch (e) {
+          print('⚠️ Network check failed for $endpoint: $e');
+          continue;
+        }
+      }
+      
+      print('❌ Network connectivity check failed for all endpoints');
+      return false;
+    } catch (e) {
+      print('❌ Network connectivity check failed: $e');
+      return false;
+    }
+  }
+
+  /// Enhanced restore purchases with network connectivity check
+  Future<Map<String, dynamic>> restorePurchasesWithConnectivityCheck() async {
+    print('🔍 Restore with Connectivity: Starting enhanced restore process');
+    
+    // Check network connectivity first
+    final hasConnectivity = await _checkNetworkConnectivity();
+    if (!hasConnectivity) {
+      print('❌ Restore with Connectivity: No network connectivity detected');
+      return {
+        'success': false,
+        'error': 'Geen internetverbinding. Controleer je netwerk en probeer het opnieuw.',
+        'details': {'reason': 'no_network_connectivity'},
+      };
+    }
+
+    // Proceed with normal restore process
+    return await restorePurchases();
+  }
+
+  /// Get detailed restore diagnostics for debugging
+  Future<Map<String, dynamic>> getRestoreDiagnostics() async {
+    try {
+      final User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        return {'error': 'User not authenticated'};
+      }
+
+      final diagnostics = <String, dynamic>{
+        'timestamp': DateTime.now().toIso8601String(),
+        'userId': user.uid,
+        'platform': Platform.operatingSystem,
+        'paymentServiceAvailable': _isAvailable,
+        'inAppPurchaseInitialized': _inAppPurchase != null,
+        'purchaseStreamActive': _subscription != null,
+        'productsLoaded': _products.length,
+        'networkConnectivity': await _checkNetworkConnectivity(),
+      };
+
+      // Get current user state
+      final userState = await _getCurrentUserPaymentState(user.uid);
+      diagnostics['userState'] = userState;
+
+      // Get subscription info
+      final subscriptionInfo = await getSubscriptionInfo();
+      diagnostics['subscriptionInfo'] = subscriptionInfo;
+
+      return diagnostics;
+    } catch (e) {
+      return {'error': 'Failed to get diagnostics: $e'};
+    }
+  }
+
+
 
   /// Get subscription info
   Future<Map<String, dynamic>?> getSubscriptionInfo() async {
@@ -948,7 +1320,6 @@ class PaymentService extends ChangeNotifier {
       final data = doc.data() as Map<String, dynamic>?;
       return data?['subscription'] as Map<String, dynamic>?;
     } catch (e) {
-      print('Error getting subscription info: $e');
       return null;
     }
   }
@@ -963,7 +1334,6 @@ class PaymentService extends ChangeNotifier {
       // Get Firebase Auth token
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
-        print('❌ No authenticated user for email sending');
         return;
       }
       
@@ -988,15 +1358,9 @@ class PaymentService extends ChangeNotifier {
       
       if (response.statusCode == 200) {
         final result = json.decode(response.body);
-        print('✅ Subscription email sent: ${result['message']}');
-        print('📧 Email ID: ${result['email_id']}');
       } else {
-        print('❌ Failed to send subscription email: ${response.statusCode}');
-        print('Response: ${response.body}');
       }
     } catch (e) {
-      print('❌ Error sending subscription email: $e');
-      // Don't throw error - email is nice-to-have, not critical
     }
   }
 
@@ -1055,14 +1419,12 @@ class PaymentService extends ChangeNotifier {
         'willAutoRenew': false,
       },
     }, SetOptions(merge: true));
-    print('✅ DEBUG: Forced bypass trial started for plan: $planType');
   }
 
   Future<bool> isInAppPurchaseAvailable() async {
     try {
       return await InAppPurchase.instance.isAvailable();
     } catch (e) {
-      // TODO: Handle or log error if needed
       return false;
     }
   }
@@ -1089,8 +1451,38 @@ class PaymentService extends ChangeNotifier {
       final DateTime trialEndDate = createdAt.toDate().add(Duration(days: trialPeriodDays));
       return DateTime.now().isBefore(trialEndDate);
     } catch (e) {
-      print('Error checking trial status: $e');
       return false;
+    }
+  }
+
+  /// Check for and handle stuck purchase completers
+  Future<void> checkForStuckPurchaseCompleters() async {
+    try {
+      print('🔍 Checking for stuck purchase completers...');
+      
+      int stuckCount = 0;
+      for (final entry in _pendingPurchaseCompleters.entries) {
+        final productId = entry.key;
+        final completer = entry.value;
+        
+        if (!completer.isCompleted) {
+          print('🔍 Found stuck completer for product: $productId');
+          stuckCount++;
+          
+          // Complete it with false to unstick it
+          completer.complete(false);
+        }
+      }
+      
+      if (stuckCount > 0) {
+        print('🧹 Cleaned up $stuckCount stuck purchase completers');
+        _pendingPurchaseCompleters.clear();
+      } else {
+        print('✅ No stuck purchase completers found');
+      }
+      
+    } catch (e) {
+      print('❌ Error checking for stuck purchase completers: $e');
     }
   }
 
@@ -1112,7 +1504,6 @@ class PaymentService extends ChangeNotifier {
       
       return daysRemaining > 0 ? daysRemaining : 0;
     } catch (e) {
-      print('Error getting trial days remaining: $e');
       return 0;
     }
   }
@@ -1140,7 +1531,6 @@ class PaymentService extends ChangeNotifier {
       
       return DateTime.now().isBefore(expiryDate.toDate());
     } catch (e) {
-      print('Error checking subscription: $e');
       return false;
     }
   }
@@ -1152,19 +1542,8 @@ class PaymentService extends ChangeNotifier {
       final bool hasSubscription = await hasActiveSubscription();
       final bool hasPremium = inTrial || hasSubscription;
       
-      // CHROMEBOOK DEBUG: Log premium access checks
-      final isChromebookDevice = await isChromebook();
-      if (isChromebookDevice) {
-        print('🔍 CHROMEBOOK PREMIUM CHECK: inTrial=$inTrial, hasSubscription=$hasSubscription, result=$hasPremium');
-      }
-      
       return hasPremium;
     } catch (e) {
-      print('❌ Error checking premium access: $e');
-      final isChromebookDevice = await isChromebook();
-      if (isChromebookDevice) {
-        print('🚨 CHROMEBOOK: Error in premium access check - defaulting to false');
-      }
       return false;
     }
   }
@@ -1185,7 +1564,6 @@ class PaymentService extends ChangeNotifier {
       
       return paymentSetupCompleted;
     } catch (e) {
-      print('❌ Error checking payment setup status: $e');
       return false;
     }
   }
@@ -1202,21 +1580,15 @@ class PaymentService extends ChangeNotifier {
         'isPremium': true, // Trial users get premium features
       }, SetOptions(merge: true));
 
-      print('Trial started for user');
     } catch (e) {
-      print('Error starting trial: $e');
     }
   }
 
   /// Start trial with selected plan - Platform-specific handling
   Future<void> startTrialWithPlan(String planType) async {
-    print('🟢 [DEBUG] startTrialWithPlan called with planType: $planType');
-    print('🟢 [DEBUG] Platform: ${Platform.operatingSystem}');
-    
     try {
       final User? user = FirebaseAuth.instance.currentUser;
       if (user == null || _firestore == null) {
-        print('🔴 [DEBUG] User not logged in or Firestore not available');
         throw Exception('User moet ingelogd zijn om proefperiode te starten');
       }
 
@@ -1229,24 +1601,21 @@ class PaymentService extends ChangeNotifier {
         throw UnsupportedError('Platform not supported for trial setup');
       }
     } catch (e) {
-      print('❌ Error starting trial with plan: $e');
-      rethrow;
     }
   }
 
   /// iOS-specific trial setup
   Future<void> _startTrialWithPlanIOS(String planType, User user) async {
-    print('🍎 [DEBUG] iOS trial setup for planType: $planType');
+    print('🔍 iOS Trial Setup: Starting for plan $planType');
     
     // iOS Simulator bypass
     bool isSimulator = false;
     try {
       isSimulator = Platform.environment.containsKey('SIMULATOR_DEVICE_NAME');
     } catch (_) {}
-    print('🟡 [DEBUG] iOS: isSimulator: $isSimulator, Platform: ${Platform.operatingSystem}');
     
     if (Platform.isIOS && isSimulator) {
-      print('🟠 [DEBUG] iOS: Simulator bypass triggered');
+      print('🔍 iOS Trial Setup: Detected simulator, bypassing payment');
       await _setupTrialDataIOS(user.uid, planType, planType, 'ios-simulator');
       // Navigate to Quick Setup after successful trial setup (new trial only)
       _navigateToQuickSetup();
@@ -1260,113 +1629,582 @@ class PaymentService extends ChangeNotifier {
     } else if (planType == 'yearly') {
       productId = yearlySubscriptionId; // 'jachtproef_yearly_2999'
     } else {
-      print('🔴 [DEBUG] iOS: Invalid plan type: $planType');
       throw Exception('Invalid plan type: $planType');
     }
+    
+    print('🔍 iOS Trial Setup: Using product ID $productId');
 
     // Initialize the in-app purchase if not already done
     if (!_isAvailable) {
-      print('🟡 [DEBUG] iOS: Payment service not available, initializing...');
+      print('🔍 iOS Trial Setup: Initializing in-app purchase');
       await initialize();
     }
 
-    // Ensure products are loaded
+    // Enhanced product loading with fallback for real devices
     if (_products.isEmpty) {
-      print('🟡 [DEBUG] iOS: No products loaded, attempting to load products...');
+      print('🔍 iOS Trial Setup: Loading products');
       await _loadProducts();
+      
+      // If products still empty, try one more time with delay
       if (_products.isEmpty) {
-        print('🔴 [DEBUG] iOS: Still no products loaded after retry');
-        throw Exception('Producten konden niet worden geladen. Controleer je internetverbinding en probeer het opnieuw.');
+        print('🔍 iOS Trial Setup: Products still empty, retrying...');
+        await Future.delayed(const Duration(seconds: 2));
+        await _loadProducts();
+      }
+      
+      if (_products.isEmpty) {
+        // On real devices, if products can't be loaded but IAP is available,
+        // we should still try to proceed and let the purchase flow handle errors
+        final isRealDevice = !(await _isRunningOnSimulator()) && !(await _isRunningOnTestFlightMac());
+        if (isRealDevice && _isAvailable) {
+          print('⚠️ iOS Trial Setup: Products not loaded but proceeding anyway for real device');
+          // Continue without products - the purchase flow will handle the error gracefully
+        } else {
+          throw Exception('Producten konden niet worden geladen. Controleer je internetverbinding en probeer het opnieuw.');
+        }
       }
     }
+    
+    print('🔍 iOS Trial Setup: Found ${_products.length} products');
 
-    // Verify the specific product is available
+    // Verify the specific product is available (with fallback for real devices)
     final hasRequestedProduct = _products.any((p) => p.id == productId);
-    print('🟡 [DEBUG] iOS: Checking if requested product $productId is available: $hasRequestedProduct');
     if (!hasRequestedProduct) {
-      print('🔴 [DEBUG] iOS: Requested product $productId not found in available products');
-      print('🔍 iOS: Available products: ${_products.map((p) => p.id).toList()}');
-      // Try to reload products one more time
-      print('🟡 [DEBUG] iOS: Final attempt to reload products...');
+      print('🔍 iOS Trial Setup: Product $productId not found, reloading products');
       await _loadProducts();
       final hasProductAfterReload = _products.any((p) => p.id == productId);
-      print('🟡 [DEBUG] iOS: Product available after reload: $hasProductAfterReload');
+      
       if (!hasProductAfterReload) {
-        print('🔴 [DEBUG] iOS: Product still not available after reload');
-        throw Exception('Het geselecteerde abonnement is momenteel niet beschikbaar. Probeer het later opnieuw.');
+        // On real devices, if product is not found but IAP is available,
+        // we should still try to proceed and let the purchase flow handle errors
+        final isRealDevice = !(await _isRunningOnSimulator()) && !(await _isRunningOnTestFlightMac());
+        if (isRealDevice && _isAvailable) {
+          print('⚠️ iOS Trial Setup: Product $productId not found but proceeding anyway for real device');
+          // Continue without product verification - the purchase flow will handle the error gracefully
+        } else {
+          throw Exception('Het geselecteerde abonnement is momenteel niet beschikbaar. Probeer het later opnieuw.');
+        }
       }
     }
 
-    // Check if running on simulator
+    print('🔍 iOS Trial Setup: Product $productId is available or proceeding anyway');
+
+    // Check if running on simulator or TestFlight on Mac
     final isSimulatorRuntime = await _isRunningOnSimulator();
-    print('🟡 [DEBUG] iOS: isRunningOnSimulator: $isSimulatorRuntime');
-    print('🟡 [DEBUG] iOS: Platform.operatingSystem: ${Platform.operatingSystem}');
-    print('🟡 [DEBUG] iOS: Platform.isIOS: ${Platform.isIOS}');
-    print('🟡 [DEBUG] iOS: Platform.environment keys: ${Platform.environment.keys.where((key) => key.contains('SIMULATOR')).toList()}');
+    final isTestFlightMac = await _isRunningOnTestFlightMac();
+    
+    print('🔍 iOS Trial Setup: Environment check - Simulator: $isSimulatorRuntime, TestFlight Mac: $isTestFlightMac');
     
     if (isSimulatorRuntime) {
-      print('🟠 [DEBUG] iOS: Simulator detected in runtime check, bypassing payment');
+      print('🔍 iOS Trial Setup: Using simulator bypass');
       await _setupTrialDataIOS(user.uid, planType, productId, 'ios-simulator');
       // Navigate to Quick Setup after successful trial setup (new trial only)
       _navigateToQuickSetup();
       return;
+    } else if (isTestFlightMac) {
+      // TestFlight on Mac: Show payment dialog for real purchase
+      print('🔍 iOS Trial Setup: TestFlight on Mac detected, showing payment dialog');
+      await _forceApplePaymentDialog(productId, planType);
+      return;
     } else {
       // Actual iOS device: Purchase the subscription with trial
-      print('🟢 [DEBUG] iOS: About to call purchaseSubscription for $productId, planType: $planType');
-      print('🟢 [DEBUG] iOS: This should trigger the Apple payment dialog');
-      await purchaseSubscription(productId, planType: planType);
-      print('🟢 [DEBUG] iOS: purchaseSubscription call finished (should now wait for user confirmation)');
-      // Note: _navigateToQuickSetup() will be called in the purchase callback after successful purchase
+      print('🔍 iOS Trial Setup: Regular iOS device, showing payment dialog');
+      await _forceApplePaymentDialog(productId, planType);
       return;
+    }
+  }
+
+  /// Force Apple payment dialog to appear (for development builds and TestFlight on Mac)
+  Future<void> _forceApplePaymentDialog(String productId, String planType) async {
+    try {
+      print('🔍 Payment Dialog: Starting for product $productId');
+      
+      // CRITICAL: Ensure purchase stream listener is set up before attempting purchase
+      await _ensurePurchaseStreamListener();
+      
+      ProductDetails? product;
+      try {
+        product = _products.firstWhere((p) => p.id == productId);
+      } catch (e) {
+        print('❌ Payment Dialog: Product not found in loaded products: $productId');
+        
+        // On real devices, if product is not found but IAP is available,
+        // try to load products one more time
+        final isRealDevice = !(await _isRunningOnSimulator()) && !(await _isRunningOnTestFlightMac());
+        if (isRealDevice && _isAvailable) {
+          print('🔍 Payment Dialog: Attempting to reload products for real device');
+          await _loadProducts();
+          try {
+            product = _products.firstWhere((p) => p.id == productId);
+          } catch (e2) {
+            print('❌ Payment Dialog: Product still not found after reload: $productId');
+            throw Exception('Product niet beschikbaar. Controleer uw internetverbinding en probeer het opnieuw.');
+          }
+        } else {
+          throw Exception('Product not found: $productId');
+        }
+      }
+      
+      print('🔍 Payment Dialog: Found product: ${product.title} - ${product.price}');
+      
+      final PurchaseParam purchaseParam = PurchaseParam(productDetails: product);
+      
+      // Check if we're on TestFlight on Mac and log for debugging
+      final isTestFlightMac = await _isRunningOnTestFlightMac();
+      if (isTestFlightMac) {
+        print('🧪 TestFlight on Mac: Attempting to show payment dialog for $productId');
+      } else {
+        print('🔍 Payment Dialog: Not TestFlight on Mac, attempting to show payment dialog for $productId');
+      }
+      
+      print('🔍 Payment Dialog: Calling InAppPurchase.instance.buyNonConsumable...');
+      final bool success = await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
+      
+      print('🔍 Payment Dialog: buyNonConsumable returned: $success');
+      
+      if (success) {
+        if (isTestFlightMac) {
+          print('✅ TestFlight on Mac: Payment dialog initiated successfully');
+        } else {
+          print('✅ Payment Dialog: Payment dialog initiated successfully');
+        }
+        print('🔍 Trial purchase flow initiated - waiting for user confirmation...');
+        return;
+      } else {
+        if (isTestFlightMac) {
+          print('❌ TestFlight on Mac: Failed to initiate payment dialog');
+        } else {
+          print('❌ Payment Dialog: Failed to initiate payment dialog');
+        }
+        throw Exception('Kon geen aankoop starten. Probeer het opnieuw.');
+      }
+    } catch (e) {
+      print('❌ Payment Dialog: Error occurred: $e');
+      if (await _isRunningOnTestFlightMac()) {
+        print('❌ TestFlight on Mac: Error in payment dialog: $e');
+      }
+      rethrow;
     }
   }
 
   /// Android-specific trial setup
   Future<void> _startTrialWithPlanAndroid(String planType, User user) async {
-    print('🤖 [DEBUG] Android trial setup for planType: $planType');
-    
     // Get the correct product ID for Android (always 'jachtproef_premium')
     String productId = 'jachtproef_premium';
-    print('🟡 [DEBUG] Android: Using jachtproef_premium for $planType subscription');
 
     // Initialize the in-app purchase if not already done
     if (!_isAvailable) {
-      print('🟡 [DEBUG] Android: Payment service not available, initializing...');
       await initialize();
     }
 
     // Ensure products are loaded
     if (_products.isEmpty) {
-      print('🟡 [DEBUG] Android: No products loaded, attempting to load products...');
       await _loadProducts();
       if (_products.isEmpty) {
-        print('🔴 [DEBUG] Android: Still no products loaded after retry');
         throw Exception('Producten konden niet worden geladen. Controleer je internetverbinding en probeer het opnieuw.');
       }
     }
 
     // Verify the specific product is available
     final hasRequestedProduct = _products.any((p) => p.id == productId);
-    print('🟡 [DEBUG] Android: Checking if requested product $productId is available: $hasRequestedProduct');
     if (!hasRequestedProduct) {
-      print('🔴 [DEBUG] Android: Requested product $productId not found in available products');
-      print('🔍 Android: Available products: ${_products.map((p) => p.id).toList()}');
-      // Try to reload products one more time
-      print('🟡 [DEBUG] Android: Final attempt to reload products...');
       await _loadProducts();
       final hasProductAfterReload = _products.any((p) => p.id == productId);
-      print('🟡 [DEBUG] Android: Product available after reload: $hasProductAfterReload');
       if (!hasProductAfterReload) {
-        print('🔴 [DEBUG] Android: Product still not available after reload');
         throw Exception('Het geselecteerde abonnement is momenteel niet beschikbaar. Probeer het later opnieuw.');
       }
     }
 
     // Android device: Purchase the subscription with trial
-    print('🟢 [DEBUG] Android: About to call purchaseSubscription for $productId, planType: $planType');
-    print('🟢 [DEBUG] Android: This should trigger the Google Play payment dialog');
     await purchaseSubscription(productId, planType: planType);
-    print('🟢 [DEBUG] Android: purchaseSubscription call finished (should now wait for user confirmation)');
-    // Note: _navigateToQuickSetup() will be called in the purchase callback after successful purchase
   }
-} 
+
+  /// Handle TestFlight auto-approval without granting premium access
+  Future<void> _handleTestFlightAutoApproval(PurchaseDetails purchaseDetails) async {
+    try {
+      final User? user = FirebaseAuth.instance.currentUser;
+      if (user == null || _firestore == null) return;
+
+      await _firestore!.collection('users').doc(user.uid).set({
+        'testFlightAutoApproval': {
+          'productId': purchaseDetails.productID,
+          'timestamp': FieldValue.serverTimestamp(),
+          'note': 'TestFlight auto-approval - no premium access granted for testing'
+        }
+      }, SetOptions(merge: true));
+      
+    } catch (e) {
+    }
+  }
+
+  /// Clear device payment state and reset service (for logout)
+  Future<void> clearDevicePaymentState() async {
+    try {
+      // Clear pending purchase completers
+      for (final completer in _pendingPurchaseCompleters.values) {
+        if (!completer.isCompleted) {
+          completer.complete(false);
+        }
+      }
+      _pendingPurchaseCompleters.clear();
+      
+      // Cancel subscription listener
+      await _subscription?.cancel();
+      _subscription = null;
+      
+      // Reset service state
+      _isAvailable = false;
+      _products.clear();
+      _inAppPurchase = null;
+      
+      // Reset initialization flag
+      _isInitializing = false;
+      
+      // Clear navigation flag
+      clearNavigationFlag();
+      
+    } catch (e) {
+    }
+  }
+
+  /// Clear unfinished transactions (for TestFlight testing)
+  Future<void> clearUnfinishedTransactions() async {
+    try {
+      print('🧹 Clearing unfinished transactions...');
+      
+      if (_inAppPurchase != null) {
+        // Force refresh InAppPurchase to clear any cached state
+        await _inAppPurchase!.isAvailable();
+        
+        // Try to restore purchases to trigger transaction completion
+        await _inAppPurchase!.restorePurchases();
+        
+        print('✅ Unfinished transactions cleared');
+      }
+    } catch (e) {
+      print('⚠️ Could not clear unfinished transactions: $e');
+    }
+  }
+
+  /// Enhanced cleanup for old/dormant payments and TestFlight issues
+  /// 
+  /// ⚠️ WARNING: This method COMPLETELY RESETS the PaymentService state!
+  /// It should ONLY be called for debugging/testing, NEVER during normal app startup.
+  /// 
+  /// This method resets:
+  /// - _isAvailable = false
+  /// - _products.clear()
+  /// - _inAppPurchase = null
+  /// - _isInitializing = false
+  /// 
+  /// If called after initialization, it will break the payment flow.
+  /// Use forceRefreshPaymentService() instead if you need to refresh the service.
+  Future<void> cleanupOldDormantPayments() async {
+    try {
+      print('🧹 Starting comprehensive cleanup of old/dormant payments...');
+      print('⚠️ WARNING: This will completely reset PaymentService state!');
+      
+      // Step 1: Check for and handle stuck purchase completers
+      await checkForStuckPurchaseCompleters();
+      
+      // Step 2: Clear any remaining pending purchase completers
+      for (final completer in _pendingPurchaseCompleters.values) {
+        if (!completer.isCompleted) {
+          print('🧹 Completing stuck purchase completer');
+          completer.complete(false);
+        }
+      }
+      _pendingPurchaseCompleters.clear();
+      
+      // Step 2: Cancel any existing purchase stream listener
+      if (_subscription != null) {
+        print('🧹 Canceling existing purchase stream listener');
+        await _subscription!.cancel();
+        _subscription = null;
+      }
+      
+      // Step 3: Clear unfinished transactions (especially important for TestFlight)
+      if (_inAppPurchase != null) {
+        print('🧹 Clearing unfinished transactions via InAppPurchase');
+        try {
+          // Force refresh InAppPurchase to clear any cached state
+          await _inAppPurchase!.isAvailable();
+          
+          // Try to restore purchases to trigger transaction completion
+          await _inAppPurchase!.restorePurchases();
+        } catch (e) {
+          print('⚠️ Error during InAppPurchase cleanup: $e');
+        }
+      }
+      
+      // Step 4: Reset service state to force fresh initialization
+      // ⚠️ CRITICAL: This completely breaks the PaymentService if called after initialization
+      print('🧹 Resetting payment service state');
+      print('⚠️ CRITICAL: Setting _isAvailable = false, _inAppPurchase = null');
+      _isAvailable = false;
+      _products.clear();
+      _inAppPurchase = null;
+      _isInitializing = false;
+      
+      // Step 5: Clear navigation flag
+      clearNavigationFlag();
+      
+      // Step 6: Platform-specific cleanup
+      if (Platform.isIOS) {
+        print('🧹 Performing iOS-specific cleanup');
+        await _cleanupIOSDormantPayments();
+      } else if (Platform.isAndroid) {
+        print('🧹 Performing Android-specific cleanup');
+        await _cleanupAndroidDormantPayments();
+      }
+      
+      print('✅ Comprehensive cleanup of old/dormant payments completed');
+      
+    } catch (e) {
+      print('❌ Error during comprehensive cleanup: $e');
+    }
+  }
+
+  /// iOS-specific cleanup for dormant payments
+  Future<void> _cleanupIOSDormantPayments() async {
+    try {
+      // Check if running on TestFlight on Mac
+      final isTestFlightMac = await _isRunningOnTestFlightMac();
+      if (isTestFlightMac) {
+        print('🧹 iOS: TestFlight on Mac detected, performing special cleanup');
+        
+        // For TestFlight on Mac, we need to be extra careful with transaction cleanup
+        if (_inAppPurchase != null) {
+          try {
+            // Force multiple restore attempts to clear any stuck transactions
+            for (int i = 0; i < 3; i++) {
+              print('🧹 iOS: TestFlight cleanup attempt ${i + 1}/3');
+              await _inAppPurchase!.restorePurchases();
+              await Future.delayed(const Duration(milliseconds: 500));
+            }
+          } catch (e) {
+            print('⚠️ iOS: TestFlight cleanup error: $e');
+          }
+        }
+      }
+      
+      // Clear any cached product information
+      _products.clear();
+      
+    } catch (e) {
+      print('❌ iOS: Error during iOS-specific cleanup: $e');
+    }
+  }
+
+  /// Android-specific cleanup for dormant payments
+  Future<void> _cleanupAndroidDormantPayments() async {
+    try {
+      // Clear any cached product information
+      _products.clear();
+      
+      // For Android, we rely on the standard InAppPurchase cleanup
+      // which should handle most dormant payment issues
+      
+    } catch (e) {
+      print('❌ Android: Error during Android-specific cleanup: $e');
+    }
+  }
+
+  /// Force refresh payment service state
+  Future<void> forceRefreshPaymentService() async {
+    try {
+      print('🔍 Force Refresh: Starting payment service refresh');
+      
+      // Clear current state
+      await clearDevicePaymentState();
+      
+      // Re-initialize
+      await initialize();
+      
+      // Reload products
+      await _loadProducts();
+      
+      print('🔍 Force Refresh: Payment service refreshed successfully');
+    } catch (e) {
+      print('❌ Force Refresh: Error refreshing payment service: $e');
+    }
+  }
+
+  /// Enhanced purchase subscription with better error handling
+  Future<Map<String, dynamic>> purchaseSubscriptionWithErrorHandling(String productId, {String? planType}) async {
+    final result = <String, dynamic>{
+      'success': false,
+      'error': null,
+      'userMessage': null,
+      'canRetry': false,
+      'details': <String, dynamic>{},
+    };
+
+    try {
+      print('🔍 Purchase Error Handling: Starting purchase for $productId');
+      
+      // Check network connectivity first
+      print('🔍 Purchase Error Handling: Checking network connectivity...');
+      if (!await _checkNetworkConnectivity()) {
+        print('❌ Purchase Error Handling: Network connectivity check failed');
+        result['error'] = 'no_network';
+        result['userMessage'] = 'Geen internetverbinding. Controleer uw netwerk en probeer het opnieuw.';
+        result['canRetry'] = true;
+        return result;
+      }
+      print('✅ Purchase Error Handling: Network connectivity check passed');
+
+      // Check if payment service is available
+      print('🔍 Purchase Error Handling: Checking payment service availability...');
+      print('🔍 Purchase Error Handling: _isAvailable: $_isAvailable, _inAppPurchase: ${_inAppPurchase != null}');
+      if (!_isAvailable || _inAppPurchase == null) {
+        print('❌ Purchase Error Handling: Payment service not available');
+        result['error'] = 'payment_not_available';
+        result['userMessage'] = 'Betalingen zijn momenteel niet beschikbaar. Probeer het later opnieuw.';
+        result['canRetry'] = true;
+        return result;
+      }
+      print('✅ Purchase Error Handling: Payment service is available');
+
+      // Ensure products are loaded
+      print('🔍 Purchase Error Handling: Checking if products are loaded...');
+      print('🔍 Purchase Error Handling: Current products count: ${_products.length}');
+      if (_products.isEmpty) {
+        print('🔍 Purchase Error Handling: No products loaded, attempting to load...');
+        try {
+          await _loadProducts();
+          print('🔍 Purchase Error Handling: Products loaded, count: ${_products.length}');
+          if (_products.isEmpty) {
+            print('❌ Purchase Error Handling: Products still empty after loading');
+            result['error'] = 'products_not_loaded';
+            result['userMessage'] = 'Producten konden niet worden geladen. Controleer uw internetverbinding.';
+            result['canRetry'] = true;
+            return result;
+          }
+        } catch (e) {
+          print('❌ Purchase Error Handling: Error loading products: $e');
+          result['error'] = 'product_load_failed';
+          result['userMessage'] = 'Producten konden niet worden geladen. Probeer het opnieuw.';
+          result['canRetry'] = true;
+          return result;
+        }
+      }
+      print('✅ Purchase Error Handling: Products are loaded');
+
+      // Attempt purchase with retry logic
+      int attempts = 0;
+      const maxAttempts = 2;
+      
+      while (attempts < maxAttempts) {
+        attempts++;
+        result['details']['attempt'] = attempts;
+        
+        try {
+          final success = await purchaseSubscription(productId, planType: planType);
+          if (success) {
+            result['success'] = true;
+            result['userMessage'] = 'Aankoop succesvol!';
+            return result;
+          } else {
+            // Purchase was initiated but failed
+            result['error'] = 'purchase_failed';
+            result['userMessage'] = 'Aankoop mislukt. Probeer het opnieuw.';
+            result['canRetry'] = true;
+            return result;
+          }
+        } catch (e) {
+          final errorStr = e.toString().toLowerCase();
+          
+          if (errorStr.contains('timeout') || errorStr.contains('payment dialog did not appear')) {
+            if (attempts < maxAttempts) {
+              await Future.delayed(Duration(seconds: attempts * 2));
+              continue;
+            }
+            result['error'] = 'timeout';
+            result['userMessage'] = 'Betaling dialoog verscheen niet. Probeer het opnieuw.';
+            result['canRetry'] = true;
+            return result;
+          } else if (errorStr.contains('network') || errorStr.contains('connection')) {
+            if (attempts < maxAttempts) {
+              await Future.delayed(Duration(seconds: attempts * 2));
+              continue;
+            }
+            result['error'] = 'network_error';
+            result['userMessage'] = 'Netwerkfout tijdens aankoop. Controleer uw verbinding.';
+            result['canRetry'] = true;
+            return result;
+          } else if (errorStr.contains('product not found')) {
+            result['error'] = 'product_not_found';
+            result['userMessage'] = 'Product niet beschikbaar. Probeer het later opnieuw.';
+            result['canRetry'] = false;
+            return result;
+          } else if (errorStr.contains('cancelled') || errorStr.contains('user cancelled')) {
+            result['error'] = 'user_cancelled';
+            result['userMessage'] = 'Aankoop geannuleerd.';
+            result['canRetry'] = true;
+            return result;
+          } else {
+            result['error'] = 'unknown_error';
+            result['userMessage'] = 'Er ging iets mis. Probeer het opnieuw.';
+            result['canRetry'] = true;
+            return result;
+          }
+        }
+      }
+      
+      result['error'] = 'max_attempts_reached';
+      result['userMessage'] = 'Aankoop mislukt na meerdere pogingen. Probeer het later opnieuw.';
+      result['canRetry'] = true;
+      return result;
+      
+    } catch (e) {
+      result['error'] = 'unexpected_error';
+      result['userMessage'] = 'Er ging iets onverwachts mis. Probeer het opnieuw.';
+      result['canRetry'] = true;
+      result['details']['exception'] = e.toString();
+      return result;
+    }
+  }
+
+  /// Get user-friendly error message for purchase errors
+  String getUserFriendlyPurchaseErrorMessage(String errorCode) {
+    switch (errorCode) {
+      case 'no_network':
+        return 'Controleer uw wifi of mobiele data en probeer het opnieuw.';
+      case 'payment_not_available':
+        return 'Betalingen zijn momenteel niet beschikbaar. Probeer het later opnieuw.';
+      case 'products_not_loaded':
+      case 'product_load_failed':
+        return 'Producten konden niet worden geladen. Controleer uw internetverbinding.';
+      case 'purchase_failed':
+        return 'Aankoop mislukt. Probeer het opnieuw.';
+      case 'timeout':
+        return 'Betaling dialoog verscheen niet. Probeer het opnieuw.';
+      case 'network_error':
+        return 'Netwerkfout tijdens aankoop. Controleer uw verbinding.';
+      case 'product_not_found':
+        return 'Product niet beschikbaar. Probeer het later opnieuw.';
+      case 'user_cancelled':
+        return 'Aankoop geannuleerd.';
+      case 'max_attempts_reached':
+        return 'Aankoop mislukt na meerdere pogingen. Probeer het later opnieuw.';
+      case 'unknown_error':
+      case 'unexpected_error':
+      default:
+        return 'Er ging iets mis. Probeer het opnieuw.';
+    }
+  }
+
+  /// Get troubleshooting steps for iOS payment issues
+  List<String> getIOSTroubleshootingSteps() {
+    return [
+      '1. Controleer of u bent ingelogd in de App Store met een geldig Apple ID',
+      '2. Controleer of uw apparaat niet in "Vraag om te kopen" modus staat',
+      '3. Controleer of Screen Time of ouderlijk toezicht in-app aankopen niet blokkeert',
+      '4. Controleer uw internetverbinding (WiFi of mobiele data)',
+      '5. Probeer de app opnieuw op te starten',
+      '6. Als het probleem aanhoudt, probeer de app te verwijderen en opnieuw te installeren via TestFlight',
+      '7. Controleer of uw Apple ID regio overeenkomt met de beschikbaarheid van de app',
+    ];
+  }
+}

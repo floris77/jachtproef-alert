@@ -50,7 +50,7 @@ class _DebugSharingPanelState extends State<DebugSharingPanel> {
     bool enrolled,
   ) {
     // Handle the enrollment response from the notification
-    print('📱 DEBUG: Received notification response for $huntTitle: ${enrolled ? "YES" : "NO"}');
+
     _handleEnrollmentResponse(enrolled);
   }
 
@@ -260,27 +260,7 @@ class _DebugSharingPanelState extends State<DebugSharingPanel> {
     // Create a test enrollment deadline (5 hours from now for testing)
     final enrollmentDeadline = DateTime.now().add(Duration(hours: 5));
 
-    print('📝 DEBUG: Sending enrollment check for:');
-    print('  Title: $huntTitle');
-    print('  Location: $huntLocation');
-    print('  Type: $huntType');
-    print('  Deadline: $enrollmentDeadline');
-    print('');
-    print('🔍 DEBUG: Raw match data:');
-    print('  match[\'title\']: ${widget.match['title']}');
-    print('  match[\'organizer\']: ${widget.match['organizer']}');
-    print('  match[\'location\']: ${widget.match['location']}');
-    print('  match[\'raw\'][\'title\']: ${widget.match['raw']?['title']}');
-    print('  match[\'raw\'][\'organizer\']: ${widget.match['raw']?['organizer']}');
-    print('  match[\'raw\'][\'location\']: ${widget.match['raw']?['location']}');
-    print('');
-    print('🧪 TEST INSTRUCTIONS:');
-    print('1️⃣ Check your notification panel for the enrollment question');
-    print('2️⃣ Tap YES or NO on the notification action buttons');
-    print('3️⃣ If YES: Enrollment button will be enabled for this match');
-    print('4️⃣ If cooldown is clear, you should get a friend sharing notification');
-    print('5️⃣ Wait 30 seconds, then try again - should NOT get friend sharing');
-    print('6️⃣ After 30+ seconds, try again - should get friend sharing again');
+
 
     // Send real push notification with action buttons
     try {
@@ -376,14 +356,14 @@ class _DebugSharingPanelState extends State<DebugSharingPanel> {
     final enrollmentDeadline = DateTime.now().add(Duration(hours: 5));
     final matchKey = _getMatchKey();
 
-    print('🔍 DEBUG: User ${enrolled ? "confirmed enrollment" : "confirmed miss"} for $huntTitle');
+
 
     // NEW: Save enrollment confirmation to enable button
     if (enrolled) {
       await _saveEnrollmentConfirmation(matchKey);
       
       // IMPORTANT: Also save to Firebase so it shows up in agenda
-      await _saveToFirebaseMatchActions();
+      await _saveToFirebaseMatchActions(isRegistered: true);
       
       // Trigger parent page refresh to update button state
       if (widget.onStateChanged != null) {
@@ -435,7 +415,7 @@ class _DebugSharingPanelState extends State<DebugSharingPanel> {
           }
         }
       } catch (e) {
-        print('❌ DEBUG: Error parsing enrollment date: $e');
+
       }
     }
     
@@ -445,16 +425,19 @@ class _DebugSharingPanelState extends State<DebugSharingPanel> {
       matchLocation: matchLocation,
       enrollmentDate: enrollmentDate,
     );
-    print('💾 DEBUG: Saved enrollment confirmation for match: $matchKey');
-    if (enrollmentDate != null) {
-      print('📅 DEBUG: Will schedule 15-minute post-enrollment notification for: $enrollmentDate');
-    }
+
   }
 
-  Future<void> _saveToFirebaseMatchActions() async {
+  Future<void> _saveToFirebaseMatchActions({
+    required bool isRegistered,
+    bool? notificationsOn,
+    bool? inAgenda,
+    bool? hasNotes,
+    bool? shared,
+  }) async {
     final user = context.read<AuthService>().currentUser;
     if (user == null) {
-      print('❌ DEBUG: No user logged in, cannot save to Firebase');
+
       return;
     }
     
@@ -466,14 +449,16 @@ class _DebugSharingPanelState extends State<DebugSharingPanel> {
           .collection('match_actions')
           .doc(matchKey)
           .set({
-            'isRegistered': true,  // This is what makes it show up in agenda
-            'notificationsOn': false,
-            'inAgenda': false,
+            'isRegistered': isRegistered,  // This is what makes it show up in agenda
+            'notificationsOn': notificationsOn,
+            'inAgenda': inAgenda,
+            'hasNotes': hasNotes,
+            'shared': shared,
             'timestamp': FieldValue.serverTimestamp(),
           });
-      print('💾 DEBUG: Saved to Firebase - match will now appear in agenda');
+
     } catch (e) {
-      print('❌ DEBUG: Error saving to Firebase: $e');
+      
     }
   }
 

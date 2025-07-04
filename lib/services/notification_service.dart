@@ -55,31 +55,52 @@ class NotificationService {
   }
 
   static Future<void> requestPermissions() async {
-    // Use permission_handler for consistent cross-platform permission handling
-    final status = await Permission.notification.request();
-    
-    if (status.isGranted) {
-      print('✅ Notification permissions granted');
-    } else if (status.isDenied) {
-      print('❌ Notification permissions denied');
-    } else if (status.isPermanentlyDenied) {
-      print('⚠️ Notification permissions permanently denied');
+    try {
+      // Use permission_handler for consistent cross-platform permission handling
+      final status = await Permission.notification.request().timeout(
+        const Duration(seconds: 8),
+        onTimeout: () {
+          print('⚠️ Permission request timed out');
+          return PermissionStatus.denied;
+        },
+      );
+      
+      if (status.isGranted) {
+        print('✅ Notification permissions granted');
+      } else if (status.isDenied) {
+        print('❌ Notification permissions denied');
+      } else if (status.isPermanentlyDenied) {
+        print('⚠️ Notification permissions permanently denied');
+      }
+
+      // Also initialize platform-specific settings with timeouts
+      try {
+        await _notifications
+            .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin>()
+            ?.requestNotificationsPermission()
+            .timeout(const Duration(seconds: 3));
+      } catch (e) {
+        print('⚠️ Android notification permission request failed: $e');
+      }
+
+      try {
+        await _notifications
+            .resolvePlatformSpecificImplementation<
+                IOSFlutterLocalNotificationsPlugin>()
+            ?.requestPermissions(
+              alert: true,
+              badge: true,
+              sound: true,
+            )
+            .timeout(const Duration(seconds: 3));
+      } catch (e) {
+        print('⚠️ iOS notification permission request failed: $e');
+      }
+    } catch (e) {
+      print('❌ Error requesting notification permissions: $e');
+      rethrow;
     }
-
-    // Also initialize platform-specific settings
-    await _notifications
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestNotificationsPermission();
-
-    await _notifications
-        .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-          alert: true,
-          badge: true,
-          sound: true,
-        );
   }
 
   static Future<void> showNotification({
@@ -122,35 +143,48 @@ class NotificationService {
     required DateTime scheduledTime,
     String? payload,
   }) async {
-    const AndroidNotificationDetails androidDetails =
-        AndroidNotificationDetails(
-      'jachtproef_alerts',
-      'Jachtproef Alerts',
-      channelDescription: 'Scheduled notifications for hunting exam alerts',
-      importance: Importance.high,
-      priority: Priority.high,
-    );
+    try {
+      const AndroidNotificationDetails androidDetails =
+          AndroidNotificationDetails(
+        'jachtproef_alerts',
+        'Jachtproef Alerts',
+        channelDescription: 'Scheduled notifications for hunting exam alerts',
+        importance: Importance.high,
+        priority: Priority.high,
+      );
 
-    const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
+      const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      );
 
-    final NotificationDetails details = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
+      final NotificationDetails details = NotificationDetails(
+        android: androidDetails,
+        iOS: iosDetails,
+      );
 
-    await _notifications.zonedSchedule(
-      id,
-      title,
-      body,
-      tz.TZDateTime.from(scheduledTime, tz.local),
-      details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      payload: payload,
-    );
+      await _notifications.zonedSchedule(
+        id,
+        title,
+        body,
+        tz.TZDateTime.from(scheduledTime, tz.local),
+        details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        payload: payload,
+      ).timeout(
+        const Duration(seconds: 5),
+        onTimeout: () {
+          print('⚠️ Notification scheduling timed out for ID: $id');
+          throw Exception('Notification scheduling timed out');
+        },
+      );
+      
+      print('✅ Notification scheduled successfully for ID: $id');
+    } catch (e) {
+      print('❌ Error scheduling notification for ID $id: $e');
+      rethrow;
+    }
   }
 
   static Future<void> cancelNotification(int id) async {

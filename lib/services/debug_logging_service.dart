@@ -40,12 +40,7 @@ class DebugLoggingService {
 
   /// Log device information
   void _logDeviceInfo() {
-    log('📱 DEVICE INFO:', level: 'INFO');
-    log('   OS: ${Platform.operatingSystem}', level: 'INFO');
-    log('   Version: ${Platform.operatingSystemVersion}', level: 'INFO');
-    log('   Local hostname: ${Platform.localHostname}', level: 'INFO');
-    log('   Number of processors: ${Platform.numberOfProcessors}', level: 'INFO');
-    log('   Environment variables: ${Platform.environment.length} variables', level: 'INFO');
+    log('📱 Platform: ${Platform.operatingSystem} ${Platform.operatingSystemVersion}', level: 'INFO');
   }
 
   /// Main logging method

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'proeven_main_page.dart';
-
-const Color kMainColor = Color(0xFF535B22);
+import '../utils/constants.dart';
 
 class HelpScreen extends StatelessWidget {
   const HelpScreen({Key? key}) : super(key: key);

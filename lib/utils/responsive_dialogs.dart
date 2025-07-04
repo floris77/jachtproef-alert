@@ -359,4 +359,50 @@ class ResponsiveDialogs {
       ),
     ) ?? false;
   }
+
+  /// Shows a responsive error dialog
+  static Future<void> showErrorDialog({
+    required BuildContext context,
+    required String title,
+    required String message,
+    String buttonText = 'OK',
+  }) async {
+    await showDialog(
+      context: context,
+      builder: (context) => createResponsiveAlertDialog(
+        context: context,
+        title: createResponsiveDialogTitle(
+          context: context,
+          title: title,
+          icon: Icons.error,
+          iconColor: Colors.red,
+        ),
+        content: Text(
+          message,
+          style: TextStyle(
+            fontSize: ResponsiveHelper.getBodyFontSize(context),
+            height: 1.4,
+          ),
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              padding: ResponsiveHelper.getButtonPadding(context),
+            ),
+            child: Text(
+              buttonText,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: ResponsiveHelper.getCaptionFontSize(context),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 } 

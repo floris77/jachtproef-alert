@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../services/debug_logging_service.dart';
 import '../utils/constants.dart';
 import '../services/auth_service.dart';
+import '../services/payment_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DebugSettingsScreen extends StatefulWidget {
@@ -269,6 +270,74 @@ class _DebugSettingsScreenState extends State<DebugSettingsScreen> {
                       label: const Text('Force Sign Out'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red[600],
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // Payment Cleanup Button
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        try {
+                          await PaymentService().cleanupOldDormantPayments();
+                          
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Payment cleanup completed! This should resolve old/dormant payment issues.'),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 3),
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Error during payment cleanup: $e'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        }
+                      },
+                      icon: const Icon(Icons.cleaning_services, color: Colors.white),
+                      label: const Text('Clean Old/Dormant Payments'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.purple[700],
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    // Check Stuck Purchase Completers Button
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        try {
+                          await PaymentService().checkForStuckPurchaseCompleters();
+                          
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Stuck purchase completers check completed!'),
+                                backgroundColor: Colors.blue,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Error checking stuck completers: $e'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        }
+                      },
+                      icon: const Icon(Icons.search, color: Colors.white),
+                      label: const Text('Check Stuck Purchase Completers'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue[700],
                         foregroundColor: Colors.white,
                       ),
                     ),

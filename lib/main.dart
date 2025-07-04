@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'screens/proeven_main_page.dart';
 import 'screens/quick_setup_screen.dart';
 import 'screens/welcome_trial_screen.dart';
@@ -27,9 +28,13 @@ import 'dart:async';
 import 'package:jachtproef_alert/screens/home_screen.dart';
 import 'package:jachtproef_alert/screens/login_screen.dart';
 import 'package:jachtproef_alert/services/performance_monitor.dart';
+import 'services/match_actions_provider.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
+import 'utils/constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('nl_NL', null);
 
   // Start performance monitoring early
   PerformanceMonitor().startMonitoring();
@@ -39,9 +44,9 @@ void main() async {
   await DebugLoggingService().initialize();
   DebugLoggingService().info('🚀 App starting up...', tag: 'STARTUP');
 
-  // Reset the navigation flag on app startup to prevent incorrect navigation.
-  PaymentService().clearNavigationFlag();
-  DebugLoggingService().info('🧹 Navigation flag cleared', tag: 'STARTUP');
+  // Don't call PaymentService before initialization - this could cause issues
+  // PaymentService().clearNavigationFlag();
+  DebugLoggingService().info('🧹 Skipping early PaymentService call', tag: 'STARTUP');
 
   // Set system UI overlay style for edge-to-edge support
   SystemChrome.setSystemUIOverlayStyle(
@@ -82,11 +87,36 @@ void main() async {
     _initializeNotificationService(),
   ]);
 
+  // CRITICAL: Do NOT call _clearDeviceStateOnStartup() here
+  // This method calls PaymentService().cleanupOldDormantPayments() which
+  // completely resets the PaymentService state (_isAvailable = false, _inAppPurchase = null)
+  // after it was successfully initialized, breaking the payment flow.
+  // 
+  // The cleanup is only needed for debugging/testing, not normal app startup.
+  // If cleanup is needed, it should be done manually via debug settings.
+  DebugLoggingService().info('🚫 Skipping device state cleanup to preserve PaymentService initialization', tag: 'STARTUP');
+
   DebugLoggingService().info('🎉 All services initialized, starting app...', tag: 'STARTUP');
   PerformanceMonitor().endTrace('app_startup');
+  
+  // CRITICAL: Use the SAME PaymentService instance that was initialized
+  // PaymentService uses singleton pattern, so this gets the initialized instance
+  // ChangeNotifierProvider.value() ensures the widget tree uses this instance
+  final paymentService = PaymentService();
+  paymentService.clearNavigationFlag();
+  DebugLoggingService().info('✅ Using initialized PaymentService instance in Provider', tag: 'STARTUP');
+  
   runApp(
-    ChangeNotifierProvider<PaymentService>.value(
-      value: PaymentService(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) {
+        final provider = MatchActionsProvider();
+        provider.loadAllActions();
+        return provider;
+        }),
+        ChangeNotifierProvider.value(value: paymentService),
+        Provider<AuthService>(create: (_) => AuthService()),
+      ],
       child: const MyApp(),
     ),
   );
@@ -114,9 +144,10 @@ Future<void> _initializePaymentService() async {
     await PaymentService().initialize();
     DebugLoggingService().info('✅ Payment Service initialized successfully', tag: 'PAYMENT');
   } catch (e) {
-    DebugLoggingService().error('❌ Payment Service initialization warning: $e', tag: 'PAYMENT');
-    print('Payment Service initialization warning: $e');
-    // Continue even if Payment Service fails to initialize
+    DebugLoggingService().error('❌ Payment Service initialization FAILED: $e', tag: 'PAYMENT');
+    print('❌ Payment Service initialization FAILED: $e');
+    // Don't continue silently - this is critical for the app to work
+    rethrow;
   }
 }
 
@@ -144,7 +175,31 @@ Future<void> _initializeNotificationService() async {
   }
 }
 
-const Color kMainColor = Color(0xFF535B22);
+/// Clear device state on app startup for clean testing
+/// 
+/// ⚠️ WARNING: This method is DANGEROUS and should NOT be called during normal startup!
+/// It calls cleanupOldDormantPayments() which completely resets the PaymentService state.
+/// 
+/// This was the root cause of the payment dialog not appearing issue:
+/// 1. PaymentService initializes successfully (_isAvailable = true, products loaded)
+/// 2. This method calls cleanupOldDormantPayments()
+/// 3. PaymentService state is reset (_isAvailable = false, _inAppPurchase = null)
+/// 4. Payment flow fails with "payment_not_available" error
+/// 
+/// Use only for debugging/testing, never in production startup.
+Future<void> _clearDeviceStateOnStartup() async {
+  try {
+    print('🔄 Clearing device state on startup...');
+    print('⚠️ WARNING: This will break PaymentService! Only use for debugging!');
+    
+    // Enhanced cleanup for old/dormant payments (especially important for TestFlight)
+    await PaymentService().cleanupOldDormantPayments();
+    
+    print('✅ Device state cleared on startup');
+  } catch (e) {
+    print('⚠️ Could not clear device state on startup: $e');
+  }
+}
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -163,9 +218,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Provider<AuthService>(
-      create: (_) => AuthService(),
-      child: DeepLinkListener(
+    return DeepLinkListener(
         child: MaterialApp(
         title: 'JachtProef Alert',
         debugShowCheckedModeBanner: false,
@@ -212,7 +265,6 @@ class _MyAppState extends State<MyApp> {
           fontFamily: 'Arial',
         ),
         home: const AuthWrapper(),
-        ),
       ),
     );
   }

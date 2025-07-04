@@ -27,8 +27,7 @@ import 'match_details_page.dart';
 import '../services/match_service.dart';
 import 'mijn_agenda_page.dart';
 import '../widgets/proef_card.dart';
-
-const Color kMainColor = Color(0xFF535B22);
+import '../utils/constants.dart';
 
 extension StringExtension on String {
   String capitalizeFirst() {
@@ -916,25 +915,7 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                   }
                   final matches = snapshot.data ?? [];
                   final filteredMatches = _getFilteredMatches(matches);
-                  // DEBUG: Print first 10 regText values (remove after debugging)
-                  final debugRegTexts = matches.take(10).map((match) {
-                    String regText = '';
-                    if (match['registration'] != null && match['registration']['text'] != null) {
-                      regText = match['registration']['text'].toString();
-                    } else if (match['regText'] != null) {
-                      regText = match['regText'].toString();
-                    } else if (match['registration_text'] != null) {
-                      regText = match['registration_text'].toString();
-                    } else if (match['raw'] != null && match['raw']['registration_text'] != null) {
-                      regText = match['raw']['registration_text'].toString();
-                    }
-                    return regText;
-                  }).toList();
-                  print('[REGTEXT_DEBUG] First 10 regText values: $debugRegTexts');
-                  // DEBUG: Print first match object (remove after debugging)
-                  if (matches.isNotEmpty) {
-                    print('[MATCH_OBJECT_DEBUG] First match object: \\n${matches.first}');
-                  }
+
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -1083,8 +1064,6 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
         onbekend.add(match);
       }
     }
-    // DEBUG: Print counts for each category (remove after debugging)
-    print('[MATCH_FILTER_DEBUG] beschikbaar: ${beschikbaar.length}, binnenkort: ${binnenkort.length}, gesloten: ${gesloten.length}, onbekend: ${onbekend.length}, total input: ${matches.length}');
 
     // Get matches for selected tab
     List<Map<String, dynamic>> tabMatches;

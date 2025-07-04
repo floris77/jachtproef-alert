@@ -53,10 +53,41 @@ class PermissionService {
     return false;
   }
   
+  static Future<bool> checkCalendarPermission() async {
+    // Check if calendar permission is available
+    // Note: add_2_calendar handles the actual permission request,
+    // but we can check if the device supports calendar access
+    try {
+      // For iOS, we can check if calendar access is available
+      if (Platform.isIOS) {
+        // iOS calendar access is typically available by default
+        // The actual permission request happens when adding events
+        return true;
+      } else if (Platform.isAndroid) {
+        // Android calendar access is typically available by default
+        // The actual permission request happens when adding events
+        return true;
+      }
+      return true;
+    } catch (e) {
+      print('❌ Error checking calendar permission: $e');
+      return false;
+    }
+  }
+  
   static Future<bool> requestCalendarPermission(BuildContext context) async {
-    // For calendar, we mainly need to inform the user about the functionality
-    // since add_2_calendar handles the actual permission request
-    
+    // First check if calendar access is available
+    final hasCalendarAccess = await checkCalendarPermission();
+    if (!hasCalendarAccess) {
+      await ResponsiveDialogs.showErrorDialog(
+        context: context,
+        title: 'Agenda Niet Beschikbaar',
+        message: 'Je apparaat ondersteunt geen agenda toegang of de agenda app is niet beschikbaar.',
+      );
+      return false;
+    }
+
+    // Show explanation dialog about calendar functionality
     final shouldProceed = await ResponsiveDialogs.showPermissionDialog(
       context: context,
       title: 'Agenda Toegang',
