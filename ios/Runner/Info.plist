@@ -96,5 +96,24 @@
 		<string>_dartobservatory._tcp</string>
 		<string>_dartobservatory._udp</string>
 	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>autofill</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>https</string>
+			</array>
+		</dict>
+	</array>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>webcredentials:nordrobe.com</string>
+	</array>
+	<key>UITextInputPasswordRules</key>
+	<string>minlength: 8; maxlength: 64; required: lower; required: upper; required: digit; required: [-];</string>
 </dict>
 </plist>

@@ -8,12 +8,13 @@ import 'dart:convert';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'payment_service.dart';
 import 'dart:io';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late SharedPreferences _prefs;
-
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
   // Add caching for user data
   Map<String, dynamic>? _cachedUserData;
@@ -28,8 +29,6 @@ class AuthService {
   Future<void> _initPrefs() async {
     _prefs = await SharedPreferences.getInstance();
   }
-
-
 
   // Get current user
   User? get currentUser => _auth.currentUser;
@@ -66,10 +65,14 @@ class AuthService {
   Future<UserCredential> signInWithEmailAndPassword(String email, String password) async {
     try {
       // First, try to sign in normally
-      return await _auth.signInWithEmailAndPassword(
+      final result = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      // Save credentials after successful login
+      print('🔐 [AUTO-LOGIN] Saving credentials after successful login');
+      await saveCredentials(email, password);
+      return result;
     } on FirebaseAuthException catch (e) {
       // If user doesn't exist, automatically create the account
       if (e.code == 'user-not-found') {
@@ -105,6 +108,10 @@ class AuthService {
 
           // Send welcome email (non-blocking - don't fail registration if email fails)
           _sendWelcomeEmailAsync(email, defaultName);
+
+          // Save credentials after auto-creation
+          print('🔐 [AUTO-CREATION] Saving credentials after successful auto-creation');
+          await saveCredentials(email, password);
 
           print('Account automatically created successfully for: $email');
           return result;
@@ -149,7 +156,7 @@ class AuthService {
         throw Exception('Geen internetverbinding. Controleer uw netwerk en probeer opnieuw.');
       }
       try {
-        UserCredential result = await _auth.createUserWithEmailAndPassword(
+        final result = await _auth.createUserWithEmailAndPassword(
           email: email,
           password: password,
         );
@@ -165,6 +172,9 @@ class AuthService {
           },
         });
         _sendWelcomeEmailAsync(email, name);
+        // Save credentials after registration
+        print('🔐 [REGISTRATION] Saving credentials after successful account creation');
+        await saveCredentials(email, password);
         return result;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'network-request-failed' && attempts < maxAttempts) {
@@ -192,10 +202,14 @@ class AuthService {
         throw Exception('Geen internetverbinding. Controleer uw netwerk en probeer opnieuw.');
       }
       try {
-        return await _auth.signInWithEmailAndPassword(
+        final result = await _auth.signInWithEmailAndPassword(
           email: email,
           password: password,
         );
+        // Save credentials after successful login
+        print('🔐 [LOGIN] Saving credentials after successful login');
+        await saveCredentials(email, password);
+        return result;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'network-request-failed' && attempts < maxAttempts) {
           await Future.delayed(const Duration(seconds: 2));
@@ -254,6 +268,9 @@ class AuthService {
       // Finally, sign out from Firebase Auth
       await _auth.signOut();
       print('🔥 Firebase Auth sign out completed');
+      
+      // Clear saved credentials on logout
+      await clearSavedCredentials();
       
       print('✅ Comprehensive logout cleanup completed');
     } catch (e) {
@@ -451,6 +468,9 @@ class AuthService {
 
       // Delete the user account
       await user.delete();
+
+      // Clear saved credentials on account deletion
+      await clearSavedCredentials();
     } on FirebaseAuthException catch (e) {
       throw Exception(_getErrorMessage(e));
     } catch (e) {
@@ -576,5 +596,43 @@ class AuthService {
       'firebaseUser': _auth.currentUser?.uid,
       'prefsReady': _prefs != null,
     };
+  }
+
+  // Save credentials securely
+  Future<void> saveCredentials(String email, String password) async {
+    print('🔐 [CREDENTIALS] Saving credentials for email: $email');
+    await _secureStorage.write(key: 'user_password', value: password);
+    await _prefs.setString('user_email', email);
+    print('✅ [CREDENTIALS] Credentials saved successfully');
+  }
+
+  // Retrieve saved credentials
+  Future<Map<String, String?>> getSavedCredentials() async {
+    final email = _prefs.getString('user_email');
+    final password = await _secureStorage.read(key: 'user_password');
+    print('🔐 [CREDENTIALS] Retrieved saved credentials - Email: ${email != null ? 'present' : 'null'}, Password: ${password != null ? 'present' : 'null'}');
+    return {'email': email, 'password': password};
+  }
+
+  // Clear saved credentials
+  Future<void> clearSavedCredentials() async {
+    print('🔐 [CREDENTIALS] Clearing saved credentials');
+    await _secureStorage.delete(key: 'user_password');
+    await _prefs.remove('user_email');
+    print('✅ [CREDENTIALS] Credentials cleared successfully');
+  }
+
+  // Mark Quick Setup as completed
+  Future<void> markQuickSetupCompleted() async {
+    try {
+      final user = currentUser;
+      if (user == null) return;
+      await _firestore.collection('users').doc(user.uid).set({
+        'quickSetupCompleted': true,
+      }, SetOptions(merge: true));
+      print('✅ [DEBUG] markQuickSetupCompleted: quickSetupCompleted set for user=${user.uid}');
+    } catch (e) {
+      print('❌ [DEBUG] markQuickSetupCompleted: Error: $e');
+    }
   }
 } 

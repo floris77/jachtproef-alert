@@ -10,6 +10,7 @@ import 'proeven_main_page.dart';
 import '../utils/responsive_helper.dart';
 import '../utils/responsive_dialogs.dart';
 import '../utils/constants.dart';
+import 'package:flutter/cupertino.dart';
 
 class QuickSetupScreen extends StatefulWidget {
   const QuickSetupScreen({super.key});
@@ -132,52 +133,32 @@ class _QuickSetupScreenState extends State<QuickSetupScreen> {
   }
 
   void _showPermissionDialog() {
-    showDialog(
+    showCupertinoDialog(
       context: context,
       builder: (BuildContext context) {
-        return ResponsiveDialogs.createResponsiveAlertDialog(
-          context: context,
-          title: Text(
+        return CupertinoAlertDialog(
+          title: const Text(
             'Meldingen Inschakelen',
-            style: TextStyle(
-              fontSize: ResponsiveHelper.getSubtitleFontSize(context),
-              fontWeight: FontWeight.bold,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
-          ),
-          content: Text(
+          content: const Padding(
+            padding: EdgeInsets.only(top: 8.0),
+            child: Text(
             'Meldingen zijn permanent uitgeschakeld. Om meldingen in te schakelen, ga naar je apparaat instellingen en schakel meldingen in voor JachtProef Alert.',
-            style: TextStyle(
-              fontSize: ResponsiveHelper.getBodyFontSize(context),
-              height: 1.4,
+              style: TextStyle(fontSize: 14),
             ),
           ),
           actions: [
-            TextButton(
+            CupertinoDialogAction(
+              child: const Text('Annuleren'),
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                'Annuleren',
-                style: TextStyle(
-                  fontSize: ResponsiveHelper.getCaptionFontSize(context),
                 ),
-              ),
-            ),
-            ElevatedButton(
+            CupertinoDialogAction(
+              child: const Text('Naar Instellingen'),
               onPressed: () {
                 Navigator.of(context).pop();
                 _openAppSettings();
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: kMainColor,
-                foregroundColor: Colors.white,
-                padding: ResponsiveHelper.getButtonPadding(context),
-              ),
-              child: Text(
-                'Naar Instellingen',
-                style: TextStyle(
-                  fontSize: ResponsiveHelper.getCaptionFontSize(context),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
             ),
           ],
         );
@@ -1092,6 +1073,8 @@ class _QuickSetupScreenState extends State<QuickSetupScreen> {
       if (emailNotifications) {
         await EmailNotificationService.setEmailNotificationsEnabled(true);
       }
+      // Mark Quick Setup as completed in Firestore
+      await context.read<AuthService>().markQuickSetupCompleted();
     } catch (e) {
       // Continue even if Firebase update fails
       print('Failed to save user preferences: $e');

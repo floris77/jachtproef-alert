@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../utils/responsive_dialogs.dart';
 import 'dart:io';
@@ -14,17 +15,49 @@ class PermissionService {
     
     if (status.isDenied) {
       // Show explanation dialog first
-      final shouldRequest = await ResponsiveDialogs.showPermissionDialog(
+      final shouldRequest = await showCupertinoDialog<bool>(
         context: context,
-        title: 'Meldingen Toestaan',
-        message: 'Om je op de hoogte te houden van belangrijke proef updates, heeft JachtProef Alert toegang nodig tot meldingen.',
-        icon: Icons.notifications,
-        benefits: [
-          'Ontvang meldingen wanneer inschrijvingen openen',
-          'Krijg herinneringen voor aankomende proeven',
-          'Mis nooit meer een belangrijke deadline',
-        ],
-      );
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: const Text(
+              'Meldingen Toestaan',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+            content: const Padding(
+              padding: EdgeInsets.only(top: 8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Om je op de hoogte te houden van belangrijke proef updates, heeft JachtProef Alert toegang nodig tot meldingen.',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  SizedBox(height: 12),
+                  Text(
+                    'Voordelen:',
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(height: 6),
+                  Text('• Ontvang meldingen wanneer inschrijvingen openen', style: TextStyle(fontSize: 12)),
+                  Text('• Krijg herinneringen voor aankomende proeven', style: TextStyle(fontSize: 12)),
+                  Text('• Mis nooit meer een belangrijke deadline', style: TextStyle(fontSize: 12)),
+                ],
+              ),
+            ),
+            actions: [
+              CupertinoDialogAction(
+                child: const Text('Niet Nu'),
+                onPressed: () => Navigator.of(context).pop(false),
+              ),
+              CupertinoDialogAction(
+                child: const Text('Toestaan'),
+                onPressed: () => Navigator.of(context).pop(true),
+              ),
+            ],
+          );
+        },
+      ) ?? false;
       
       if (!shouldRequest) return false;
       
@@ -35,17 +68,52 @@ class PermissionService {
     
     if (status.isPermanentlyDenied) {
       // Show settings dialog
-      await ResponsiveDialogs.showSettingsDialog(
+      await showCupertinoDialog(
         context: context,
-        title: 'Meldingen Geblokkeerd',
-        message: 'Meldingen zijn uitgeschakeld voor JachtProef Alert. Ga naar Instellingen om deze in te schakelen.',
-        steps: [
-          'Tap "Ga naar Instellingen"',
-          'Zoek "JachtProef Alert"',
-          'Schakel meldingen in',
-          'Kom terug naar de app',
-        ],
-        onSettingsPressed: () => openAppSettings(),
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: const Text(
+              'Meldingen Geblokkeerd',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+            content: const Padding(
+              padding: EdgeInsets.only(top: 8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Meldingen zijn uitgeschakeld voor JachtProef Alert. Ga naar Instellingen om deze in te schakelen.',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  SizedBox(height: 12),
+                  Text(
+                    'Stappen:',
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(height: 6),
+                  Text('1. Tap "Ga naar Instellingen"', style: TextStyle(fontSize: 12)),
+                  Text('2. Zoek "JachtProef Alert"', style: TextStyle(fontSize: 12)),
+                  Text('3. Schakel meldingen in', style: TextStyle(fontSize: 12)),
+                  Text('4. Kom terug naar de app', style: TextStyle(fontSize: 12)),
+                ],
+              ),
+            ),
+            actions: [
+              CupertinoDialogAction(
+                child: const Text('Annuleren'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              CupertinoDialogAction(
+                child: const Text('Ga naar Instellingen'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  openAppSettings();
+                },
+              ),
+            ],
+          );
+        },
       );
       return false;
     }
@@ -79,26 +147,75 @@ class PermissionService {
     // First check if calendar access is available
     final hasCalendarAccess = await checkCalendarPermission();
     if (!hasCalendarAccess) {
-      await ResponsiveDialogs.showErrorDialog(
+      await showCupertinoDialog(
         context: context,
-        title: 'Agenda Niet Beschikbaar',
-        message: 'Je apparaat ondersteunt geen agenda toegang of de agenda app is niet beschikbaar.',
+        builder: (context) => CupertinoAlertDialog(
+          title: const Text(
+            'Agenda Niet Beschikbaar',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          content: const Padding(
+            padding: EdgeInsets.only(top: 8.0),
+            child: Text(
+              'Je apparaat ondersteunt geen agenda toegang of de agenda app is niet beschikbaar.',
+              style: TextStyle(fontSize: 14),
+            ),
+          ),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text('OK'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
       );
       return false;
     }
 
     // Show explanation dialog about calendar functionality
-    final shouldProceed = await ResponsiveDialogs.showPermissionDialog(
+    final shouldProceed = await showCupertinoDialog<bool>(
       context: context,
-      title: 'Agenda Toegang',
-      message: 'JachtProef Alert wil proef datums toevoegen aan je agenda zodat je ze nooit vergeet.',
-      icon: Icons.calendar_today,
-      benefits: [
-        'Automatisch proef datums in je agenda',
-        'Inschrijf deadlines worden toegevoegd',
-        'Synchroniseert met je standaard agenda app',
-      ],
-    );
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: const Text(
+            'Agenda Toegang',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          content: const Padding(
+            padding: EdgeInsets.only(top: 8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'JachtProef Alert wil proef datums toevoegen aan je agenda zodat je ze nooit vergeet.',
+                  style: TextStyle(fontSize: 14),
+                ),
+                SizedBox(height: 12),
+                Text(
+                  'Voordelen:',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                ),
+                SizedBox(height: 6),
+                Text('• Automatisch proef datums in je agenda', style: TextStyle(fontSize: 12)),
+                Text('• Inschrijf deadlines worden toegevoegd', style: TextStyle(fontSize: 12)),
+                Text('• Synchroniseert met je standaard agenda app', style: TextStyle(fontSize: 12)),
+              ],
+            ),
+          ),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text('Niet Nu'),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            CupertinoDialogAction(
+              child: const Text('Toestaan'),
+              onPressed: () => Navigator.of(context).pop(true),
+            ),
+          ],
+        );
+      },
+    ) ?? false;
     
     return shouldProceed;
   }

@@ -26,7 +26,6 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
     super.initState();
     LastPageManager.setLastPage('/plan-selection');
   }
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -415,11 +414,11 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
                                   const SizedBox(width: 8),
                                 ],
                                 Text(
-                                  _selectedPlan == null ? 'Kies een abonnement' : 'Start Gratis Proefperiode',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              _selectedPlan == null ? 'Kies een abonnement' : 'Start Gratis Proefperiode',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                                 ),
                               ],
                             ),
@@ -633,13 +632,13 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
           if (errorMessage.contains('In-app purchases not available on ios')) {
             _showIOSPaymentTroubleshootingDialog();
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Fout bij herstellen aankopen: $errorMessage'),
-                backgroundColor: Colors.red,
-                duration: const Duration(seconds: 5),
-              ),
-            );
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Fout bij herstellen aankopen: $errorMessage'),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 5),
+            ),
+          );
           }
         }
       }
@@ -697,25 +696,26 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Diagnose Resultaten'),
-            content: SingleChildScrollView(
-              child: Column(
+            title: const Text(
+              'Diagnose Resultaten',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+            content: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Platform: ${diagnostics['platform'] ?? 'Onbekend'}'),
-                  Text('Netwerk: ${diagnostics['networkConnectivity'] == true ? '✅ Verbonden' : '❌ Niet verbonden'}'),
-                  Text('Payment Service: ${diagnostics['paymentServiceAvailable'] == true ? '✅ Beschikbaar' : '❌ Niet beschikbaar'}'),
-                  Text('Producten geladen: ${diagnostics['productsLoaded'] ?? 0}'),
+                Text('Platform: ${diagnostics['platform'] ?? 'Onbekend'}', style: const TextStyle(fontSize: 13)),
+                Text('Netwerk: ${diagnostics['networkConnectivity'] == true ? '✅ Verbonden' : '❌ Niet verbonden'}', style: const TextStyle(fontSize: 13)),
+                Text('Payment Service: ${diagnostics['paymentServiceAvailable'] == true ? '✅ Beschikbaar' : '❌ Niet beschikbaar'}', style: const TextStyle(fontSize: 13)),
+                Text('Producten geladen: ${diagnostics['productsLoaded'] ?? 0}', style: const TextStyle(fontSize: 13)),
                   const SizedBox(height: 8),
-                  const Text('Mogelijke oplossingen:', style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text('Mogelijke oplossingen:', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
                   const SizedBox(height: 4),
-                  const Text('• Controleer je internetverbinding'),
-                  const Text('• Zorg dat je ingelogd bent met het juiste Apple ID'),
-                  const Text('• Probeer de app opnieuw op te starten'),
-                  const Text('• Neem contact op met support als het probleem aanhoudt'),
+                const Text('• Controleer je internetverbinding', style: TextStyle(fontSize: 12)),
+                const Text('• Zorg dat je ingelogd bent met het juiste Apple ID', style: TextStyle(fontSize: 12)),
+                const Text('• Probeer de app opnieuw op te starten', style: TextStyle(fontSize: 12)),
+                const Text('• Neem contact op met support als het probleem aanhoudt', style: TextStyle(fontSize: 12)),
                 ],
-              ),
             ),
             actions: [
               TextButton(
@@ -792,37 +792,38 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Betalingen Niet Beschikbaar'),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'In-app aankopen zijn momenteel niet beschikbaar op uw apparaat. Dit kan verschillende oorzaken hebben:',
-                style: TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 16),
-              ..._paymentService.getIOSTroubleshootingSteps().map((step) => 
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(
-                    step,
-                    style: const TextStyle(fontSize: 14),
-                  ),
+        title: const Text(
+          'Betalingen Niet Beschikbaar',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'In-app aankopen zijn momenteel niet beschikbaar op uw apparaat.',
+              style: TextStyle(fontSize: 14),
+            ),
+            const SizedBox(height: 12),
+            ..._paymentService.getIOSTroubleshootingSteps().map((step) => 
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Text(
+                  '• $step',
+                  style: const TextStyle(fontSize: 13),
                 ),
               ),
-              const SizedBox(height: 16),
-              const Text(
-                'Als het probleem aanhoudt, probeer dan:',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              const Text('• De app te verwijderen en opnieuw te installeren via TestFlight'),
-              const Text('• Uw apparaat opnieuw op te starten'),
-              const Text('• Contact op te nemen met support'),
-            ],
-          ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Als het probleem aanhoudt:',
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 6),
+            const Text('• App verwijderen en opnieuw installeren via TestFlight', style: TextStyle(fontSize: 13)),
+            const Text('• Apparaat opnieuw opstarten', style: TextStyle(fontSize: 13)),
+            const Text('• Contact opnemen met support', style: TextStyle(fontSize: 13)),
+          ],
         ),
         actions: [
           TextButton(

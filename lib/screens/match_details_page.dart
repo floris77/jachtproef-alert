@@ -720,10 +720,16 @@ Gedeeld via JachtProef Alert 📱''';
       context: context,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
-          title: Text(title),
+          title: Text(
+            title,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
           content: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(message),
+            padding: const EdgeInsets.only(top: 6.0),
+            child: Text(
+              message,
+              style: const TextStyle(fontSize: 14),
+            ),
           ),
           actions: [
             CupertinoDialogAction(
@@ -743,13 +749,17 @@ Gedeeld via JachtProef Alert 📱''';
       context: context,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
-          title: Text('Agenda Status'),
+          title: const Text(
+            'Agenda Status',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
           content: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
+            padding: const EdgeInsets.only(top: 6.0),
             child: Text(
               inAgenda 
                 ? 'Deze proef is gemarkeerd als "in agenda". Als de proef niet in je agenda app staat, kun je de status hier aanpassen.'
-                : 'Deze proef is niet gemarkeerd als "in agenda". Als de proef wel in je agenda app staat, kun je de status hier aanpassen.'
+                : 'Deze proef is niet gemarkeerd als "in agenda". Als de proef wel in je agenda app staat, kun je de status hier aanpassen.',
+              style: const TextStyle(fontSize: 14),
             ),
           ),
           actions: [

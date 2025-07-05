@@ -159,7 +159,7 @@ class PaymentService extends ChangeNotifier {
       print('🔍 Initialize: Already available, skipping');
       return;
     }
-    
+      
     if (_isInitializing) {
       print('🔍 Initialize: Initialization already in progress, waiting...');
       // Wait for the current initialization to complete
@@ -226,7 +226,7 @@ class PaymentService extends ChangeNotifier {
           // Try to proceed anyway and let the purchase flow handle errors gracefully
           _isAvailable = true;
         } else {
-          _isAvailable = isAvailable;
+      _isAvailable = isAvailable;
         }
       } else {
         _isAvailable = isAvailable;
@@ -339,7 +339,7 @@ class PaymentService extends ChangeNotifier {
       
       if (response.notFoundIDs.isNotEmpty) {
         print('⚠️ Load Products: Some products not found: ${response.notFoundIDs}');
-      }
+        }
         
       if (response.error != null) {
         print('❌ Load Products: Response error: ${response.error}');
@@ -572,33 +572,16 @@ class PaymentService extends ChangeNotifier {
     
     if (purchaseDetails.status == PurchaseStatus.purchased ||
         purchaseDetails.status == PurchaseStatus.restored) {
-      
       print('🔍 iOS Purchase Update: Handling purchased/restored purchase');
       
-      // Check environment to determine how to handle the purchase
-      final isXcodeBuild = await _isRunningFromXcode();
-      final isTestFlightMac = await _isRunningOnTestFlightMac();
-      
-      if (isXcodeBuild && kForcePaymentDialogInDevelopment) {
-        // For Xcode builds with forced payment dialog, treat as real purchase
-        print('🔍 iOS Purchase Update: Xcode build detected, treating as real purchase');
-        _handleSuccessfulPurchase(purchaseDetails);
-      } else if (isTestFlightMac) {
-        // TestFlight on Mac: Treat as real purchase (payment dialog should have appeared)
-        print('🔍 iOS Purchase Update: TestFlight on Mac detected, treating as real purchase');
-        _handleSuccessfulPurchase(purchaseDetails);
+      // Check if running on simulator
+      final isSimulator = await _isRunningOnSimulator();
+      if (isSimulator) {
+        print('🔍 iOS Purchase Update: Simulator detected, not granting premium access');
       } else {
-        // Normal TestFlight/App Store behavior
-        if (purchaseDetails.pendingCompletePurchase == true) {
-          // This is a real purchase that requires user confirmation
-          print('🔍 iOS Purchase Update: Pending complete purchase, treating as real purchase');
+        // Always grant premium access for valid purchases, even on TestFlight
+        print('🔍 iOS Purchase Update: Granting premium access and updating Firestore');
           _handleSuccessfulPurchase(purchaseDetails);
-        } else {
-          // For TestFlight auto-approval, we should NOT grant premium access
-          // This is just for testing the purchase flow
-          print('🔍 iOS Purchase Update: TestFlight auto-approval, not granting premium access');
-          _handleTestFlightAutoApproval(purchaseDetails);
-        }
       }
       
       // Complete pending purchase with success
@@ -727,84 +710,82 @@ class PaymentService extends ChangeNotifier {
 
   /// Handle successful purchase with platform-specific logic
   Future<void> _handleSuccessfulPurchase(PurchaseDetails purchaseDetails) async {
-    print('🔍 Handle Successful Purchase: Starting for ${purchaseDetails.productID}');
-    
+    print('🔍 [DEBUG] Handle Successful Purchase: Starting for ${purchaseDetails.productID}');
     try {
       final User? user = FirebaseAuth.instance.currentUser;
       if (user == null || _firestore == null) {
-        print('❌ Handle Successful Purchase: User or Firestore is null');
+        print('❌ [DEBUG] Handle Successful Purchase: User or Firestore is null');
         return;
       }
-      
-      print('🔍 Handle Successful Purchase: User found, processing platform-specific logic');
-      
+      print('🔍 [DEBUG] Handle Successful Purchase: User found: ${user.uid}, platform: ${Platform.operatingSystem}');
       // Platform-specific successful purchase handling
       if (Platform.isIOS) {
-        print('🔍 Handle Successful Purchase: Processing iOS purchase');
+        print('🔍 [DEBUG] Handle Successful Purchase: Processing iOS purchase');
         await _handleSuccessfulPurchaseIOS(purchaseDetails, user);
       } else if (Platform.isAndroid) {
-        print('🔍 Handle Successful Purchase: Processing Android purchase');
+        print('🔍 [DEBUG] Handle Successful Purchase: Processing Android purchase');
         await _handleSuccessfulPurchaseAndroid(purchaseDetails, user);
       } else {
-        print('🔍 Handle Successful Purchase: Unsupported platform');
+        print('🔍 [DEBUG] Handle Successful Purchase: Unsupported platform');
       }
-
-      // Track purchase completion for abandonment analysis
       await PlanAbandonmentService.trackPurchaseCompletion();
-      
-      print('🔍 Handle Successful Purchase: Completed successfully');
+      print('🔍 [DEBUG] Handle Successful Purchase: Completed successfully');
     } catch (e) {
-      print('❌ Handle Successful Purchase: Error: $e');
+      print('❌ [DEBUG] Handle Successful Purchase: Error: $e');
     }
   }
 
-  /// iOS-specific successful purchase handling
   Future<void> _handleSuccessfulPurchaseIOS(PurchaseDetails purchaseDetails, User user) async {
-    // Check if this is a trial purchase for iOS
     final bool isTrialPurchase = purchaseDetails.productID == 'jachtproef_monthly_399' || 
                                  purchaseDetails.productID == 'jachtproef_yearly_2999';
-    
+    print('🔍 [DEBUG] _handleSuccessfulPurchaseIOS: user=${user.uid}, product=${purchaseDetails.productID}, isTrial=$isTrialPurchase');
     if (isTrialPurchase) {
-      // This is a trial purchase - set up trial data
       final String planType = purchaseDetails.productID == 'jachtproef_monthly_399' ? 'monthly' : 'yearly';
-      
+      print('🔍 [DEBUG] _handleSuccessfulPurchaseIOS: Writing trial data to Firestore...');
       await _setupTrialDataIOS(user.uid, planType, purchaseDetails.productID, 'ios');
-      
-      // CRITICAL FIX: Navigate to Quick Setup for BOTH new purchases AND restored purchases
-      // This prevents users from getting stuck on the payment screen when they already own the subscription
+      print('🔍 [DEBUG] _handleSuccessfulPurchaseIOS: Firestore update complete for user=${user.uid}');
+      // Check if quick setup is already completed
+      final doc = await _firestore!.collection('users').doc(user.uid).get();
+      final quickSetupCompleted = doc.data()?['quickSetupCompleted'] == true;
+      print('🔍 [DEBUG] _handleSuccessfulPurchaseIOS: quickSetupCompleted=$quickSetupCompleted');
+      if (!quickSetupCompleted) {
       _navigateToQuickSetup();
+      } else {
+        print('🔍 [DEBUG] _handleSuccessfulPurchaseIOS: Skipping Quick Setup, already completed.');
+      }
     }
   }
 
-  /// Android-specific successful purchase handling
   Future<void> _handleSuccessfulPurchaseAndroid(PurchaseDetails purchaseDetails, User user) async {
-    // Check if this is a trial purchase for Android
     final bool isTrialPurchase = purchaseDetails.productID == 'jachtproef_premium';
-    
+    print('🔍 [DEBUG] _handleSuccessfulPurchaseAndroid: user=${user.uid}, product=${purchaseDetails.productID}, isTrial=$isTrialPurchase');
     if (isTrialPurchase) {
-      // For Android, we need to determine the plan type from the purchase details
-      // This might need to be passed from the calling context or determined differently
-      final String planType = 'monthly'; // Default fallback - this should be improved
-      
+      final String planType = 'monthly'; // Default fallback
+      print('🔍 [DEBUG] _handleSuccessfulPurchaseAndroid: Writing trial data to Firestore...');
       await _setupTrialDataAndroid(user.uid, planType, purchaseDetails.productID, 'android');
-      
-      // CRITICAL FIX: Navigate to Quick Setup for BOTH new purchases AND restored purchases
-      // This prevents users from getting stuck on the payment screen when they already own the subscription
+      print('🔍 [DEBUG] _handleSuccessfulPurchaseAndroid: Firestore update complete for user=${user.uid}');
+      // Check if quick setup is already completed
+      final doc = await _firestore!.collection('users').doc(user.uid).get();
+      final quickSetupCompleted = doc.data()?['quickSetupCompleted'] == true;
+      print('🔍 [DEBUG] _handleSuccessfulPurchaseAndroid: quickSetupCompleted=$quickSetupCompleted');
+      if (!quickSetupCompleted) {
       _navigateToQuickSetup();
+      } else {
+        print('🔍 [DEBUG] _handleSuccessfulPurchaseAndroid: Skipping Quick Setup, already completed.');
+      }
     }
   }
 
-  /// iOS-specific trial data setup
   Future<void> _setupTrialDataIOS(String userId, String planType, String productId, String platform) async {
-    await _firestore!.collection('users').doc(userId).set({
+    final data = {
           'createdAt': FieldValue.serverTimestamp(),
           'trialStartDate': FieldValue.serverTimestamp(),
           'selectedPlan': planType,
           'subscriptionStatus': 'trial',
           'trialEndDate': Timestamp.fromDate(DateTime.now().add(const Duration(days: 14))),
           'trialEnded': false,
-      'isPremium': true, // Only granted AFTER successful subscription setup
-      'paymentSetupCompleted': true, // Mark payment flow as completed
+      'isPremium': true,
+      'paymentSetupCompleted': true,
           'subscription': {
         'productId': productId,
             'status': 'trial',
@@ -814,20 +795,26 @@ class PaymentService extends ChangeNotifier {
         'willAutoRenew': true,
         'autoRenewDate': Timestamp.fromDate(DateTime.now().add(const Duration(days: 14))),
           },
-        }, SetOptions(merge: true));
+    };
+    print('🔍 [DEBUG] _setupTrialDataIOS: Writing to Firestore for user=$userId, data=$data');
+    try {
+      await _firestore!.collection('users').doc(userId).set(data, SetOptions(merge: true));
+      print('✅ [DEBUG] _setupTrialDataIOS: Firestore write success for user=$userId');
+    } catch (e) {
+      print('❌ [DEBUG] _setupTrialDataIOS: Firestore write error for user=$userId: $e');
+    }
   }
 
-  /// Android-specific trial data setup
   Future<void> _setupTrialDataAndroid(String userId, String planType, String productId, String platform) async {
-    await _firestore!.collection('users').doc(userId).set({
+    final data = {
       'createdAt': FieldValue.serverTimestamp(),
       'trialStartDate': FieldValue.serverTimestamp(),
       'selectedPlan': planType,
       'subscriptionStatus': 'trial',
       'trialEndDate': Timestamp.fromDate(DateTime.now().add(const Duration(days: 14))),
       'trialEnded': false,
-      'isPremium': true, // Only granted AFTER successful subscription setup
-      'paymentSetupCompleted': true, // Mark payment flow as completed
+      'isPremium': true,
+      'paymentSetupCompleted': true,
       'subscription': {
         'productId': productId,
         'status': 'trial',
@@ -837,7 +824,14 @@ class PaymentService extends ChangeNotifier {
         'willAutoRenew': true,
         'autoRenewDate': Timestamp.fromDate(DateTime.now().add(const Duration(days: 14))),
       },
-    }, SetOptions(merge: true));
+    };
+    print('🔍 [DEBUG] _setupTrialDataAndroid: Writing to Firestore for user=$userId, data=$data');
+    try {
+      await _firestore!.collection('users').doc(userId).set(data, SetOptions(merge: true));
+      print('✅ [DEBUG] _setupTrialDataAndroid: Firestore write success for user=$userId');
+    } catch (e) {
+      print('❌ [DEBUG] _setupTrialDataAndroid: Firestore write error for user=$userId: $e');
+    }
   }
 
   /// Legacy method for backward compatibility - now delegates to platform-specific methods
@@ -1232,15 +1226,15 @@ class PaymentService extends ChangeNotifier {
         try {
           final response = await http.get(Uri.parse(endpoint)).timeout(
             const Duration(seconds: 3),
-            onTimeout: () {
-              throw TimeoutException('Network connectivity check timed out');
-            },
-          );
+        onTimeout: () {
+          throw TimeoutException('Network connectivity check timed out');
+        },
+      );
           if (response.statusCode == 200) {
             print('✅ Network connectivity check passed using: $endpoint');
             return true;
           }
-        } catch (e) {
+    } catch (e) {
           print('⚠️ Network check failed for $endpoint: $e');
           continue;
         }
@@ -1538,12 +1532,24 @@ class PaymentService extends ChangeNotifier {
   /// Check if user has premium access (trial or subscription)
   Future<bool> hasPremiumAccess() async {
     try {
-      final bool inTrial = await isInTrialPeriod();
-      final bool hasSubscription = await hasActiveSubscription();
-      final bool hasPremium = inTrial || hasSubscription;
-      
+      final User? user = FirebaseAuth.instance.currentUser;
+      if (user == null || _firestore == null) return false;
+      final DocumentSnapshot doc = await _firestore!.collection('users').doc(user.uid).get();
+      if (!doc.exists) {
+        print('🔍 [DEBUG] hasPremiumAccess: No Firestore doc for user=${user.uid}');
+        return false;
+      }
+      final data = doc.data() as Map<String, dynamic>?;
+      final subscription = data?['subscription'] as Map<String, dynamic>?;
+      final isPremium = data?['isPremium'] == true;
+      final selectedPlan = data?['selectedPlan'];
+      final paymentSetupCompleted = data?['paymentSetupCompleted'] == true;
+      print('🔍 [DEBUG] hasPremiumAccess: user=${user.uid}, isPremium=$isPremium, selectedPlan=$selectedPlan, paymentSetupCompleted=$paymentSetupCompleted, subscription=$subscription');
+      final bool hasPremium = isPremium || (selectedPlan != null && selectedPlan.toString().isNotEmpty) || paymentSetupCompleted;
+      print('🔍 [DEBUG] hasPremiumAccess: Computed hasPremium=$hasPremium');
       return hasPremium;
     } catch (e) {
+      print('❌ [DEBUG] hasPremiumAccess: Error: $e');
       return false;
     }
   }
@@ -1660,7 +1666,7 @@ class PaymentService extends ChangeNotifier {
           print('⚠️ iOS Trial Setup: Products not loaded but proceeding anyway for real device');
           // Continue without products - the purchase flow will handle the error gracefully
         } else {
-          throw Exception('Producten konden niet worden geladen. Controleer je internetverbinding en probeer het opnieuw.');
+        throw Exception('Producten konden niet worden geladen. Controleer je internetverbinding en probeer het opnieuw.');
         }
       }
     }
@@ -1682,7 +1688,7 @@ class PaymentService extends ChangeNotifier {
           print('⚠️ iOS Trial Setup: Product $productId not found but proceeding anyway for real device');
           // Continue without product verification - the purchase flow will handle the error gracefully
         } else {
-          throw Exception('Het geselecteerde abonnement is momenteel niet beschikbaar. Probeer het later opnieuw.');
+        throw Exception('Het geselecteerde abonnement is momenteel niet beschikbaar. Probeer het later opnieuw.');
         }
       }
     }
@@ -1741,7 +1747,7 @@ class PaymentService extends ChangeNotifier {
             throw Exception('Product niet beschikbaar. Controleer uw internetverbinding en probeer het opnieuw.');
           }
         } else {
-          throw Exception('Product not found: $productId');
+        throw Exception('Product not found: $productId');
         }
       }
       
@@ -2207,4 +2213,4 @@ class PaymentService extends ChangeNotifier {
       '7. Controleer of uw Apple ID regio overeenkomt met de beschikbaarheid van de app',
     ];
   }
-}
+} 

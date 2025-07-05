@@ -291,17 +291,26 @@ class _DebugSharingPanelState extends State<DebugSharingPanel> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('📱 Enrollment Check Notification'),
+          title: const Text(
+            '📱 Enrollment Check Notification',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('🎯 JachtProef Alert', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green)),
-              SizedBox(height: 8),
-              Text('Did you enroll for this hunting exam?'),
-              SizedBox(height: 12),
+              const Text(
+                '🎯 JachtProef Alert',
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: 14),
+              ),
+              const SizedBox(height: 6),
+              const Text(
+                'Did you enroll for this hunting exam?',
+                style: TextStyle(fontSize: 14),
+              ),
+              const SizedBox(height: 10),
               Container(
-                padding: EdgeInsets.all(12),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Colors.blue.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
@@ -309,15 +318,23 @@ class _DebugSharingPanelState extends State<DebugSharingPanel> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('📍 $huntTitle', style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text('🏞️ $huntLocation'),
-                    Text('⏰ Deadline: ${DateFormat('dd MMM yyyy HH:mm').format(enrollmentDeadline)}'),
+                    Text(
+                      '📍 $huntTitle',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                    ),
+                    Text('🏞️ $huntLocation', style: const TextStyle(fontSize: 12)),
+                    Text(
+                      '⏰ Deadline: ${DateFormat('dd MMM yyyy HH:mm').format(enrollmentDeadline)}',
+                      style: const TextStyle(fontSize: 12),
+                    ),
                   ],
                 ),
               ),
-              SizedBox(height: 12),
-              Text('(This simulates a real push notification)', 
-                   style: TextStyle(fontSize: 12, color: Colors.grey, fontStyle: FontStyle.italic)),
+              const SizedBox(height: 10),
+              const Text(
+                '(This simulates a real push notification)', 
+                style: TextStyle(fontSize: 11, color: Colors.grey, fontStyle: FontStyle.italic),
+              ),
             ],
           ),
           actions: [
@@ -698,22 +715,29 @@ Gedeeld via JachtProef Alert 📱''';
         return AlertDialog(
           title: Row(
             children: [
-              Text('📱'),
-              SizedBox(width: 8),
-              Expanded(child: Text('Friend Sharing Notification')),
+              const Text('📱', style: TextStyle(fontSize: 16)),
+              const SizedBox(width: 8),
+              const Expanded(
+                child: Text(
+                  'Friend Sharing Notification',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+              ),
             ],
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('🎯 JachtProef Alert', 
-                   style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green)),
-              SizedBox(height: 12),
+              const Text(
+                '🎯 JachtProef Alert', 
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: 14),
+              ),
+              const SizedBox(height: 10),
               
               // Main sharing message - make it stand out
               Container(
-                padding: EdgeInsets.all(12),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: userEnrolled ? Colors.green.withOpacity(0.15) : Colors.blue.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(8),
@@ -722,38 +746,16 @@ Gedeeld via JachtProef Alert 📱''';
                     width: 1,
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Highlight the key message
-                    Text(
-                      userEnrolled 
-                        ? '✅ Je hebt je ingeschreven!' 
-                        : '📢 Er is nog plek!',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: userEnrolled ? Colors.green[700] : Colors.blue[700],
-                      ),
+                child: Text(
+                  message,
+                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
                     ),
-                    SizedBox(height: 8),
-                    Text(
-                      '🤝 Laat je vrienden weten dat er nog plek is!',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.orange[700],
-                      ),
-                    ),
-                  ],
                 ),
-              ),
+              const SizedBox(height: 10),
               
-              SizedBox(height: 12),
-              
-              // Match details - smaller and less prominent
+              // Match details
               Container(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: Colors.grey.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(6),
@@ -761,17 +763,29 @@ Gedeeld via JachtProef Alert 📱''';
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('📍 $abbreviatedTitle', 
-                         style: TextStyle(fontSize: 11, color: Colors.grey[700])),
-                    Text('🏞️ $abbreviatedLocation', 
-                         style: TextStyle(fontSize: 11, color: Colors.grey[700])),
+                    Text(
+                      '📍 $abbreviatedTitle',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                    ),
+                    Text(
+                      '🏞️ $abbreviatedLocation',
+                      style: const TextStyle(fontSize: 12),
+                    ),
                   ],
                 ),
               ),
+              const SizedBox(height: 10),
               
-              SizedBox(height: 12),
-              Text('(This simulates a friend sharing notification)', 
-                   style: TextStyle(fontSize: 12, color: Colors.grey, fontStyle: FontStyle.italic)),
+              const Text(
+                'Deel JachtProef Alert met vrienden zodat zij ook geen proeven missen!',
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+              const SizedBox(height: 8),
+              
+              const Text(
+                '(This simulates a friend sharing notification)', 
+                style: TextStyle(fontSize: 10, color: Colors.grey, fontStyle: FontStyle.italic),
+              ),
             ],
           ),
           actions: [

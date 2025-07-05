@@ -260,7 +260,10 @@ class _InstellingenPageState extends State<InstellingenPage> {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              title: const Text('Voorkeuren Aanpassen', style: TextStyle(fontWeight: FontWeight.bold)),
+              title: const Text(
+                'Voorkeuren Aanpassen',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
               content: Container(
                 width: double.maxFinite,
                 child: Column(
@@ -269,9 +272,9 @@ class _InstellingenPageState extends State<InstellingenPage> {
                   children: [
                     const Text(
                       'Selecteer de proef types die je wilt zien:',
-                      style: TextStyle(fontWeight: FontWeight.w500),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     Container(
                       constraints: const BoxConstraints(maxHeight: 300),
                       child: SingleChildScrollView(
@@ -349,7 +352,7 @@ class _InstellingenPageState extends State<InstellingenPage> {
             return AlertDialog(
               title: Text(
                 'Profiel Bewerken',
-                style: TextStyle(fontSize: ResponsiveHelper.getSubtitleFontSize(context))
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)
               ),
               content: ConstrainedBox(
                 constraints: ResponsiveHelper.getResponsiveConstraints(context),
@@ -560,15 +563,15 @@ class _InstellingenPageState extends State<InstellingenPage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(
+        title: const Text(
           'Account verwijderen',
-          style: TextStyle(fontSize: ResponsiveHelper.getSubtitleFontSize(context))
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)
         ),
         content: ConstrainedBox(
           constraints: ResponsiveHelper.getResponsiveConstraints(context),
-          child: Text(
+          child: const Text(
             'Weet u zeker dat u uw account wilt verwijderen? Dit kan niet ongedaan worden gemaakt.',
-            style: TextStyle(fontSize: ResponsiveHelper.getBodyFontSize(context))
+            style: TextStyle(fontSize: 14)
           ),
         ),
         actions: [
@@ -622,7 +625,10 @@ class _InstellingenPageState extends State<InstellingenPage> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: const Text('Wachtwoord wijzigen'),
+              title: const Text(
+                'Wachtwoord wijzigen',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
               content: Form(
                 key: formKey,
                 child: Column(
@@ -1127,8 +1133,14 @@ class _InstellingenPageState extends State<InstellingenPage> {
                           final shouldClear = await showDialog<bool>(
                             context: context,
                             builder: (context) => AlertDialog(
-                              title: const Text('Weet je het zeker?'),
-                              content: const Text('Wil je echt al je favoriete proef types wissen?'),
+                              title: const Text(
+                                'Weet je het zeker?',
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                              ),
+                              content: const Text(
+                                'Wil je echt al je favoriete proef types wissen?',
+                                style: TextStyle(fontSize: 14),
+                              ),
                               actions: [
                                 TextButton(
                                   onPressed: () => Navigator.of(context).pop(false),

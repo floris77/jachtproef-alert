@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
@@ -353,10 +354,27 @@ class CalendarService {
       }
     } else {
       // Show error dialog for better user experience
-      ResponsiveDialogs.showErrorDialog(
+      showCupertinoDialog(
         context: context,
-        title: 'Agenda Toevoegen Mislukt',
-        message: _getErrorMessage(result),
+        builder: (context) => CupertinoAlertDialog(
+          title: const Text(
+            'Agenda Toevoegen Mislukt',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          content: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              _getErrorMessage(result),
+              style: const TextStyle(fontSize: 14),
+            ),
+          ),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text('OK'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
       );
     }
   }

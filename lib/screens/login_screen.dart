@@ -9,6 +9,7 @@ import 'proeven_main_page.dart';
 import 'register_screen.dart';
 import 'reset_password_screen.dart';
 import '../utils/responsive_helper.dart';
+import '../services/payment_service.dart';
 
 class LoginScreen extends StatefulWidget {
   final bool showOnlyEmailLogin;
@@ -29,6 +30,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   String? _errorMessage;
   String? _userStatusMessage;
+  String? _pendingErrorDialog;
+  OverlayEntry? _successBanner;
 
   @override
   void initState() {
@@ -36,10 +39,13 @@ class _LoginScreenState extends State<LoginScreen> {
     // Listen to focus changes to scroll to active field
     _emailFocusNode.addListener(_onFocusChange);
     _passwordFocusNode.addListener(_onFocusChange);
+    _loadSavedCredentials();
   }
 
   @override
   void dispose() {
+    _successBanner?.remove();
+    _successBanner = null;
     _emailController.dispose();
     _passwordController.dispose();
     _emailFocusNode.dispose();
@@ -63,6 +69,89 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void _showErrorDialog(String message) {
+    if (_pendingErrorDialog == message) return; // Prevent duplicate dialogs
+    _pendingErrorDialog = message;
+    showCupertinoDialog(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        title: const Text(
+          'Inloggen mislukt',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+        content: Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Text(
+            message,
+            style: const TextStyle(fontSize: 14),
+            textAlign: TextAlign.left,
+          ),
+        ),
+        actions: [
+          CupertinoDialogAction(
+            child: const Text('OK'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              _pendingErrorDialog = null;
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showSuccessBanner(String message) {
+    _successBanner?.remove();
+    _successBanner = OverlayEntry(
+      builder: (context) => Positioned(
+        top: MediaQuery.of(context).padding.top + 60,
+        left: 24,
+        right: 24,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.green.shade600,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.check_circle, color: Colors.white, size: 22),
+                const SizedBox(width: 10),
+                Flexible(
+                  child: Text(
+                    message,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    Overlay.of(context, rootOverlay: true)?.insert(_successBanner!);
+    Future.delayed(const Duration(seconds: 2), () {
+      _successBanner?.remove();
+      _successBanner = null;
+    });
+  }
+
   Future<void> _signInWithEmailAndPassword() async {
     if (_formKey.currentState == null || !_formKey.currentState!.validate()) return;
 
@@ -77,11 +166,11 @@ class _LoginScreenState extends State<LoginScreen> {
         _emailController.text.trim(),
         _passwordController.text,
       );
-      
       setState(() {
         _userStatusMessage = 'Succesvol ingelogd!';
       });
-      
+      // Show compact success banner
+      if (mounted) _showSuccessBanner('Succesvol ingelogd!');
       if (mounted) {
         await Future.delayed(const Duration(seconds: 1));
         await _checkAndNavigateAfterLogin();
@@ -92,12 +181,40 @@ class _LoginScreenState extends State<LoginScreen> {
         _userStatusMessage = errorMessage['title'];
         _errorMessage = errorMessage['details'];
       });
+      // Show improved error dialog
+      _showErrorDialog(errorMessage['details'] ?? 'Onbekende fout');
     } finally {
       if (mounted) {
         setState(() {
           _isLoading = false;
         });
       }
+    }
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    print('🔐 [LOGIN] Loading saved credentials...');
+    final authService = context.read<AuthService>();
+    final creds = await authService.getSavedCredentials();
+    if (creds['email'] != null) {
+      _emailController.text = creds['email']!;
+      print('🔐 [LOGIN] Email loaded: ${creds['email']}');
+    }
+    if (creds['password'] != null) {
+      _passwordController.text = creds['password']!;
+      print('🔐 [LOGIN] Password loaded: present');
+      // Optionally, auto-login if both are present
+      if (creds['email']!.isNotEmpty && creds['password']!.isNotEmpty) {
+        print('🔐 [LOGIN] Both email and password present, triggering auto-login...');
+        // Wait for the first frame to avoid setState in build
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!_isLoading) {
+            _signInWithEmailAndPassword();
+          }
+        });
+      }
+    } else {
+      print('🔐 [LOGIN] No saved password found');
     }
   }
 
@@ -143,33 +260,57 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _checkAndNavigateAfterLogin() async {
+    setState(() { _isLoading = true; });
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) return;
 
-      // Check if user has selected a plan in Firestore
+      // Ensure PaymentService is initialized
+      await PaymentService().initialize();
+
+      // Check if user has selected a plan or has premium access in Firestore
       final doc = await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
           .get();
 
+      bool hasPremium = false;
       if (doc.exists) {
         final data = doc.data();
         final selectedPlan = data?['selectedPlan'];
-        
-        if (selectedPlan != null && selectedPlan.isNotEmpty) {
-          // User has already selected a plan, go to main flow
-          Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-          return;
+        final isPremium = data?['isPremium'] == true;
+        final paymentSetupCompleted = data?['paymentSetupCompleted'] == true;
+        hasPremium = (selectedPlan != null && selectedPlan.toString().isNotEmpty) || isPremium || paymentSetupCompleted;
+      }
+      // Debug log
+      print('🔍 LOGIN DEBUG: Firestore hasPremium=$hasPremium');
+
+      if (!hasPremium) {
+        // Fallback: check PaymentService directly for premium access
+        try {
+          final paymentServicePremium = await PaymentService().hasPremiumAccess();
+          print('🔍 LOGIN DEBUG: PaymentService hasPremiumAccess=$paymentServicePremium');
+          if (paymentServicePremium) {
+            hasPremium = true;
+          }
+        } catch (e) {
+          print('🔍 LOGIN DEBUG: Error checking PaymentService premium: $e');
         }
       }
-      
-      // User hasn't selected a plan yet, go to plan selection
+
+      if (hasPremium) {
+        // User has premium access, go to main flow
+        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+        return;
+      }
+      // User hasn't selected a plan and has no premium, go to plan selection
       Navigator.pushNamedAndRemoveUntil(context, '/plan-selection', (route) => false);
     } catch (e) {
-      print('Error checking user plan: $e');
+      print('Error checking user plan/premium: $e');
       // Fallback to main flow if there's an error
       Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+    } finally {
+      if (mounted) setState(() { _isLoading = false; });
     }
   }
 

@@ -388,8 +388,22 @@ class _AuthWrapperState extends State<AuthWrapper> {
       return false;
     }
     final userId = user.uid;
+    
     // Check the persistent flag that is set at the end of the QuickSetupScreen
-    return prefs.getBool('quick_setup_completed_$userId') ?? false;
+    final localFlag = prefs.getBool('quick_setup_completed_$userId') ?? false;
+    
+    // Also check Firestore flag for consistency
+    try {
+      final doc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+      final firestoreFlag = doc.data()?['quickSetupCompleted'] == true;
+      
+      // If either flag is true, consider Quick Setup completed
+      return localFlag || firestoreFlag;
+    } catch (e) {
+      // If Firestore check fails, fall back to local flag
+      print('⚠️ Error checking Firestore Quick Setup flag: $e');
+      return localFlag;
+    }
   }
   
   Future<bool> _hasSeenOnboarding() async {

@@ -55,20 +55,26 @@ class ViralSharingService {
       builder: (BuildContext context) => AlertDialog(
         title: Row(
           children: [
-            Icon(Icons.share, color: Colors.green),
-            SizedBox(width: 8),
-            Text('Deel met vrienden'),
+            const Icon(Icons.share, color: Colors.green, size: 20),
+            const SizedBox(width: 8),
+            const Text(
+              'Deel met vrienden',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
           ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(message),
-            SizedBox(height: 16),
             Text(
+              message,
+              style: const TextStyle(fontSize: 14),
+            ),
+            const SizedBox(height: 12),
+            const Text(
               'Help andere jagers deze geweldige app te ontdekken!',
-              style: TextStyle(fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
             ),
           ],
         ),
@@ -111,7 +117,7 @@ class ViralSharingService {
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -124,16 +130,16 @@ class ViralSharingService {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 16),
             
             // Icon and title
-            Icon(Icons.favorite, color: Colors.red, size: 48),
-            SizedBox(height: 16),
-            Text(
+            const Icon(Icons.favorite, color: Colors.red, size: 36),
+            const SizedBox(height: 12),
+            const Text(
               'Vond je dit handig?',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 6),
             
             // Message
             Text(
@@ -141,9 +147,9 @@ class ViralSharingService {
                   ? 'Geweldig dat je je hebt ingeschreven voor $matchTitle! Deel JachtProef Alert met vrienden zodat zij ook geen proeven missen.'
                   : 'Jammer dat $matchTitle niet uitkwam. Deel JachtProef Alert met vrienden - misschien kunnen zij wel!',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 20),
             
             // Action buttons
             Row(
