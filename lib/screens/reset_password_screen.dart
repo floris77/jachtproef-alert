@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+
 import '../services/auth_service.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
@@ -90,27 +92,30 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 24),
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        hintText: 'Email',
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
+                    AutofillGroup(
+                      child: TextFormField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          hintText: 'Email',
+                          filled: true,
+                          fillColor: CupertinoColors.systemGrey6,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: CupertinoColors.systemGrey4),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: CupertinoColors.systemGrey4),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: CupertinoColors.activeBlue),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         ),
+                        keyboardType: TextInputType.emailAddress,
+                        autofillHints: const [AutofillHints.username],
                       ),
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Vul uw email in';
-                        }
-                        if (!value.contains('@')) {
-                          return 'Vul een geldig email adres in';
-                        }
-                        return null;
-                      },
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton(

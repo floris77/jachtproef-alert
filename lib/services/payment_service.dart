@@ -155,8 +155,8 @@ class PaymentService extends ChangeNotifier {
   Future<void> initialize() async {
     print('🔍 Initialize: Starting payment service initialization');
     
-    if (_isAvailable) {
-      print('🔍 Initialize: Already available, skipping');
+    if (_isAvailable && _inAppPurchase != null) {
+      print('🔍 Initialize: Already available and properly initialized, skipping');
       return;
     }
       
@@ -262,9 +262,17 @@ class PaymentService extends ChangeNotifier {
       
       print('🔍 Initialize: Initialization complete - Available: $_isAvailable, Products: ${_products.length}');
       
+      // Verify initialization was successful
+      if (_isAvailable && _inAppPurchase != null) {
+        print('✅ Initialize: Payment service successfully initialized and ready');
+      } else {
+        print('⚠️ Initialize: Payment service initialization may have issues - Available: $_isAvailable, IAP: ${_inAppPurchase != null}');
+      }
+      
     } catch (e) {
       print('❌ Initialize: Error during initialization: $e');
       _isAvailable = false;
+      _inAppPurchase = null;
     } finally {
       _isInitializing = false;
     }
@@ -363,7 +371,23 @@ class PaymentService extends ChangeNotifier {
   List<ProductDetails> get availableProducts => _products;
 
   /// Check if in-app purchases are available
-  bool get isAvailable => _isAvailable;
+  bool get isAvailable => _isAvailable && _inAppPurchase != null;
+
+  /// Ensure payment service is properly initialized
+  Future<bool> ensureInitialized() async {
+    if (_isAvailable && _inAppPurchase != null) {
+      return true;
+    }
+    
+    print('🔍 Ensure Initialized: Payment service not properly initialized, reinitializing...');
+    try {
+      await initialize();
+      return _isAvailable && _inAppPurchase != null;
+    } catch (e) {
+      print('❌ Ensure Initialized: Failed to reinitialize payment service: $e');
+      return false;
+    }
+  }
 
   /// Diagnostic method to check payment service status
   Future<Map<String, dynamic>> getDiagnosticInfo() async {
@@ -437,7 +461,8 @@ class PaymentService extends ChangeNotifier {
 
   /// Purchase a subscription with platform-specific handling
   Future<bool> purchaseSubscription(String productId, {String? planType}) async {
-    if (!_isAvailable || _inAppPurchase == null) {
+    // Ensure payment service is properly initialized before attempting purchase
+    if (!await ensureInitialized()) {
       final error = 'In-app purchases not available on ${Platform.operatingSystem}';
       throw Exception('In-app purchases not available');
     }
@@ -2060,17 +2085,18 @@ class PaymentService extends ChangeNotifier {
       }
       print('✅ Purchase Error Handling: Network connectivity check passed');
 
-      // Check if payment service is available
+      // Check if payment service is available and ensure it's initialized
       print('🔍 Purchase Error Handling: Checking payment service availability...');
       print('🔍 Purchase Error Handling: _isAvailable: $_isAvailable, _inAppPurchase: ${_inAppPurchase != null}');
-      if (!_isAvailable || _inAppPurchase == null) {
-        print('❌ Purchase Error Handling: Payment service not available');
+      
+      if (!await ensureInitialized()) {
+        print('❌ Purchase Error Handling: Payment service not available after initialization attempt');
         result['error'] = 'payment_not_available';
         result['userMessage'] = 'Betalingen zijn momenteel niet beschikbaar. Probeer het later opnieuw.';
         result['canRetry'] = true;
         return result;
       }
-      print('✅ Purchase Error Handling: Payment service is available');
+      print('✅ Purchase Error Handling: Payment service is available and properly initialized');
 
       // Ensure products are loaded
       print('🔍 Purchase Error Handling: Checking if products are loaded...');

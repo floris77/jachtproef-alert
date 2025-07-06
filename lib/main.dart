@@ -397,8 +397,18 @@ class _AuthWrapperState extends State<AuthWrapper> {
       final doc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
       final firestoreFlag = doc.data()?['quickSetupCompleted'] == true;
       
+      print('🔍 [QUICK SETUP CHECK] User: $userId, Local flag: $localFlag, Firestore flag: $firestoreFlag');
+      
+      // If Firestore flag is true, also set the local flag for consistency
+      if (firestoreFlag && !localFlag) {
+        print('🔍 [QUICK SETUP CHECK] Setting local flag to match Firestore');
+        await prefs.setBool('quick_setup_completed_$userId', true);
+      }
+      
       // If either flag is true, consider Quick Setup completed
-      return localFlag || firestoreFlag;
+      final result = localFlag || firestoreFlag;
+      print('🔍 [QUICK SETUP CHECK] Final result: $result');
+      return result;
     } catch (e) {
       // If Firestore check fails, fall back to local flag
       print('⚠️ Error checking Firestore Quick Setup flag: $e');

@@ -541,16 +541,17 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
     });
 
     try {
-      final productId = _selectedPlan == 'monthly' 
-        ? 'jachtproef_monthly_399' 
-        : 'jachtproef_yearly_2999';
-      
       // Get PaymentService with error handling
       final paymentService = context.read<PaymentService>();
       if (paymentService == null) {
         print('❌ Plan Selection: PaymentService not found in widget tree');
         throw Exception('Payment service not available');
       }
+      
+      // Use platform-specific product IDs
+      final productId = _selectedPlan == 'monthly' 
+        ? PaymentService.monthlySubscriptionId 
+        : PaymentService.yearlySubscriptionId;
       
       print('🔍 Plan Selection: Calling purchaseSubscriptionWithErrorHandling for product: $productId');
       final result = await paymentService.purchaseSubscriptionWithErrorHandling(

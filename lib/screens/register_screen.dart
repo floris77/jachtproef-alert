@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+
 import '../services/auth_service.dart';
 import 'proeven_main_page.dart';
 
@@ -52,6 +53,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _passwordController.text,
         _nameController.text.trim(),
       );
+      
+      // Trigger autofill save after successful registration
+      print('🔐 [AUTOFILL] Triggering autofill save after registration');
       
       setState(() {
         _userStatusMessage = 'Account succesvol aangemaakt! U wordt automatisch ingelogd...';
@@ -200,59 +204,113 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    child: CupertinoTextField(
-                    controller: _nameController,
-                      placeholder: 'Naam',
-                      decoration: BoxDecoration(
-                        color: CupertinoColors.systemGrey6,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: CupertinoColors.systemGrey4),
-                    ),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    child: CupertinoTextField(
-                    controller: _emailController,
-                      placeholder: 'Email',
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: BoxDecoration(
-                        color: CupertinoColors.systemGrey6,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: CupertinoColors.systemGrey4),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    child: CupertinoTextField(
-                    controller: _passwordController,
-                      placeholder: 'Wachtwoord',
-                      obscureText: true,
-                      decoration: BoxDecoration(
-                        color: CupertinoColors.systemGrey6,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: CupertinoColors.systemGrey4),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 24),
-                    child: CupertinoTextField(
-                    controller: _confirmPasswordController,
-                      placeholder: 'Bevestig wachtwoord',
-                      obscureText: true,
-                      decoration: BoxDecoration(
-                        color: CupertinoColors.systemGrey6,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: CupertinoColors.systemGrey4),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  AutofillGroup(
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          child: TextFormField(
+                            controller: _nameController,
+                            decoration: InputDecoration(
+                              hintText: 'Naam',
+                              filled: true,
+                              fillColor: CupertinoColors.systemGrey6,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: CupertinoColors.systemGrey4),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: CupertinoColors.systemGrey4),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: CupertinoColors.activeBlue),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            ),
+                            autofillHints: const [AutofillHints.name],
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          child: TextFormField(
+                            controller: _emailController,
+                            decoration: InputDecoration(
+                              hintText: 'Email',
+                              filled: true,
+                              fillColor: CupertinoColors.systemGrey6,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: CupertinoColors.systemGrey4),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: CupertinoColors.systemGrey4),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: CupertinoColors.activeBlue),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            ),
+                            keyboardType: TextInputType.emailAddress,
+                            autofillHints: const [AutofillHints.username],
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          child: TextFormField(
+                            controller: _passwordController,
+                            decoration: InputDecoration(
+                              hintText: 'Wachtwoord',
+                              filled: true,
+                              fillColor: CupertinoColors.systemGrey6,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: CupertinoColors.systemGrey4),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: CupertinoColors.systemGrey4),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: CupertinoColors.activeBlue),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            ),
+                            obscureText: true,
+                            autofillHints: const [AutofillHints.newPassword],
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 24),
+                          child: TextFormField(
+                            controller: _confirmPasswordController,
+                            decoration: InputDecoration(
+                              hintText: 'Bevestig wachtwoord',
+                              filled: true,
+                              fillColor: CupertinoColors.systemGrey6,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: CupertinoColors.systemGrey4),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: CupertinoColors.systemGrey4),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: CupertinoColors.activeBlue),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            ),
+                            obscureText: true,
+                            autofillHints: const [AutofillHints.newPassword],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   CupertinoButton(

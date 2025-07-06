@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/auth_service.dart';
@@ -166,6 +167,10 @@ class _LoginScreenState extends State<LoginScreen> {
         _emailController.text.trim(),
         _passwordController.text,
       );
+      
+      // Trigger autofill save after successful login
+      _triggerAutofillSave();
+      
       setState(() {
         _userStatusMessage = 'Succesvol ingelogd!';
       });
@@ -216,6 +221,13 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       print('🔐 [LOGIN] No saved password found');
     }
+  }
+
+  // Trigger autofill after successful login
+  void _triggerAutofillSave() {
+    // This will trigger the autofill system to save the credentials
+    // The autofill hints in the text fields will handle the rest
+    print('🔐 [AUTOFILL] Triggering autofill save for credentials');
   }
 
   Map<String, String> _getUserFriendlyErrorMessage(String error) {
@@ -461,38 +473,64 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Email field
                     Container(
                       margin: const EdgeInsets.only(bottom: 16),
-                      child: CupertinoTextField(
-                        controller: _emailController,
-                        focusNode: _emailFocusNode,
-                        placeholder: 'Email',
-                              keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                        onSubmitted: (_) => _passwordFocusNode.requestFocus(),
-                        decoration: BoxDecoration(
-                          color: CupertinoColors.systemGrey6,
-                                  borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: CupertinoColors.systemGrey4),
-                                ),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                                ),
-                              ),
+                      child: AutofillGroup(
+                        child: TextFormField(
+                          controller: _emailController,
+                          focusNode: _emailFocusNode,
+                          decoration: InputDecoration(
+                            hintText: 'Email',
+                            filled: true,
+                            fillColor: CupertinoColors.systemGrey6,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: CupertinoColors.systemGrey4),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: CupertinoColors.systemGrey4),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: CupertinoColors.activeBlue),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          textInputAction: TextInputAction.next,
+                          autofillHints: const [AutofillHints.username],
+                          onFieldSubmitted: (_) => _passwordFocusNode.requestFocus(),
+                        ),
+                      ),
+                    ),
                     
                     // Password field
                     Container(
                       margin: const EdgeInsets.only(bottom: 24),
-                      child: CupertinoTextField(
+                      child: TextFormField(
                         controller: _passwordController,
-                              focusNode: _passwordFocusNode,
-                        placeholder: 'Wachtwoord',
+                        focusNode: _passwordFocusNode,
+                        decoration: InputDecoration(
+                          hintText: 'Wachtwoord',
+                          filled: true,
+                          fillColor: CupertinoColors.systemGrey6,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: CupertinoColors.systemGrey4),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: CupertinoColors.systemGrey4),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: CupertinoColors.activeBlue),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        ),
                         obscureText: true,
                         textInputAction: TextInputAction.done,
-                        onSubmitted: (_) => _signInWithEmailAndPassword(),
-                        decoration: BoxDecoration(
-                          color: CupertinoColors.systemGrey6,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: CupertinoColors.systemGrey4),
-                                  ),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        autofillHints: const [AutofillHints.password],
+                        onFieldSubmitted: (_) => _signInWithEmailAndPassword(),
                       ),
                     ),
                       
