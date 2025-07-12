@@ -742,47 +742,41 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                                   },
                                 ),
                               ),
-                              // Horizontal Scrollable Filter Chips - shows all options upfront
-                              Container(
-                                height: 40,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: matchTypes.length,
-                                  itemBuilder: (context, index) {
-                                    final type = matchTypes[index];
-                                    final isSelected = selectedFilter == type;
-                                    
-                                    return Container(
-                                      margin: EdgeInsets.only(right: 8, left: index == 0 ? 4 : 0),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            selectedFilter = type;
-                                            selectedTypes = [type];
-                                          });
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                          decoration: BoxDecoration(
-                                            color: isSelected ? kMainColor : Colors.transparent,
-                                            borderRadius: BorderRadius.circular(20),
-                                            border: Border.all(
-                                              color: isSelected ? kMainColor : CupertinoColors.systemGrey4,
-                                              width: 1.5,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            type,
-                                            style: TextStyle(
-                                              color: isSelected ? Colors.white : kMainColor,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 14,
-                                            ),
+                              // Filter Dropdown - clean list without horizontal scrolling
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20),
+                                child: GestureDetector(
+                                  onTap: () => _showFilterPicker(context),
+                                  child: Container(
+                                    height: 48,
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: CupertinoColors.systemGrey4,
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          selectedFilter,
+                                          style: TextStyle(
+                                            color: kMainColor,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16,
                                           ),
                                         ),
-                                      ),
-                                    );
-                                  },
+                                        Icon(
+                                          CupertinoIcons.chevron_down,
+                                          color: kMainColor,
+                                          size: 20,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
@@ -925,7 +919,91 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
     );
   }
 
-  // Removed unused filter picker methods - now using horizontal scrollable chips
+  // Filter picker modal - shows all options in a clean list
+  void _showFilterPicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Handle bar
+              Container(
+                                 margin: const EdgeInsets.only(top: 12),
+                height: 4,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              // Title
+              Padding(
+                                 padding: const EdgeInsets.all(20),
+                child: Text(
+                  'Filter Proeven',
+                                     style: const TextStyle(
+                     fontSize: 18,
+                     fontWeight: FontWeight.bold,
+                     color: Colors.black,
+                   ),
+                ),
+              ),
+              // Filter options list
+              Container(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.75,
+                ),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: matchTypes.length,
+                  itemBuilder: (context, index) {
+                    final type = matchTypes[index];
+                    final isSelected = selectedFilter == type;
+                    
+                    return ListTile(
+                      title: Text(
+                        type,
+                        style: TextStyle(
+                          color: isSelected ? kMainColor : Colors.black,
+                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                          fontSize: 16,
+                        ),
+                      ),
+                      trailing: isSelected
+                          ? Icon(
+                              CupertinoIcons.checkmark,
+                              color: kMainColor,
+                              size: 20,
+                            )
+                          : null,
+                      onTap: () {
+                        setState(() {
+                          selectedFilter = type;
+                          selectedTypes = [type];
+                        });
+                        Navigator.pop(context);
+                      },
+                    );
+                  },
+                ),
+              ),
+              // Bottom padding for safe area
+              SizedBox(height: MediaQuery.of(context).padding.bottom + 20),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   // Helper method to get filtered matches
   List<Map<String, dynamic>> _getFilteredMatches(List<Map<String, dynamic>> matches) {
