@@ -288,11 +288,17 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
   String userName = '';
   late TabController _tabController;
   
-  // Enhanced scroll tracking for better UX
-  bool _showHeader = true;
-  double _hideHeaderScrollPosition = 0.0;
+  // Enhanced scroll tracking for better UX using ValueNotifier to prevent ListView rebuilds
+  late ValueNotifier<bool> _showHeader;
+  double _lastScrollPosition = 0.0;
   static const double _scrollBufferDistance = 120.0; // About 1 match card height - more reasonable
   static const double _topThreshold = 150.0; // Show header when within 150px of top
+  
+  // ScrollController for preserving scroll position
+  late ScrollController _scrollController;
+  
+  // Scroll debounce to prevent feedback loops
+  bool _isScrolling = false;
 
   // Temporary fix: define match lists to resolve build errors
   List<Map<String, dynamic>> inschrijvenMatches = [];
@@ -307,6 +313,38 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
     _loadUserPreferences();
     _showFirstTimeHelp();
     _tabController = TabController(length: 4, vsync: this);
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+    _showHeader = ValueNotifier<bool>(true);
+  }
+
+  void _onScroll() {
+    final currentScrollPosition = _scrollController.offset;
+    final scrollDelta = currentScrollPosition - _lastScrollPosition;
+    
+    // Simple, stable logic - avoid complex state changes that cause jumping
+    bool shouldShowHeader = _showHeader.value;
+    
+    // Show header when at the very top
+    if (currentScrollPosition <= 50.0) {
+      shouldShowHeader = true;
+    }
+    // Hide header when scrolled down far enough with downward momentum
+    else if (currentScrollPosition > 150.0 && scrollDelta > 5.0 && _showHeader.value) {
+      shouldShowHeader = false;
+    }
+    // Show header when scrolling up with upward momentum (but not at top)
+    else if (scrollDelta < -15.0 && currentScrollPosition > 80.0 && !_showHeader.value) {
+      shouldShowHeader = true;
+    }
+    
+    // Only update ValueNotifier if there's actually a change - this WON'T rebuild ListView
+    if (shouldShowHeader != _showHeader.value) {
+      _showHeader.value = shouldShowHeader; // This doesn't trigger setState!
+    }
+    
+    // Always update last position for next delta calculation
+    _lastScrollPosition = currentScrollPosition;
   }
 
   void _loadUserData() async {
@@ -551,359 +589,275 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Custom App Bar
-            Padding(
-              padding: EdgeInsets.only(top: isVerySmallScreen ? 8 : 10, left: 0, right: 0, bottom: 0),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Center(
-                    child: Text(
-                      'Proeven',
-                      style: TextStyle(
-                        fontSize: isVerySmallScreen ? 18 : 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  // iOS-style Help button
-                  Positioned(
-                    right: 20,
-                    child: CupertinoButton(
-                      padding: EdgeInsets.all(isVerySmallScreen ? 8 : 12),
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(builder: (context) => const HelpScreen()),
-                              );
-                            },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: kMainColor,
-                            width: 1.5,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              CupertinoIcons.question_circle,
-                              color: kMainColor,
-                              size: 16,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              'HELP',
-                              style: TextStyle(
-                                color: kMainColor,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5,
-                          ),
-                        ),
-                      ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 8),
-            // Greeting and subtitle
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      'Hi,  0${userName.isNotEmpty ? userName : 'there'} 👋',
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w800,
-                        color: kMainColor,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      maxLines: 1,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Laten we samen je volgende proef vinden!',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.grey[400],
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 18),
-            // Responsive Search and Filter Bar
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final isSmallScreen = constraints.maxWidth < 370;
-                if (isSmallScreen) {
-                  // Stack vertically on small screens
-                  return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+            // Collapsible Header Section - use ValueListenableBuilder to prevent ListView rebuilds
+            ValueListenableBuilder<bool>(
+              valueListenable: _showHeader,
+              builder: (context, showHeader, child) {
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  height: showHeader ? null : 0,
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 200),
+                    opacity: showHeader ? 1.0 : 0.0,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                        Container(
-                      height: 48,
-                          margin: const EdgeInsets.only(bottom: 10),
-                      decoration: BoxDecoration(
-                            color: CupertinoColors.systemGrey6,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: CupertinoColors.systemGrey4,
-                              width: 0.5,
-                            ),
-                          ),
-                          child: CupertinoTextField(
-                            placeholder: 'Zoeken',
-                            placeholderStyle: TextStyle(
-                              color: CupertinoColors.systemGrey,
-                              fontSize: 16,
-                            ),
-                            prefix: Padding(
-                              padding: const EdgeInsets.only(left: 12),
-                              child: Icon(
-                                CupertinoIcons.search,
-                                color: CupertinoColors.systemGrey,
-                                size: 20,
-                              ),
-                            ),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: CupertinoColors.label,
-                            ),
-                            decoration: null,
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                        onChanged: (value) {
-                          setState(() {
-                            searchQuery = value;
-                          });
-                        },
-                      ),
-                    ),
-                        Container(
-                      height: 48,
-                          margin: const EdgeInsets.only(bottom: 4),
-                      decoration: BoxDecoration(
-                            color: _isFilterActive() ? kMainColor.withOpacity(0.10) : CupertinoColors.systemGrey6,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: _isFilterActive() ? kMainColor : CupertinoColors.systemGrey4,
-                              width: _isFilterActive() ? 1.5 : 0.5,
-                            ),
-                      ),
-                          child: CupertinoButton(
-                            padding: const EdgeInsets.symmetric(horizontal: 18),
-                            onPressed: () {
-                              _showFilterPicker();
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    selectedFilter,
-                          style: TextStyle(
-                                      color: _isFilterActive() ? kMainColor : CupertinoColors.label,
-                                      fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                                    overflow: TextOverflow.ellipsis,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Custom App Bar
+                        Padding(
+                          padding: EdgeInsets.only(top: isVerySmallScreen ? 8 : 10, left: 0, right: 0, bottom: 0),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Center(
+                                child: Text(
+                                  'Proeven',
+                                  style: TextStyle(
+                                    fontSize: isVerySmallScreen ? 18 : 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
                                   ),
                                 ),
-                                  Icon(
-                                  CupertinoIcons.chevron_down,
-                                  color: _isFilterActive() ? kMainColor : CupertinoColors.systemGrey,
-                                  size: 16,
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ),
-                                ],
                               ),
-                            );
-                } else {
-                  // Side by side on normal screens
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 160, // Fixed width for search bar
-                          height: 48,
-                          decoration: BoxDecoration(
-                            color: CupertinoColors.systemGrey6,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: CupertinoColors.systemGrey4,
-                              width: 0.5,
-                            ),
+                              // iOS-style Help button
+                              Positioned(
+                                right: 20,
+                                child: CupertinoButton(
+                                  padding: EdgeInsets.all(isVerySmallScreen ? 8 : 12),
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) => const HelpScreen()),
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
+                                      border: Border.all(
+                                        color: kMainColor,
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          CupertinoIcons.question_circle,
+                                          color: kMainColor,
+                                          size: 16,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          'HELP',
+                                          style: TextStyle(
+                                            color: kMainColor,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          child: CupertinoTextField(
-                            placeholder: 'Zoeken',
-                            placeholderStyle: TextStyle(
-                              color: CupertinoColors.systemGrey,
-                              fontSize: 16,
                         ),
-                            prefix: Padding(
-                              padding: const EdgeInsets.only(left: 12),
-                              child: Icon(
-                                CupertinoIcons.search,
-                                color: CupertinoColors.systemGrey,
-                                size: 20,
-              ),
-            ),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: CupertinoColors.label,
-                            ),
-                            decoration: null,
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                            onChanged: (value) {
-                              setState(() {
-                                searchQuery = value;
-                              });
+                        const SizedBox(height: 8),
+                        // Greeting and subtitle
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                width: double.infinity,
+                                child: Text(
+                                  'Hi, ${userName.isNotEmpty ? userName : 'there'} 👋',
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.w800,
+                                    color: kMainColor,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  maxLines: 1,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Laten we samen je volgende proef vinden!',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.grey[400],
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        // Search and Filter Bar
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Container(
+                                height: 48,
+                                margin: const EdgeInsets.only(bottom: 10),
+                                decoration: BoxDecoration(
+                                  color: CupertinoColors.systemGrey6,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: CupertinoColors.systemGrey4,
+                                    width: 0.5,
+                                  ),
+                                ),
+                                child: CupertinoTextField(
+                                  placeholder: 'Zoeken',
+                                  placeholderStyle: TextStyle(
+                                    color: CupertinoColors.systemGrey,
+                                    fontSize: 16,
+                                  ),
+                                  prefix: Padding(
+                                    padding: const EdgeInsets.only(left: 12),
+                                    child: Icon(
+                                      CupertinoIcons.search,
+                                      color: CupertinoColors.systemGrey,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: CupertinoColors.label,
+                                  ),
+                                  decoration: null,
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      searchQuery = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                              Container(
+                                height: 48,
+                                margin: const EdgeInsets.only(bottom: 4),
+                                decoration: BoxDecoration(
+                                  color: _isFilterActive() ? kMainColor.withOpacity(0.10) : CupertinoColors.systemGrey6,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: _isFilterActive() ? kMainColor : CupertinoColors.systemGrey4,
+                                    width: _isFilterActive() ? 1.5 : 0.5,
+                                  ),
+                                ),
+                                child: CupertinoButton(
+                                  padding: const EdgeInsets.symmetric(horizontal: 18),
+                                  onPressed: () {
+                                    _showFilterPicker();
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          selectedFilter,
+                                          style: TextStyle(
+                                            color: _isFilterActive() ? kMainColor : CupertinoColors.label,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      Icon(
+                                        CupertinoIcons.chevron_down,
+                                        color: _isFilterActive() ? kMainColor : CupertinoColors.systemGrey,
+                                        size: 16,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        // Tab selector
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: CupertinoSlidingSegmentedControl<int>(
+                            groupValue: selectedTab,
+                            backgroundColor: CupertinoColors.systemGrey6,
+                            thumbColor: kMainColor,
+                            children: {
+                              0: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                child: Text(
+                                  'Inschrijven',
+                                  style: TextStyle(
+                                    fontSize: isVerySmallScreen ? 11 : 12.5,
+                                    fontWeight: FontWeight.w600,
+                                    color: selectedTab == 0 ? Colors.white : kMainColor,
+                                  ),
+                                ),
+                              ),
+                              1: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                child: Text(
+                                  'Binnenkort',
+                                  style: TextStyle(
+                                    fontSize: isVerySmallScreen ? 11 : 12.5,
+                                    fontWeight: FontWeight.w600,
+                                    color: selectedTab == 1 ? Colors.white : kMainColor,
+                                  ),
+                                ),
+                              ),
+                              2: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                child: Text(
+                                  'Gesloten',
+                                  style: TextStyle(
+                                    fontSize: isVerySmallScreen ? 11 : 12.5,
+                                    fontWeight: FontWeight.w600,
+                                    color: selectedTab == 2 ? Colors.white : kMainColor,
+                                  ),
+                                ),
+                              ),
+                              3: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                child: Text(
+                                  'Onbekend',
+                                  style: TextStyle(
+                                    fontSize: isVerySmallScreen ? 11 : 12.5,
+                                    fontWeight: FontWeight.w600,
+                                    color: selectedTab == 3 ? Colors.white : kMainColor,
+                                  ),
+                                ),
+                              ),
+                            },
+                            onValueChanged: (int? value) {
+                              if (value != null) {
+                                setState(() {
+                                  selectedTab = value;
+                                });
+                              }
                             },
                           ),
                         ),
-                        const SizedBox(width: 16), // More space between search and filter
-                        Expanded(
-              child: Container(
-                            height: 48,
-                decoration: BoxDecoration(
-                              color: _isFilterActive() ? kMainColor : Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: kMainColor,
-                                width: 1.5,
-                              ),
-                            ),
-                            child: CupertinoButton(
-                              padding: const EdgeInsets.symmetric(horizontal: 18),
-                              onPressed: () {
-                                _showFilterPicker();
-                              },
-                child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                      Expanded(
-                                    child: Text(
-                                      selectedFilter,
-                                      style: TextStyle(
-                                        color: _isFilterActive() ? Colors.white : kMainColor,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 16,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  Icon(
-                                    CupertinoIcons.chevron_down,
-                                    color: _isFilterActive() ? Colors.white : kMainColor,
-                                    size: 16,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                        const SizedBox(height: 18),
                       ],
                     ),
-                  );
-                }
+                  ),
+                );
               },
             ),
-            const SizedBox(height: 12),
-            // Apple-style Segmented Control (Cupertino) with no scrolling and no truncation
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: CupertinoSlidingSegmentedControl<int>(
-                groupValue: selectedTab,
-                backgroundColor: Colors.white,
-                thumbColor: kMainColor,
-                children: {
-                  0: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
-                    child: Center(
-                            child: Text(
-                                'Alle',
-                        style: TextStyle(
-                          fontSize: isVerySmallScreen ? 11 : 12.5,
-                          fontWeight: FontWeight.w600,
-                          color: selectedTab == 0 ? Colors.white : kMainColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                  1: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
-                    child: Center(
-                      child: Text(
-                                'Inschrijven',
-                        style: TextStyle(
-                          fontSize: isVerySmallScreen ? 11 : 12.5,
-                          fontWeight: FontWeight.w600,
-                          color: selectedTab == 1 ? Colors.white : kMainColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                  2: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
-                    child: Center(
-                      child: Text(
-                                'Binnenkort',
-                        style: TextStyle(
-                          fontSize: isVerySmallScreen ? 11 : 12.5,
-                          fontWeight: FontWeight.w600,
-                          color: selectedTab == 2 ? Colors.white : kMainColor,
-                            ),
-                          ),
-                        ),
-                      ),
-                  3: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
-                    child: Center(
-                      child: Text(
-                        'Gesloten',
-                        style: TextStyle(
-                          fontSize: isVerySmallScreen ? 11 : 12.5,
-                          fontWeight: FontWeight.w600,
-                          color: selectedTab == 3 ? Colors.white : kMainColor,
-                ),
-              ),
-            ),
-                  ),
-                },
-                onValueChanged: (int? value) {
-                  if (value != null) {
-                    setState(() {
-                      selectedTab = value;
-                    });
-                  }
-                },
-              ),
-            ),
-            const SizedBox(height: 18),
             // Result count and Match list
             Expanded(
-              child: FutureBuilder<List<Map<String, dynamic>>>(
-                future: MatchService.fetchMatches(),
+              child: StreamBuilder<List<Map<String, dynamic>>>(
+                stream: MatchService.getMatchesStream(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -922,7 +876,7 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Text(
-                          ' ${filteredMatches.length} resultaten',
+                          '${filteredMatches.length} resultaten',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey[400],
@@ -933,6 +887,8 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                       const SizedBox(height: 8),
                       Expanded(
                         child: ListView.builder(
+                          key: const PageStorageKey('proeven_list_scroll_position'),
+                          controller: _scrollController,
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                           itemCount: filteredMatches.length,
                           itemBuilder: (context, index) {
@@ -1053,17 +1009,101 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
       }
       regText = regText.trim().toLowerCase();
 
-      // Use exact matching for categories
+      // Handle empty registration text - default to 'inschrijven'
+      if (regText.isEmpty) {
+        regText = 'inschrijven';
+      }
+
+      final matchDate = _parseMatchDate(match);
+      
+      // Categorize registration text patterns
+      bool isAvailableForEnrollment = false;
+      bool isFutureEnrollment = false;
+      bool isClosed = false;
+      
       if (regText == 'inschrijven') {
-        beschikbaar.add(match);
+        isAvailableForEnrollment = true;
       } else if (regText.startsWith('vanaf ')) {
-        binnenkort.add(match);
+        isFutureEnrollment = true;
       } else if (regText == 'niet mogelijk' || regText == 'niet meer mogelijk') {
+        isClosed = true;
+      } else {
+        // Handle specialized enrollment criteria (breed-specific, selection matches, etc.)
+        if (regText.contains('selectie') || regText.contains('kwalificatie') || 
+            regText.contains('alleen') || regText.contains('specifiek') ||
+            regText.contains('staande hond') || regText.contains('rasgroep') ||
+            regText.contains('aantekening') || regText.contains('bezitten')) {
+          // These are specialized subcategory matches - treat as available but with restrictions
+          isAvailableForEnrollment = true;
+        } else {
+          // Unknown pattern - default to available
+          print('[DEBUG] Unknown registration text: "$regText" for match: ${match['organizer']} - defaulting to available');
+          isAvailableForEnrollment = true;
+        }
+      }
+      
+      // Categorize matches based on analysis
+      if (isAvailableForEnrollment && matchDate != null && matchDate.isAfter(DateTime.now())) {
+        beschikbaar.add(match);
+      } else if (isFutureEnrollment) {
+        // Parse enrollment date once and attach to match object
+        DateTime? enrollmentDate;
+        try {
+          final dateTimeStr = regText.substring(6).trim(); // Remove 'vanaf ' and trim
+          // Format: "22-06-2025 19:00" or "22-06-2025"
+          final parts = dateTimeStr.split(' ');
+          if (parts.isNotEmpty) {
+            final datePart = parts[0]; // DD-MM-YYYY
+            String timePart = '00:00'; // Default to midnight
+            if (parts.length >= 2) {
+              timePart = parts[1]; // HH:MM
+            }
+            final dateComponents = datePart.split('-');
+            final timeComponents = timePart.split(':');
+            if (dateComponents.length == 3 && timeComponents.length == 2) {
+              enrollmentDate = DateTime(
+                int.parse(dateComponents[2]), // Year
+                int.parse(dateComponents[1]), // Month
+                int.parse(dateComponents[0]), // Day
+                int.parse(timeComponents[0]), // Hour
+                int.parse(timeComponents[1]), // Minute
+              );
+              match['enrollmentDate'] = enrollmentDate;
+              print('[DEBUG] Parsed enrollmentDate for match: '
+                '${match['title'] ?? match['organizer']} -> $enrollmentDate');
+            }
+          }
+        } catch (e) {
+          print('[DEBUG] Failed to parse enrollmentDate for match: '
+            '${match['title'] ?? match['organizer']} - Error: $e');
+        }
+        if (enrollmentDate != null && enrollmentDate.isAfter(DateTime.now())) {
+          binnenkort.add(match);
+        } else {
+          // If enrollment date is in the past, move to appropriate category
+          // Check if the match date is also in the past
+          final matchDate = _parseMatchDate(match);
+          if (matchDate != null && matchDate.isBefore(DateTime.now())) {
+            // Match is in the past, mark as closed
+            gesloten.add(match);
+          } else {
+            // Enrollment date is in the past but match is in the future
+            // This should be "Inschrijven" (open for enrollment)
+            beschikbaar.add(match);
+          }
+        }
+      } else if (isClosed) {
         gesloten.add(match);
       } else {
+        // This should rarely happen now with our improved categorization
         onbekend.add(match);
       }
     }
+
+    // Debug: Print categorization results
+    print('[DEBUG] Match categorization: beschikbaar=${beschikbaar.length}, binnenkort=${binnenkort.length}, gesloten=${gesloten.length}, onbekend=${onbekend.length}');
+    
+
 
     // Get matches for selected tab
     List<Map<String, dynamic>> tabMatches;
@@ -1086,10 +1126,24 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
       final title = match['title']?.toString().toLowerCase() ?? '';
       final organizer = match['organizer']?.toString().toLowerCase() ?? '';
       final type = match['type']?.toString().toLowerCase() ?? '';
-      // Search filter
+      final location = match['location']?.toString().toLowerCase() ?? '';
+      final registrationText = match['registration_text']?.toString().toLowerCase() ?? 
+                              match['registration']?['text']?.toString().toLowerCase() ?? 
+                              match['raw']?['registration_text']?.toString().toLowerCase() ?? '';
+      final remarks = match['remarks']?.toString().toLowerCase() ?? 
+                     match['remark']?.toString().toLowerCase() ?? '';
+      final calendarType = match['calendar_type']?.toString().toLowerCase() ?? '';
+      
+      // Search filter - now searches through all relevant fields
       if (searchQuery.isNotEmpty) {
         final query = searchQuery.toLowerCase();
-        if (!title.contains(query) && !organizer.contains(query) && !type.contains(query)) {
+        if (!title.contains(query) && 
+            !organizer.contains(query) && 
+            !type.contains(query) &&
+            !location.contains(query) &&
+            !registrationText.contains(query) &&
+            !remarks.contains(query) &&
+            !calendarType.contains(query)) {
           return false;
         }
       }
@@ -1101,13 +1155,90 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
           return false;
         }
       } else if (selectedTypes.isNotEmpty && !selectedTypes.contains('Alle proeven')) {
-        // Type filter
-        if (!selectedTypes.any((selectedType) => type.contains(selectedType.toLowerCase()))) {
+        // Type filter - handle both abbreviations and full names
+        final matchFound = selectedTypes.any((selectedType) {
+          final selectedLower = selectedType.toLowerCase();
+          final typeLower = type.toLowerCase();
+          
+          // Handle abbreviation mappings
+          if (selectedLower == 'swt' && typeLower.contains('spaniël workingtest')) {
+            return true;
+          }
+          if (selectedLower == 'kjp' && typeLower.contains('kinder jachtproef')) {
+            return true;
+          }
+          if (selectedLower == 'owt' && typeLower.contains('orweja working test')) {
+            return true;
+          }
+          
+          // Default case-insensitive matching
+          return typeLower.contains(selectedLower);
+        });
+        
+        // Debug logging for specific types
+        if (selectedTypes.contains('PJP') && type.toLowerCase().contains('pjp')) {
+          print('[DEBUG] PJP filtering working: found match "${match['organizer']}"');
+        }
+        if (selectedTypes.contains('SWT') && type.toLowerCase().contains('spaniël')) {
+          print('[DEBUG] SWT filtering working: found match "${match['organizer']}" with type "${type}"');
+        }
+        if (selectedTypes.contains('MAP') && type.toLowerCase().contains('map')) {
+          print('[DEBUG] MAP filtering working: found match "${match['organizer']}" with type "${type}"');
+        }
+        
+        if (!matchFound) {
           return false;
         }
       }
       return true;
     }).toList();
+  }
+
+  /// Helper method to parse match date from various formats
+  DateTime? _parseMatchDate(Map<String, dynamic> match) {
+    try {
+      final rawDate = match['date'] ?? match['raw']?['date'];
+      if (rawDate == null) return null;
+      
+      if (rawDate is Timestamp) {
+        return rawDate.toDate();
+      }
+      if (rawDate is DateTime) {
+        return rawDate;
+      }
+      if (rawDate is String) {
+        // Try different date formats
+        final formats = [
+          'yyyy-MM-dd',
+          'dd-MM-yyyy',
+          'yyyy/MM/dd',
+          'dd/MM/yyyy',
+        ];
+        
+        for (final format in formats) {
+          try {
+            return DateFormat(format).parse(rawDate);
+          } catch (_) {
+            continue;
+          }
+        }
+        
+        // Try ISO format as fallback
+        return DateTime.parse(rawDate);
+      }
+      return null;
+    } catch (e) {
+      print('[DEBUG] Failed to parse match date: $e');
+      return null;
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _tabController.dispose();
+    _showHeader.dispose();
+    super.dispose();
   }
 }
 
@@ -1133,6 +1264,8 @@ String _formatMatchDate(Map<String, dynamic> match) {
   }
   return rawDate.toString();
 }
+
+
 
 Future<List<Map<String, String>>> _getNotificationTimersAsync(DateTime baseDate) async {
   final List<Map<String, String>> timers = [];
@@ -1207,6 +1340,156 @@ class _ActionButton extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+// Collapsible Header Widget to prevent ListView rebuilds
+class _CollapsibleHeader extends StatefulWidget {
+  final bool showHeader;
+  final String userName;
+  final String searchQuery;
+  final String selectedFilter;
+  final int selectedTab;
+  final List<String> selectedTypes;
+  final List<String> userFavoriteTypes;
+  final Function(String) onSearchChanged;
+  final Function(String, List<String>) onFilterChanged;
+  final Function(int) onTabChanged;
+
+  const _CollapsibleHeader({
+    required this.showHeader,
+    required this.userName,
+    required this.searchQuery,
+    required this.selectedFilter,
+    required this.selectedTab,
+    required this.selectedTypes,
+    required this.userFavoriteTypes,
+    required this.onSearchChanged,
+    required this.onFilterChanged,
+    required this.onTabChanged,
+  });
+
+  @override
+  State<_CollapsibleHeader> createState() => _CollapsibleHeaderState();
+}
+
+class _CollapsibleHeaderState extends State<_CollapsibleHeader> {
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth < 375;
+    final isLargeScreen = screenWidth > 414;
+    final isVerySmallScreen = screenWidth < 350;
+    
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      height: widget.showHeader ? null : 0,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 200),
+        opacity: widget.showHeader ? 1.0 : 0.0,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Custom App Bar
+            Padding(
+              padding: EdgeInsets.only(top: isVerySmallScreen ? 8 : 10, left: 0, right: 0, bottom: 0),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Center(
+                    child: Text(
+                      'Proeven',
+                      style: TextStyle(
+                        fontSize: isVerySmallScreen ? 18 : 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  // iOS-style Help button
+                  Positioned(
+                    right: 20,
+                    child: CupertinoButton(
+                      padding: EdgeInsets.all(isVerySmallScreen ? 8 : 12),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => const HelpScreen()),
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: kMainColor,
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              CupertinoIcons.question_circle,
+                              color: kMainColor,
+                              size: 16,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              'HELP',
+                              style: TextStyle(
+                                color: kMainColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            // Greeting and subtitle
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      'Hi, ${widget.userName.isNotEmpty ? widget.userName : 'there'} 👋',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w800,
+                        color: kMainColor,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      maxLines: 1,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Laten we samen je volgende proef vinden!',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.grey[400],
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 18),
+          ],
         ),
       ),
     );
