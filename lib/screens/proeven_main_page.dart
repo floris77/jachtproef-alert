@@ -666,7 +666,7 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                           ),
                         ),
                         const SizedBox(height: 8),
-                        // Greeting and subtitle
+                        // Greeting and subtitle - only this part is collapsible
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Column(
@@ -698,160 +698,157 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                           ),
                         ),
                         const SizedBox(height: 18),
-                        // Search and Filter Bar
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Container(
-                                height: 48,
-                                margin: const EdgeInsets.only(bottom: 10),
-                                decoration: BoxDecoration(
-                                  color: CupertinoColors.systemGrey6,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: CupertinoColors.systemGrey4,
-                                    width: 0.5,
-                                  ),
-                                ),
-                                child: CupertinoTextField(
-                                  placeholder: 'Zoeken',
-                                  placeholderStyle: TextStyle(
-                                    color: CupertinoColors.systemGrey,
-                                    fontSize: 16,
-                                  ),
-                                  prefix: Padding(
-                                    padding: const EdgeInsets.only(left: 12),
-                                    child: Icon(
-                                      CupertinoIcons.search,
-                                      color: CupertinoColors.systemGrey,
-                                      size: 20,
-                                    ),
-                                  ),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: CupertinoColors.label,
-                                  ),
-                                  decoration: null,
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      searchQuery = value;
-                                    });
-                                  },
-                                ),
-                              ),
-                              // Filter Dropdown - clean list without horizontal scrolling
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20),
-                                child: GestureDetector(
-                                  onTap: () => _showFilterPicker(context),
-                                  child: Container(
-                                    height: 48,
-                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: CupertinoColors.systemGrey4,
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          selectedFilter,
-                                          style: TextStyle(
-                                            color: kMainColor,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                        Icon(
-                                          CupertinoIcons.chevron_down,
-                                          color: kMainColor,
-                                          size: 20,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        // Tab selector
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: CupertinoSlidingSegmentedControl<int>(
-                            groupValue: selectedTab,
-                            backgroundColor: CupertinoColors.systemGrey6,
-                            thumbColor: kMainColor,
-                            children: {
-                              0: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8),
-                                child: Text(
-                                  'Inschrijven',
-                                  style: TextStyle(
-                                    fontSize: isVerySmallScreen ? 11 : 12.5,
-                                    fontWeight: FontWeight.w600,
-                                    color: selectedTab == 0 ? Colors.white : kMainColor,
-                                  ),
-                                ),
-                              ),
-                              1: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8),
-                                child: Text(
-                                  'Binnenkort',
-                                  style: TextStyle(
-                                    fontSize: isVerySmallScreen ? 11 : 12.5,
-                                    fontWeight: FontWeight.w600,
-                                    color: selectedTab == 1 ? Colors.white : kMainColor,
-                                  ),
-                                ),
-                              ),
-                              2: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8),
-                                child: Text(
-                                  'Gesloten',
-                                  style: TextStyle(
-                                    fontSize: isVerySmallScreen ? 11 : 12.5,
-                                    fontWeight: FontWeight.w600,
-                                    color: selectedTab == 2 ? Colors.white : kMainColor,
-                                  ),
-                                ),
-                              ),
-                              3: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8),
-                                child: Text(
-                                  'Onbekend',
-                                  style: TextStyle(
-                                    fontSize: isVerySmallScreen ? 11 : 12.5,
-                                    fontWeight: FontWeight.w600,
-                                    color: selectedTab == 3 ? Colors.white : kMainColor,
-                                  ),
-                                ),
-                              ),
-                            },
-                            onValueChanged: (int? value) {
-                              if (value != null) {
-                                setState(() {
-                                  selectedTab = value;
-                                });
-                              }
-                            },
-                          ),
-                        ),
-                        const SizedBox(height: 18),
                       ],
                     ),
                   ),
                 );
               },
             ),
+            // Always visible controls - Search, Filter, and Tab selector
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    height: 48,
+                    margin: const EdgeInsets.only(bottom: 10),
+                    decoration: BoxDecoration(
+                      color: CupertinoColors.systemGrey6,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: CupertinoColors.systemGrey4,
+                        width: 0.5,
+                      ),
+                    ),
+                    child: CupertinoTextField(
+                      placeholder: 'Zoeken',
+                      placeholderStyle: TextStyle(
+                        color: CupertinoColors.systemGrey,
+                        fontSize: 16,
+                      ),
+                      prefix: Padding(
+                        padding: const EdgeInsets.only(left: 12),
+                        child: Icon(
+                          CupertinoIcons.search,
+                          color: CupertinoColors.systemGrey,
+                          size: 20,
+                        ),
+                      ),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: CupertinoColors.label,
+                      ),
+                      decoration: null,
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                      onChanged: (value) {
+                        setState(() {
+                          searchQuery = value;
+                        });
+                      },
+                    ),
+                  ),
+                  // Filter Dropdown - clean list without horizontal scrolling
+                  GestureDetector(
+                    onTap: () => _showFilterPicker(context),
+                    child: Container(
+                      height: 48,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: CupertinoColors.systemGrey4,
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            selectedFilter,
+                            style: TextStyle(
+                              color: kMainColor,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Icon(
+                            CupertinoIcons.chevron_down,
+                            color: kMainColor,
+                            size: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Tab selector - always visible
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: CupertinoSlidingSegmentedControl<int>(
+                groupValue: selectedTab,
+                backgroundColor: CupertinoColors.systemGrey6,
+                thumbColor: kMainColor,
+                children: {
+                  0: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(
+                      'Alle',
+                      style: TextStyle(
+                        fontSize: isVerySmallScreen ? 11 : 12.5,
+                        fontWeight: FontWeight.w600,
+                        color: selectedTab == 0 ? Colors.white : kMainColor,
+                      ),
+                    ),
+                  ),
+                  1: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(
+                      'Inschrijven',
+                      style: TextStyle(
+                        fontSize: isVerySmallScreen ? 11 : 12.5,
+                        fontWeight: FontWeight.w600,
+                        color: selectedTab == 1 ? Colors.white : kMainColor,
+                      ),
+                    ),
+                  ),
+                  2: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(
+                      'Binnenkort',
+                      style: TextStyle(
+                        fontSize: isVerySmallScreen ? 11 : 12.5,
+                        fontWeight: FontWeight.w600,
+                        color: selectedTab == 2 ? Colors.white : kMainColor,
+                      ),
+                    ),
+                  ),
+                  3: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(
+                      'Gesloten',
+                      style: TextStyle(
+                        fontSize: isVerySmallScreen ? 11 : 12.5,
+                        fontWeight: FontWeight.w600,
+                        color: selectedTab == 3 ? Colors.white : kMainColor,
+                      ),
+                    ),
+                  ),
+                },
+                onValueChanged: (int? value) {
+                  if (value != null) {
+                    setState(() {
+                      selectedTab = value;
+                    });
+                  }
+                },
+              ),
+            ),
+            const SizedBox(height: 18),
             // Result count and Match list
             Expanded(
               child: StreamBuilder<List<Map<String, dynamic>>>(
@@ -1014,115 +1011,40 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
     List<Map<String, dynamic>> onbekend = [];
 
     for (final match in matches) {
-      // Use the correct field for registration text
-      String regText = '';
-      if (match['registration'] != null && match['registration']['text'] != null) {
-        regText = match['registration']['text'].toString();
-      } else if (match['regText'] != null) {
-        regText = match['regText'].toString();
-      } else if (match['registration_text'] != null) {
-        regText = match['registration_text'].toString();
-      } else if (match['raw'] != null && match['raw']['registration_text'] != null) {
-        regText = match['raw']['registration_text'].toString();
-      }
-      regText = regText.trim().toLowerCase();
-
-      // Handle empty registration text - default to 'inschrijven'
-      if (regText.isEmpty) {
-        regText = 'inschrijven';
-      }
+      // Generate registration text based on dates from Firebase
+      final registrationInfo = _generateRegistrationInfo(match);
+      final regText = registrationInfo['text'] as String;
+      final enrollmentDate = registrationInfo['enrollmentDate'] as DateTime?;
+      
+      // Debug: Log the generated registration info
+      print('[DEBUG] Generated registration info for match: ${match['title'] ?? match['organizer']}');
+      print('[DEBUG] Registration text: "$regText"');
+      print('[DEBUG] Enrollment date: ${enrollmentDate?.toIso8601String() ?? 'null'}');
 
       final matchDate = _parseMatchDate(match);
       
-      // Categorize registration text patterns
-      bool isAvailableForEnrollment = false;
-      bool isFutureEnrollment = false;
-      bool isClosed = false;
-      
+      // Categorize based on generated registration text
       if (regText == 'inschrijven') {
-        isAvailableForEnrollment = true;
-      } else if (regText.startsWith('vanaf ')) {
-        isFutureEnrollment = true;
-      } else if (regText == 'niet mogelijk' || regText == 'niet meer mogelijk') {
-        isClosed = true;
-      } else {
-        // Handle specialized enrollment criteria (breed-specific, selection matches, etc.)
-        if (regText.contains('selectie') || regText.contains('kwalificatie') || 
-            regText.contains('alleen') || regText.contains('specifiek') ||
-            regText.contains('staande hond') || regText.contains('rasgroep') ||
-            regText.contains('aantekening') || regText.contains('bezitten')) {
-          // These are specialized subcategory matches - treat as available but with restrictions
-          isAvailableForEnrollment = true;
-        } else {
-          // Unknown pattern - default to available
-          print('[DEBUG] Unknown registration text: "$regText" for match: ${match['organizer']} - defaulting to available');
-          isAvailableForEnrollment = true;
-        }
-      }
-      
-      // Categorize matches based on analysis
-      if (isAvailableForEnrollment && matchDate != null && matchDate.isAfter(DateTime.now())) {
         beschikbaar.add(match);
-      } else if (isFutureEnrollment) {
-        // Parse enrollment date once and attach to match object
-        DateTime? enrollmentDate;
-        try {
-          final dateTimeStr = regText.substring(6).trim(); // Remove 'vanaf ' and trim
-          // Format: "22-06-2025 19:00" or "22-06-2025"
-          final parts = dateTimeStr.split(' ');
-          if (parts.isNotEmpty) {
-            final datePart = parts[0]; // DD-MM-YYYY
-            String timePart = '00:00'; // Default to midnight
-            if (parts.length >= 2) {
-              timePart = parts[1]; // HH:MM
-            }
-            final dateComponents = datePart.split('-');
-            final timeComponents = timePart.split(':');
-            if (dateComponents.length == 3 && timeComponents.length == 2) {
-              enrollmentDate = DateTime(
-                int.parse(dateComponents[2]), // Year
-                int.parse(dateComponents[1]), // Month
-                int.parse(dateComponents[0]), // Day
-                int.parse(timeComponents[0]), // Hour
-                int.parse(timeComponents[1]), // Minute
-              );
-              match['enrollmentDate'] = enrollmentDate;
-              print('[DEBUG] Parsed enrollmentDate for match: '
-                '${match['title'] ?? match['organizer']} -> $enrollmentDate');
-            }
-          }
-        } catch (e) {
-          print('[DEBUG] Failed to parse enrollmentDate for match: '
-            '${match['title'] ?? match['organizer']} - Error: $e');
+        print('[DEBUG] Added match to beschikbaar: ${match['title'] ?? match['organizer']}');
+      } else if (regText.startsWith('vanaf ')) {
+        if (enrollmentDate != null) {
+          match['enrollmentDate'] = enrollmentDate;
         }
-        if (enrollmentDate != null && enrollmentDate.isAfter(DateTime.now())) {
-          binnenkort.add(match);
-        } else {
-          // If enrollment date is in the past, move to appropriate category
-          // Check if the match date is also in the past
-          final matchDate = _parseMatchDate(match);
-          if (matchDate != null && matchDate.isBefore(DateTime.now())) {
-            // Match is in the past, mark as closed
-            gesloten.add(match);
-          } else {
-            // Enrollment date is in the past but match is in the future
-            // This should be "Inschrijven" (open for enrollment)
-            beschikbaar.add(match);
-          }
-        }
-      } else if (isClosed) {
+        binnenkort.add(match);
+        print('[DEBUG] Added match to binnenkort: ${match['title'] ?? match['organizer']}');
+      } else if (regText == 'niet mogelijk' || regText == 'niet meer mogelijk') {
         gesloten.add(match);
+        print('[DEBUG] Added match to gesloten: ${match['title'] ?? match['organizer']}');
       } else {
-        // This should rarely happen now with our improved categorization
         onbekend.add(match);
+        print('[DEBUG] Added match to onbekend: ${match['title'] ?? match['organizer']} - regText: "$regText"');
       }
     }
 
     // Debug: Print categorization results
     print('[DEBUG] Match categorization: beschikbaar=${beschikbaar.length}, binnenkort=${binnenkort.length}, gesloten=${gesloten.length}, onbekend=${onbekend.length}');
     
-
-
     // Get matches for selected tab
     List<Map<String, dynamic>> tabMatches;
     switch (selectedTab) {
@@ -1145,9 +1067,6 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
       final organizer = match['organizer']?.toString().toLowerCase() ?? '';
       final type = match['type']?.toString().toLowerCase() ?? '';
       final location = match['location']?.toString().toLowerCase() ?? '';
-      final registrationText = match['registration_text']?.toString().toLowerCase() ?? 
-                              match['registration']?['text']?.toString().toLowerCase() ?? 
-                              match['raw']?['registration_text']?.toString().toLowerCase() ?? '';
       final remarks = match['remarks']?.toString().toLowerCase() ?? 
                      match['remark']?.toString().toLowerCase() ?? '';
       final calendarType = match['calendar_type']?.toString().toLowerCase() ?? '';
@@ -1159,12 +1078,12 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
             !organizer.contains(query) && 
             !type.contains(query) &&
             !location.contains(query) &&
-            !registrationText.contains(query) &&
             !remarks.contains(query) &&
             !calendarType.contains(query)) {
           return false;
         }
       }
+      
       // Favorites filter
       if (selectedTypes.contains('Favorieten')) {
         // Only show matches whose type is in userFavoriteTypes
@@ -1210,6 +1129,104 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
       }
       return true;
     }).toList();
+  }
+
+  // Generate registration text based on dates from Firebase
+  Map<String, dynamic> _generateRegistrationInfo(Map<String, dynamic> match) {
+    final now = DateTime.now();
+    
+    // Parse the main match date
+    final matchDate = _parseMatchDate(match);
+    
+    // Check if match is in the past
+    if (matchDate != null && matchDate.isBefore(now)) {
+      return {
+        'text': 'niet meer mogelijk',
+        'enrollmentDate': null,
+      };
+    }
+    
+    // Get the registration text from Firebase
+    String regText = '';
+    if (match['registration_text'] != null) {
+      regText = match['registration_text'].toString().trim();
+    }
+    
+    // Parse "vanaf [date] [time]" patterns
+    if (regText.toLowerCase().startsWith('vanaf ')) {
+      try {
+        final dateTimeStr = regText.substring(6).trim(); // Remove 'vanaf ' and trim
+        // Format: "22-06-2025 19:00" or "27-07-2025 19:00"
+        final parts = dateTimeStr.split(' ');
+        if (parts.isNotEmpty) {
+          final datePart = parts[0]; // DD-MM-YYYY
+          String timePart = '00:00'; // Default to midnight
+          if (parts.length >= 2) {
+            timePart = parts[1]; // HH:MM
+          }
+          
+          // Parse date
+          final dateParts = datePart.split('-');
+          if (dateParts.length == 3) {
+            final day = int.parse(dateParts[0]);
+            final month = int.parse(dateParts[1]);
+            final year = int.parse(dateParts[2]);
+            
+            // Parse time
+            final timeParts = timePart.split(':');
+            final hour = timeParts.length >= 1 ? int.parse(timeParts[0]) : 0;
+            final minute = timeParts.length >= 2 ? int.parse(timeParts[1]) : 0;
+            
+            final enrollmentDate = DateTime(year, month, day, hour, minute);
+            
+            return {
+              'text': regText, // Keep original text
+              'enrollmentDate': enrollmentDate,
+            };
+          }
+        }
+      } catch (e) {
+        print('[DEBUG] Error parsing enrollment date from "$regText": $e');
+      }
+    }
+    
+    // For other registration texts, return as-is
+    if (regText.isNotEmpty) {
+      return {
+        'text': regText,
+        'enrollmentDate': null,
+      };
+    }
+    
+    // Default: enrollment is open now
+    return {
+      'text': 'inschrijven',
+      'enrollmentDate': null,
+    };
+  }
+
+  // Helper method to parse dates from various formats
+  DateTime? _parseDate(dynamic dateRaw) {
+    if (dateRaw == null) return null;
+    if (dateRaw is Timestamp) {
+      return dateRaw.toDate();
+    }
+    if (dateRaw is DateTime) {
+      return dateRaw;
+    }
+    if (dateRaw is String) {
+      try {
+        return DateTime.parse(dateRaw);
+      } catch (_) {
+        // Try dd-MM-yyyy format
+        try {
+          return DateFormat('dd-MM-yyyy').parse(dateRaw);
+        } catch (_) {
+          return null;
+        }
+      }
+    }
+    return null;
   }
 
   /// Helper method to parse match date from various formats

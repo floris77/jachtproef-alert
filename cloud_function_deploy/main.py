@@ -21,7 +21,7 @@ from google.cloud import storage
 
 # ORWEJA CREDENTIALS for protected calendar access
 ORWEJA_USERNAME = "Jacqueline vd Hart-Snelle"
-ORWEJA_PASSWORD = "927jfieI1221"
+ORWEJA_PASSWORD = "Jindi11Leia"
 
 # Initialize Firebase
 db = None
@@ -58,8 +58,21 @@ def parse_date(date_text):
         print(f"⚠️ Error parsing date '{date_text}': {e}")
         return datetime.now().date()
 
-def scrape_tier1_public_calendar():
+# ====================================================================
+# ARCHIVED: Tier 1 Scraper (No longer used - July 2025)
+# ====================================================================
+# We switched to using only Tier 2 (protected calendars) because:
+# 1. Tier 2 provides more accurate and detailed data
+# 2. Tier 1 had column mapping issues and inconsistent data
+# 3. Tier 2 includes proper registration status and enrollment dates
+# 
+# This function is kept for historical reference but is not called
+# ====================================================================
+
+def scrape_tier1_public_calendar_ARCHIVED():
     """
+    ARCHIVED: Tier 1 scraper - no longer used
+    
     Tier 1: Scrape public calendar for all matches
     URL: https://my.orweja.nl/widget/kalender/
     """
@@ -112,10 +125,10 @@ def scrape_tier1_public_calendar():
                 location = re.sub(r'\s+', ' ', location)  # Clean multiple spaces
                 location = location.replace('\\', '').strip()  # Remove escape chars
                 
-                # Parse registration status (column 4 if exists)
+                # Parse registration status (column 5 - last column with registration text)
                 reg_status = ""
-                if len(cells) > 4:
-                    reg_status = cells[4].get_text(separator=' ', strip=True)
+                if len(cells) > 5:
+                    reg_status = cells[5].get_text(separator=' ', strip=True)
                     reg_status = re.sub(r'\s+', ' ', reg_status)  # Clean multiple spaces
                     reg_status = reg_status.replace('\\', '').strip()  # Remove escape chars
                 
@@ -452,8 +465,17 @@ def scrape_tier2_protected_calendars():
     print(f"📊 After deduplication: {len(unique_matches)} unique matches")
     return unique_matches
 
-def match_tier1_tier2(tier1_matches, tier2_matches):
+# ====================================================================
+# ARCHIVED: Tier 1/Tier 2 Matching Logic (No longer used - July 2025)
+# ====================================================================
+# This function was used to combine Tier 1 and Tier 2 data, but since
+# we now only use Tier 2, this matching logic is no longer needed.
+# ====================================================================
+
+def match_tier1_tier2_ARCHIVED(tier1_matches, tier2_matches):
     """
+    ARCHIVED: Tier 1/Tier 2 matching logic - no longer used
+    
     Match Tier 1 and Tier 2 entries using date and organizer similarity
     """
     print("🔗 Matching Tier 1 and Tier 2 entries...")
@@ -584,39 +606,24 @@ def mark_past_matches_as_closed():
         print(f"❌ Error marking matches as closed: {e}")
 
 def export_matches_to_csv(tier1_matches, tier2_matches):
-    """Export matches to CSV format"""
+    """Export matches to CSV format (Tier 2 only since July 2025)"""
     output = io.StringIO()
     writer = csv.writer(output)
     
     # Write header
-    writer.writerow(['Tier', 'Date', 'Organizer', 'Location', 'Type', 'Registration_Text', 'Remarks', 'Calendar_Type', 'Source'])
+    writer.writerow(['Date', 'Organizer', 'Location', 'Type', 'Registration_Text', 'Remarks', 'Calendar_Type', 'Source'])
     
-    # Write Tier 1 matches
-    for match in tier1_matches:
-        writer.writerow([
-            'Tier 1',
-            match.get('date', ''),
-            match.get('organizer', ''),
-            match.get('location', ''),
-            match.get('type', ''),
-            match.get('registration_text', ''),
-            match.get('remarks', ''),
-            'Public',
-            'ORWEJA Public Calendar'
-        ])
-    
-    # Write Tier 2 matches
+    # Write Tier 2 matches (our only data source)
     for match in tier2_matches:
         writer.writerow([
-            'Tier 2',
             match.get('date', ''),
             match.get('organizer', ''),
             match.get('location', ''),
             match.get('type', ''),
             match.get('registration_text', ''),
-            match.get('remarks', ''),
-            'Protected',
-            f"ORWEJA {match.get('type', 'Unknown')} Calendar"
+            match.get('remark', ''),  # Note: Tier 2 uses 'remark' not 'remarks'
+            match.get('calendar_type', ''),
+            f"ORWEJA {match.get('calendar_type', 'Unknown')} Calendar"
         ])
     
     return output.getvalue()
@@ -669,44 +676,34 @@ def main(request):
     # Check if CSV export is requested
     request_json = request.get_json(silent=True) or {}
     export_csv = request_json.get('export_all_data', False)
-    use_tier1 = request_json.get('use_tier1', False)  # Optional flag to enable Tier 1
     
     # Initialize Firebase
     firebase_available = initialize_firebase()
     
-    # Step 1: Scrape Tier 2 (protected calendars) - Our primary data source
+    # Step 1: Scrape Tier 2 (protected calendars) - Our only data source
     tier2_matches = scrape_tier2_protected_calendars()
     
     if not tier2_matches:
         print("❌ No matches found in Tier 2")
         return json.dumps({"error": "No matches found in Tier 2"}), 200
     
-    # Step 2: Optionally scrape Tier 1 (only if explicitly requested)
-    tier1_matches = []
-    if use_tier1:
-        print("⚠️ Tier 1 scraping requested - using both tiers")
-        tier1_matches = scrape_tier1_public_calendar()
-        
-        # Match Tier 1 and Tier 2 entries
-        final_matches = match_tier1_tier2(tier1_matches, tier2_matches)
-    else:
-        print("✅ Using Tier 2 only - cleaner data source")
-        final_matches = tier2_matches
+    # Use Tier 2 matches as our final data source
+    print("✅ Using Tier 2 only - cleaner and more accurate data source")
+    final_matches = tier2_matches
     
-    # Step 3: Upload to Firebase (if available and not just exporting)
+    # Step 2: Upload to Firebase (if available and not just exporting)
     if firebase_available and final_matches and not export_csv:
         upload_to_firebase(final_matches)
         mark_past_matches_as_closed()
     
-    # Step 4: Export to CSV if requested
+    # Step 3: Export to CSV if requested
     csv_content = None
     if export_csv:
-        csv_content = export_matches_to_csv(tier1_matches, tier2_matches)
+        csv_content = export_matches_to_csv([], tier2_matches)  # Empty Tier 1 list
         print("📊 Preparing match data for export...")
     
     print("=" * 50)
     print("🎉 Scraper completed successfully!")
-    print(f"📊 Tier 1 matches: {len(tier1_matches)}")
     print(f"📊 Tier 2 matches: {len(tier2_matches)}")
     print(f"📊 Final matches: {len(final_matches)}")
     print("=" * 50)
@@ -714,7 +711,6 @@ def main(request):
     # Return success response
     result = {
         'success': True,
-        'tier1_matches': len(tier1_matches),
         'tier2_matches': len(tier2_matches),
         'tier2_breakdown': {
             'veldwedstrijd': len([m for m in tier2_matches if m.get('calendar_type') == 'Veldwedstrijd']),
@@ -723,17 +719,15 @@ def main(request):
         },
         'final_matches': len(final_matches),
         'matches_uploaded': len(final_matches),
-        'using_tier1': use_tier1,
+        'scraper_version': 'tier2_only',
         'timestamp': datetime.now().isoformat()
     }
     
     # If CSV export is requested, include the actual match data
     if export_csv:
         # Convert dates to strings for JSON serialization
-        tier1_data_serializable = convert_dates_to_strings(tier1_matches)
         tier2_data_serializable = convert_dates_to_strings(tier2_matches)
         
-        result["tier1_data"] = tier1_data_serializable
         result["tier2_data"] = tier2_data_serializable
         result["has_match_data"] = True
     
