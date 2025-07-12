@@ -742,43 +742,47 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
                                   },
                                 ),
                               ),
+                              // Horizontal Scrollable Filter Chips - shows all options upfront
                               Container(
-                                height: 48,
-                                margin: const EdgeInsets.only(bottom: 4),
-                                decoration: BoxDecoration(
-                                  color: _isFilterActive() ? kMainColor.withOpacity(0.10) : CupertinoColors.systemGrey6,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: _isFilterActive() ? kMainColor : CupertinoColors.systemGrey4,
-                                    width: _isFilterActive() ? 1.5 : 0.5,
-                                  ),
-                                ),
-                                child: CupertinoButton(
-                                  padding: const EdgeInsets.symmetric(horizontal: 18),
-                                  onPressed: () {
-                                    _showFilterPicker();
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          selectedFilter,
-                                          style: TextStyle(
-                                            color: _isFilterActive() ? kMainColor : CupertinoColors.label,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
+                                height: 40,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: matchTypes.length,
+                                  itemBuilder: (context, index) {
+                                    final type = matchTypes[index];
+                                    final isSelected = selectedFilter == type;
+                                    
+                                    return Container(
+                                      margin: EdgeInsets.only(right: 8, left: index == 0 ? 4 : 0),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            selectedFilter = type;
+                                            selectedTypes = [type];
+                                          });
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                          decoration: BoxDecoration(
+                                            color: isSelected ? kMainColor : Colors.transparent,
+                                            borderRadius: BorderRadius.circular(20),
+                                            border: Border.all(
+                                              color: isSelected ? kMainColor : CupertinoColors.systemGrey4,
+                                              width: 1.5,
+                                            ),
                                           ),
-                                          overflow: TextOverflow.ellipsis,
+                                          child: Text(
+                                            type,
+                                            style: TextStyle(
+                                              color: isSelected ? Colors.white : kMainColor,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 14,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                      Icon(
-                                        CupertinoIcons.chevron_down,
-                                        color: _isFilterActive() ? kMainColor : CupertinoColors.systemGrey,
-                                        size: 16,
-                                      ),
-                                    ],
-                                  ),
+                                    );
+                                  },
                                 ),
                               ),
                             ],
@@ -921,71 +925,7 @@ class _ProevenListPageState extends State<ProevenListPage> with TickerProviderSt
     );
   }
 
-  // Helper method to determine if a filter is active
-  bool _isFilterActive() {
-    return selectedFilter != 'Alle proeven';
-  }
-
-  // iOS-style filter picker
-  void _showFilterPicker() {
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => Container(
-        height: 300,
-        padding: const EdgeInsets.only(top: 6.0),
-        margin: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        color: CupertinoColors.systemBackground.resolveFrom(context),
-        child: SafeArea(
-          top: false,
-          child: Column(
-            children: [
-              Container(
-                width: 40,
-                height: 4,
-                margin: const EdgeInsets.only(bottom: 8),
-                decoration: BoxDecoration(
-                  color: CupertinoColors.systemGrey4,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              Expanded(
-                child: CupertinoPicker(
-                  magnification: 1.2,
-                  squeeze: 1.2,
-                  useMagnifier: true,
-                  itemExtent: 50,
-                  scrollController: FixedExtentScrollController(
-                    initialItem: matchTypes.indexOf(selectedFilter),
-                  ),
-                  onSelectedItemChanged: (int selectedIndex) {
-                    setState(() {
-                      selectedFilter = matchTypes[selectedIndex];
-                      selectedTypes = [matchTypes[selectedIndex]];
-                    });
-                  },
-                  children: List<Widget>.generate(matchTypes.length, (int index) {
-                    final isFavorite = matchTypes[index] == 'Favorieten';
-                    return Center(
-                      child: Text(
-                        matchTypes[index],
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: isFavorite ? FontWeight.bold : FontWeight.w500,
-                          color: isFavorite ? kMainColor : CupertinoColors.label,
-                        ),
-                      ),
-                    );
-                  }),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // Removed unused filter picker methods - now using horizontal scrollable chips
 
   // Helper method to get filtered matches
   List<Map<String, dynamic>> _getFilteredMatches(List<Map<String, dynamic>> matches) {
