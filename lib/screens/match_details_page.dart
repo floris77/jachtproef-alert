@@ -209,6 +209,47 @@ class _MatchDetailsPageContentState extends State<_MatchDetailsPageContent> with
     return '${org}_$date';
   }
 
+  String _cleanText(String text) {
+    // Clean up text by removing email protection and formatting issues
+    String cleaned = text;
+    
+    // Remove email protection text (various formats)
+    cleaned = cleaned.replaceAll(RegExp(r'\[email[^\]]*protected\]'), '');
+    cleaned = cleaned.replaceAll(RegExp(r'\[email[^\]]*\]'), '');
+    
+    // Remove "Aanvang:" and similar prefixes
+    cleaned = cleaned.replaceAll(RegExp(r'Aanvang:\s*\d{1,2}[:.]\d{2}'), '');
+    
+    // Fix spacing issues in text (especially for locations)
+    cleaned = _fixTextSpacing(cleaned);
+    
+    // Clean up multiple spaces and trim
+    cleaned = cleaned.replaceAll(RegExp(r'\s+'), ' ').trim();
+    
+    return cleaned;
+  }
+  
+  String _fixTextSpacing(String text) {
+    if (text.isEmpty) return text;
+    
+    // Fix common concatenation issues
+    String fixed = text
+        // Add spaces before capital letters (camelCase fix)
+        .replaceAllMapped(RegExp(r'([a-z])([A-Z])'), (match) => '${match.group(1)} ${match.group(2)}')
+        // Add spaces before numbers if missing
+        .replaceAllMapped(RegExp(r'([a-zA-Z])(\d)'), (match) => '${match.group(1)} ${match.group(2)}')
+        // Clean up multiple spaces
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+    
+    // Log the fix if it changed (for debugging)
+    if (fixed != text && text.isNotEmpty) {
+      print('📍 [UI] Fixed text spacing: "$text" → "$fixed"');
+    }
+    
+    return fixed;
+  }
+
   Future<void> _toggleNotifications() async {
     // Optimistic update - update UI immediately
     final newState = !notificationsOn;
@@ -416,9 +457,33 @@ Gedeeld via JachtProef Alert 📱''';
     // Use the passed-in match data directly - no async loading needed
     final match = widget.match;
     final matchDate = _getMatchDate(match);
-    final enrollmentDate = _getEnrollmentOpeningDate(match);
+    // Use enrollmentDate from match if available, otherwise fall back to parsing
+    final enrollmentDate = match['enrollmentDate'] is DateTime
+        ? match['enrollmentDate']
+        : _getEnrollmentOpeningDate(match);
+    final now = DateTime.now();
+    // Debug: print both enrollmentDate and now with time zones and values
+    // ignore: avoid_print
+    print('[DEBUG] enrollmentDate: '
+      '${enrollmentDate != null ? enrollmentDate.toIso8601String() : 'null'} (runtimeType: ${enrollmentDate?.runtimeType})');
+    print('[DEBUG] now: ${now.toIso8601String()} (runtimeType: ${now.runtimeType})');
+    final canEnableNotifications = enrollmentDate != null && enrollmentDate.isAfter(now);
+    print('[DEBUG] canEnableNotifications: $canEnableNotifications');
     final hasValidDate = matchDate != null;
+    // Debug log for enrollmentDate
+    // ignore: avoid_print
+    print('[DEBUG] enrollmentDate for match details: '
+      '${match['title'] ?? match['organizer']} -> '
+      '${enrollmentDate != null ? '$enrollmentDate (type: ${enrollmentDate.runtimeType})' : 'null'}');
     
+    final canAddToAgenda = matchDate != null;
+    // Get registration text for notification enabling
+    String regText = match['registration']?['text']?.toString() ?? match['registration_text']?.toString() ?? match['raw']?['registration_text']?.toString() ?? '';
+    // Determine registration status
+    regText = regText.trim().toLowerCase();
+    // Only disable for 'Binnenkort' (not yet open)
+    final canEnroll = !regText.startsWith('vanaf ');
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Proef Details'),
@@ -436,7 +501,7 @@ Gedeeld via JachtProef Alert 📱''';
                 // Organizer (RichText)
                 RichText(
                   text: TextSpan(
-                    text: match['organizer']?.toString() ?? 'Onbekend',
+                    text: _cleanText(match['organizer']?.toString() ?? 'Onbekend'),
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -468,7 +533,7 @@ Gedeeld via JachtProef Alert 📱''';
                       _buildInfoRow(
                   icon: Icons.location_on,
                         title: 'Locatie',
-                        subtitle: match['location']?.toString() ?? 'Onbekend',
+                        subtitle: _cleanText(match['location']?.toString() ?? 'Onbekend'),
                   useRichText: true,
                   ),
                 // Date (RichText)
@@ -503,7 +568,7 @@ Gedeeld via JachtProef Alert 📱''';
                           ),
                     child: RichText(
                       text: TextSpan(
-                        children: _breakWord(match['remark'].toString(), Colors.black87, 16, FontWeight.normal),
+                        children: _breakWord(_cleanText(match['remark'].toString()), Colors.black87, 16, FontWeight.normal),
                             ),
                           ),
                         ),
@@ -625,7 +690,9 @@ Gedeeld via JachtProef Alert 📱''';
   }
 
   Widget _buildActionButtons(BuildContext context, Map<String, dynamic> match, bool isEnrolled, bool notificationsOn, bool inAgenda, bool hasValidDate) {
-    final enrollmentDate = _getEnrollmentOpeningDate(match);
+    final enrollmentDate = match['enrollmentDate'] is DateTime
+        ? match['enrollmentDate']
+        : _getEnrollmentOpeningDate(match);
     final now = DateTime.now();
     final canEnableNotifications = enrollmentDate != null && enrollmentDate.isAfter(now);
     final matchDate = _getMatchDate(match);
@@ -639,26 +706,23 @@ Gedeeld via JachtProef Alert 📱''';
 
     return Column(
       children: [
-        AbsorbPointer(
-          absorbing: !canEnroll || isSavingEnrollment,
-          child: Opacity(
-            opacity: canEnroll ? 1.0 : 0.5,
-            child: _buildCupertinoActionButton(
+        // Only show enrollment button when enrollment is available
+        if (canEnroll) ...[
+          _buildCupertinoActionButton(
           icon: isEnrolled ? CupertinoIcons.checkmark_circle_fill : CupertinoIcons.circle,
               label: isSavingEnrollment
                   ? 'Bezig met opslaan...'
                   : 'Inschrijven',
           color: isEnrolled ? kMainColor : Colors.black,
           filled: isEnrolled,
-              onTap: canEnroll && !isSavingEnrollment
+            onTap: !isSavingEnrollment
                   ? () {
                       _handleEnrollmentTap();
                   }
                   : null,
-                ),
-          ),
         ),
         const SizedBox(height: 12),
+        ],
         AbsorbPointer(
           absorbing: !canEnableNotifications,
           child: Opacity(

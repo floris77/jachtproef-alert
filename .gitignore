@@ -46,3 +46,5 @@ app.*.map.json
 scraper-service-account.json
 *.apk
 *.aab
+node_modules/
+*.log

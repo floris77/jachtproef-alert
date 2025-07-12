@@ -144,6 +144,27 @@ class NotificationService {
     String? payload,
   }) async {
     try {
+      // Validate that the scheduled time is in the future
+      final now = DateTime.now();
+      if (scheduledTime.isBefore(now)) {
+        final timeUntil = scheduledTime.difference(now);
+        print('❌ Cannot schedule notification in the past. Scheduled: $scheduledTime, Now: $now, Difference: ${timeUntil.inMinutes} minutes');
+        throw ArgumentError('Cannot schedule notification in the past. Scheduled time must be in the future.');
+      }
+
+      // Convert to Amsterdam timezone with proper validation
+      final amsterdam = tz.getLocation('Europe/Amsterdam');
+      final tzScheduledTime = tz.TZDateTime.from(scheduledTime, amsterdam);
+      
+      // Double-check the timezone-converted time is still in the future
+      final tzNow = tz.TZDateTime.now(amsterdam);
+      if (tzScheduledTime.isBefore(tzNow)) {
+        print('❌ TZDateTime conversion resulted in past time. Original: $scheduledTime, Converted: $tzScheduledTime, TZ Now: $tzNow');
+        throw ArgumentError('TZDateTime conversion resulted in a past time. Cannot schedule notification.');
+      }
+
+      print('📅 Scheduling notification for ID $id at $tzScheduledTime (local: $scheduledTime)');
+
       const AndroidNotificationDetails androidDetails =
           AndroidNotificationDetails(
         'jachtproef_alerts',
@@ -168,21 +189,24 @@ class NotificationService {
         id,
         title,
         body,
-        tz.TZDateTime.from(scheduledTime, tz.local),
+        tzScheduledTime,
         details,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         payload: payload,
       ).timeout(
-        const Duration(seconds: 5),
+        const Duration(seconds: 10),
         onTimeout: () {
           print('⚠️ Notification scheduling timed out for ID: $id');
-          throw Exception('Notification scheduling timed out');
+          throw Exception('Notification scheduling timed out after 10 seconds');
         },
       );
       
-      print('✅ Notification scheduled successfully for ID: $id');
+      print('✅ Notification scheduled successfully for ID: $id at $tzScheduledTime');
     } catch (e) {
       print('❌ Error scheduling notification for ID $id: $e');
+      if (e.toString().contains('scheduledDate')) {
+        throw ArgumentError('Invalid scheduledDate: The scheduled time must be in the future. Original error: $e');
+      }
       rethrow;
     }
   }

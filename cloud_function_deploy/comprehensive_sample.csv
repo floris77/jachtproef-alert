@@ -1,0 +1,9 @@
+date,tier1_organizer,tier1_type,tier1_location,tier1_registration,tier2_organizer,tier2_type,tier2_calendar_type,tier2_location,match_found,similarity_score,normalized_tier1,normalized_tier2,notes
+2025-12-01,Jachtvereniging Amsterdam,veldwedstrijd,Amsterdam,Inschrijven,Jachtvereniging Amsterdam,MAP,MAP Calendar,Amsterdam,YES,1.000,jachtvereniging amsterdam,jachtvereniging amsterdam,Perfect match - should work
+2025-12-01,KNJV Noord-Holland,veldwedstrijd,Noord-Holland,Inschrijven,KNJV Noord-Holland,KNJV,KNJV Calendar,Noord-Holland,YES,1.000,knjv noordholland,knjv noordholland,Perfect match - should work
+2025-12-08,PJP Gelderland,veldwedstrijd,Gelderland,Inschrijven,PJP Gelderland,PJP,PJP Calendar,Gelderland,YES,1.000,pjp gelderland,pjp gelderland,Perfect match - should work
+2025-12-15,Jachtvereniging Rotterdam,veldwedstrijd,Rotterdam,Inschrijven,,,Rotterdam,NO,,jachtvereniging rotterdam,,Only in Tier 1 - no Tier 2 match
+2025-12-22,KNJV Zuid-Holland,veldwedstrijd,Zuid-Holland,Inschrijven,,,Zuid-Holland,NO,,knjv zuidholland,,Only in Tier 1 - no Tier 2 match
+2025-12-01,,,Amsterdam,Inschrijven,Stichting Jachtvereniging,MAP,MAP Calendar,Amsterdam,NO,,,stichting jachtvereniging,Only in Tier 2 - different naming
+2025-12-08,,,Gelderland,Inschrijven,PJP-Gelderland,PJP,PJP Calendar,Gelderland,NO,,,pjpgelderland,Only in Tier 2 - different naming
+2025-12-15,,,Rotterdam,Inschrijven,&nbsp;Jachtvereniging&nbsp;,MAP,MAP Calendar,Rotterdam,NO,,,jachtvereniging,Only in Tier 2 - HTML entities 

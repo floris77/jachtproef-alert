@@ -1,0 +1,620 @@
+executionId: j15fkhr79i2x
+result: "{\"success\": true, \"tier1_matches\": 0, \"tier2_matches\": 145, \"tier2_breakdown\"\
+  : {\"veldwedstrijd\": 84, \"jachthondenproef\": 60, \"orweja_werktest\": 1}, \"\
+  final_matches\": 145, \"matches_uploaded\": 145, \"using_tier1\": false, \"timestamp\"\
+  : \"2025-07-06T20:16:59.399118\", \"tier1_data\": [], \"tier2_data\": [{\"date\"\
+  : \"2025-07-24\", \"organizer\": \"CAC Apporteerwedstrijd\", \"location\": \"Chesapeake\
+  \ Bay Retriever Club Nederland[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\"\
+  , \"registration_text\": \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\",\
+  \ \"source\": \"tier2\"}, {\"date\": \"2025-09-03\", \"organizer\": \"CACIT Najaarswedstrijd\
+  \ Continentaal I koppel\", \"location\": \"Continentale Staande honden Vereeniging[email\\\
+  u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\": \"selectie\
+  \ wedstrijd wk continentale\", \"calendar_type\": \"Veldwedstrijd\", \"source\"\
+  : \"tier2\"}, {\"date\": \"2025-09-03\", \"organizer\": \"CAC Zweetspoorproef C\"\
+  , \"location\": \"Vereniging De Weimarse Staande Hond[email\\u00a0protected]\",\
+  \ \"type\": \"Veldwedstrijd\", \"registration_text\": \"alleen inschrijven met een\
+  \ staande hond (rasgroep 7) de hond moet tenminste een van de aantekeningen zw d,\
+  \ zw e, zw f bezitten\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"\
+  }, {\"date\": \"2025-09-06\", \"organizer\": \"CAC Najaarswedstrijd Continentaal\
+  \ I solo\", \"location\": \"Nederlandse Vereniging \\\"De Duitse Staande Korthaar\\\
+  \"[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2025-09-06\", \"organizer\": \"CAC Najaarswedstrijd Quete a la Francaise\
+  \ solo\", \"location\": \"Nederlandse Pointer Club[email\\u00a0protected]\", \"\
+  type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-06\", \"organizer\"\
+  : \"Jeugd Jeugdwedstrijd najaar staande honden\", \"location\": \"Nederlandse Vereniging\
+  \ Langhaar[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2025-09-10\", \"organizer\": \"Jeugd Jeugdwedstrijd najaar staande\
+  \ honden\", \"location\": \"Vereniging De Drentsche Patrijshond[email\\u00a0protected]\"\
+  , \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-10\", \"organizer\"\
+  : \"CAC Najaarswedstrijd Continentaal II solo\", \"location\": \"Epagneul Vereniging\
+  \ Nederland[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2025-09-11\", \"organizer\": \"Jeugd Jeugdwedstrijd najaar staande\
+  \ honden\", \"location\": \"Vereniging De Weimarse Staande Hond[email\\u00a0protected]\"\
+  , \"type\": \"Veldwedstrijd\", \"registration_text\": \"voor jeugdhonden continentaal\
+  \ ii (c)\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\"\
+  : \"2025-09-11\", \"organizer\": \"CACIT Najaarswedstrijd Continentaal I solo\"\
+  , \"location\": \"Nederlandse Vereniging Langhaar[email\\u00a0protected]\", \"type\"\
+  : \"Veldwedstrijd\", \"registration_text\": \"inschrijven\", \"calendar_type\":\
+  \ \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-12\", \"organizer\"\
+  : \"CACIT Najaarswedstrijd Continentaal I solo\", \"location\": \"Nederlandse Vereniging\
+  \ Langhaari.s.m: Vereniging de Drentsche Patrijshond[email\\u00a0protected]\", \"\
+  type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-13\", \"organizer\"\
+  : \"n.v.t. Certificaatdag Spaniels\", \"location\": \"Engelse Springer Club, Welsh\
+  \ Springer Spaniel Club, Cocker Spaniel Club[email\\u00a0protected]\", \"type\"\
+  : \"Veldwedstrijd\", \"registration_text\": \"inschrijven\", \"calendar_type\":\
+  \ \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-13\", \"organizer\"\
+  : \"CACIT Najaarswedstrijd Continentaal I solo\", \"location\": \"Nederlandse Vereniging\
+  \ Langhaar[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2025-09-14\", \"organizer\": \"CAC Zweetspoorproef F\", \"location\"\
+  : \"Nederlandse Teckel Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\"\
+  , \"registration_text\": \"alleen open voor dashonden (groep vi)\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-15\", \"organizer\"\
+  : \"CAC Najaarswedstrijd Continentaal I solo\", \"location\": \"Nederlandse Vereniging\
+  \ van Hongaarse Staande Honden 'Vizsla'[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\"\
+  , \"registration_text\": \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\",\
+  \ \"source\": \"tier2\"}, {\"date\": \"2025-09-15\", \"organizer\": \"CAC Najaarswedstrijd\
+  \ Continentaal II solo\", \"location\": \"Nederlandse Grote Munsterlander Vereniging[email\\\
+  u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\"\
+  , \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-16\"\
+  , \"organizer\": \"CAC Najaarswedstrijd Continentaal II solo\", \"location\": \"\
+  Bracco Italiano Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2025-09-17\", \"organizer\": \"Jeugd Jeugdwedstrijd najaar staande\
+  \ honden\", \"location\": \"Nederlandse Vereniging Langhaar[email\\u00a0protected]\"\
+  , \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-17\", \"organizer\"\
+  : \"CAC Zweetspoorproef F\", \"location\": \"Nederlandse Vereniging Langhaar[email\\\
+  u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\"\
+  , \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-17\"\
+  , \"organizer\": \"Jeugd Jeugdwedstrijd najaar staande honden\", \"location\": \"\
+  Nederlandse Vereniging van Heidewachtel Liefhebbers[email\\u00a0protected]\", \"\
+  type\": \"Veldwedstrijd\", \"registration_text\": \"indeling op basis lotingsprotocol\"\
+  , \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-18\"\
+  , \"organizer\": \"CAC Najaarswedstrijd Continentaal I solo\", \"location\": \"\
+  Nederlandse Vereniging van Hongaarse Staande Honden 'Vizsla'[email\\u00a0protected]\"\
+  , \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-19\", \"organizer\"\
+  : \"CAC Najaarswedstrijd Continentaal II solo\", \"location\": \"Vereniging De Drentsche\
+  \ Patrijshond[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2025-09-19\", \"organizer\": \"CAC Najaarswedstrijd Continentaal\
+  \ I solo\", \"location\": \"Vereniging Vrienden Duits Draadhaar[email\\u00a0protected]\"\
+  , \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-20\", \"organizer\"\
+  : \"CACIT Najaarswedstrijd Continentaal I solo\", \"location\": \"Nederlandse Vereniging\
+  \ Langhaar[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2025-09-20\", \"organizer\": \"Jeugd Jeugdwedstrijd najaar staande\
+  \ honden\", \"location\": \"Vereniging Vrienden Duits Draadhaar[email\\u00a0protected]\"\
+  , \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-20\", \"organizer\"\
+  : \"CAC Najaarswedstrijd Continentaal II solo\", \"location\": \"Bracco Italiano\
+  \ Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2025-09-20\", \"organizer\": \"CACIT Najaarswedstrijd Quete a la\
+  \ Francaise koppel\", \"location\": \"Vereniging Liefhebbers van de Engelse Setter[email\\\
+  u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\"\
+  , \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-20\"\
+  , \"organizer\": \"CAC Najaarswedstrijd Quete a la Francaise solo\", \"location\"\
+  : \"Vereniging Liefhebbers van de Engelse Setter[email\\u00a0protected]\", \"type\"\
+  : \"Veldwedstrijd\", \"registration_text\": \"inschrijven\", \"calendar_type\":\
+  \ \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-22\", \"organizer\"\
+  : \"Jeugd Jeugdwedstrijd najaar staande honden\", \"location\": \"Nederlandse Vereniging\
+  \ van Hongaarse Staande Honden 'Vizsla'[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\"\
+  , \"registration_text\": \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\",\
+  \ \"source\": \"tier2\"}, {\"date\": \"2025-09-23\", \"organizer\": \"CAC Najaarswedstrijd\
+  \ Continentaal II solo\", \"location\": \"Vereniging Slowaakse Ruwharige Staande\
+  \ Hond[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2025-09-24\", \"organizer\": \"Jeugd Jeugdwedstrijd najaar staande\
+  \ honden\", \"location\": \"Nederlandse Vereniging Langhaar[email\\u00a0protected]\"\
+  , \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-24\", \"organizer\"\
+  : \"CAC Najaarswedstrijd Continentaal II solo\", \"location\": \"Vereniging De Weimarse\
+  \ Staande Hond[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2025-09-24\", \"organizer\": \"CAC Najaarswedstrijd Continentaal\
+  \ I solo\", \"location\": \"Epagneul Breton Club Nederland[email\\u00a0protected]\"\
+  , \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-24\", \"organizer\"\
+  : \"Jeugd Jeugdwedstrijd najaar staande honden\", \"location\": \"Epagneul Vereniging\
+  \ Nederland[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"evn continentaal ii jeugdwedstrijd\", \"calendar_type\": \"Veldwedstrijd\",\
+  \ \"source\": \"tier2\"}, {\"date\": \"2025-09-25\", \"organizer\": \"CACIT Najaarswedstrijd\
+  \ Continentaal I solo\", \"location\": \"Continentale Staande honden Vereeniging[email\\\
+  u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\"\
+  , \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-26\"\
+  , \"organizer\": \"CACIT Najaarswedstrijd Continentaal I solo\", \"location\": \"\
+  Continentale Staande honden Vereeniging[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\"\
+  , \"registration_text\": \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\",\
+  \ \"source\": \"tier2\"}, {\"date\": \"2025-09-27\", \"organizer\": \"n.v.t. Certificaatdag\
+  \ Spaniels\", \"location\": \"Engelse Springer Club, Welsh Springer Spaniel Club,\
+  \ Cocker Spaniel Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"\
+  registration_text\": \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\"\
+  : \"tier2\"}, {\"date\": \"2025-09-27\", \"organizer\": \"Jeugd Jeugdwedstrijd najaar\
+  \ staande honden\", \"location\": \"Vereniging De Weimarse Staande Hond[email\\\
+  u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\"\
+  , \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-27\"\
+  , \"organizer\": \"CAC Najaarswedstrijd Continentaal II solo\", \"location\": \"\
+  Vereniging De Drentsche Patrijshond[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\"\
+  , \"registration_text\": \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\",\
+  \ \"source\": \"tier2\"}, {\"date\": \"2025-09-27\", \"organizer\": \"CAC Najaarswedstrijd\
+  \ Quete a la Francaise solo\", \"location\": \"Nederlandse Pointer Clubi.s.m: Ierse\
+  \ Setterclub[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2025-09-28\", \"organizer\": \"CAC Najaarswedstrijd Continentaal\
+  \ I solo\", \"location\": \"Epagneul Breton Club Nederland[email\\u00a0protected]\"\
+  , \"type\": \"Veldwedstrijd\", \"registration_text\": \"locatie samenkomst volgt\"\
+  , \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-29\"\
+  , \"organizer\": \"CAC Najaarswedstrijd Continentaal II solo\", \"location\": \"\
+  Bracco Italiano Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2025-09-29\", \"organizer\": \"Jeugd Jeugdwedstrijd najaar staande\
+  \ honden\", \"location\": \"Nederlandse Grote Munsterlander Vereniging[email\\u00a0protected]\"\
+  , \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-09-30\", \"organizer\"\
+  : \"CAC Najaarswedstrijd Continentaal II solo\", \"location\": \"Bracco Italiano\
+  \ Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2025-10-01\", \"organizer\": \"Jeugd Jeugdwedstrijd najaar staande\
+  \ honden\", \"location\": \"Continentale Staande honden Vereeniging[email\\u00a0protected]\"\
+  , \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-10-02\", \"organizer\"\
+  : \"Jeugd Jeugdwedstrijd najaar staande honden\", \"location\": \"Vereniging De\
+  \ Drentsche Patrijshond[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"\
+  registration_text\": \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\"\
+  : \"tier2\"}, {\"date\": \"2025-10-02\", \"organizer\": \"CAC Najaarswedstrijd Continentaal\
+  \ I solo\", \"location\": \"Epagneul Breton Club Nederland[email\\u00a0protected]\"\
+  , \"type\": \"Veldwedstrijd\", \"registration_text\": \"locatie samenkomst volgt\"\
+  , \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-10-03\"\
+  , \"organizer\": \"Jeugd Jeugdwedstrijd najaar staande honden\", \"location\": \"\
+  Nederlandse Vereniging Langhaar[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\"\
+  , \"registration_text\": \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\",\
+  \ \"source\": \"tier2\"}, {\"date\": \"2025-10-03\", \"organizer\": \"CAC Najaarswedstrijd\
+  \ Quete a la Francaise solo\", \"location\": \"Nederlandse Pointer Club[email\\\
+  u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\"\
+  , \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-10-03\"\
+  , \"organizer\": \"CAC Najaarswedstrijd Continentaal I solo\", \"location\": \"\
+  Nederlandse Vereniging Langhaar[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\"\
+  , \"registration_text\": \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\",\
+  \ \"source\": \"tier2\"}, {\"date\": \"2025-10-04\", \"organizer\": \"CAC Zweetspoorproef\
+  \ F\", \"location\": \"Vereniging Vrienden Duits Draadhaar[email\\u00a0protected]\"\
+  , \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-10-04\", \"organizer\"\
+  : \"CAC Zweetspoorproef F\", \"location\": \"Parson Russell Terrier Club Nederland[email\\\
+  u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\": \"honden\
+  \ dienen schotvast certificaat te hebben behaald.\", \"calendar_type\": \"Veldwedstrijd\"\
+  , \"source\": \"tier2\"}, {\"date\": \"2025-10-04\", \"organizer\": \"Jeugd Jeugdwedstrijd\
+  \ najaar staande honden\", \"location\": \"Nederlandse Vereniging Langhaar[email\\\
+  u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\"\
+  , \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-10-04\"\
+  , \"organizer\": \"CAC Najaarswedstrijd Continentaal I solo\", \"location\": \"\
+  Nederlandse Vereniging Langhaar[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\"\
+  , \"registration_text\": \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\",\
+  \ \"source\": \"tier2\"}, {\"date\": \"2025-10-08\", \"organizer\": \"Jeugd Jeugdwedstrijd\
+  \ najaar staande honden\", \"location\": \"Vereniging De Drentsche Patrijshond[email\\\
+  u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\": \"i.bc -\
+  \ continentale staande honden\", \"calendar_type\": \"Veldwedstrijd\", \"source\"\
+  : \"tier2\"}, {\"date\": \"2025-10-08\", \"organizer\": \"CACIT Najaarswedstrijd\
+  \ Continentaal I solo\", \"location\": \"Continentale Staande honden Vereeniging[email\\\
+  u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\"\
+  , \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-10-08\"\
+  , \"organizer\": \"CAC Zweetspoorproef F\", \"location\": \"Nederlandse Fauve de\
+  \ Bretagne Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"cat. iv (lopende honden) en v (zweethonden)\", \"calendar_type\": \"Veldwedstrijd\"\
+  , \"source\": \"tier2\"}, {\"date\": \"2025-10-11\", \"organizer\": \"Jeugd Jeugdwedstrijd\
+  \ najaar staande honden\", \"location\": \"Nederlandse Vereniging Langhaar[email\\\
+  u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\"\
+  , \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-10-11\"\
+  , \"organizer\": \"Jeugd Jeugdwedstrijd najaar staande honden\", \"location\": \"\
+  Vereniging Vrienden Duits Draadhaar[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\"\
+  , \"registration_text\": \"alleen voor duitse staande draadharen\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-10-11\", \"organizer\"\
+  : \"CACIT Najaarswedstrijd Continentaal I solo\", \"location\": \"Nederlandse Vereniging\
+  \ Langhaar[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2025-10-11\", \"organizer\": \"n.v.t. Luid op spoor proef\", \"location\"\
+  : \"Nederlandse Teckel Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\"\
+  , \"registration_text\": \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\",\
+  \ \"source\": \"tier2\"}, {\"date\": \"2025-10-12\", \"organizer\": \"Jeugd Jeugdwedstrijd\
+  \ najaar staande honden\", \"location\": \"Nederlandse Vereniging Langhaar[email\\\
+  u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\"\
+  , \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-10-18\"\
+  , \"organizer\": \"CAC Zweetspoorproef D\", \"location\": \"Nederlandse Brakken\
+  \ Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"honden dienen 2 jaar oud te zijn en schotvast certificaat te hebben behaald.\"\
+  , \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-10-18\"\
+  , \"organizer\": \"CAC Zweetspoorproef E\", \"location\": \"Nederlandse Teckel Club[email\\\
+  u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\": \"alleen\
+  \ open voor dashonden (groep vi)\", \"calendar_type\": \"Veldwedstrijd\", \"source\"\
+  : \"tier2\"}, {\"date\": \"2025-10-25\", \"organizer\": \"CAC Spanielwedstrijd voor\
+  \ de voet\", \"location\": \"Engelse Springer Club, Welsh Springer Spaniel Club,\
+  \ Cocker Spaniel Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"\
+  registration_text\": \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\"\
+  : \"tier2\"}, {\"date\": \"2025-11-01\", \"organizer\": \"CAC Spanielwedstrijd voor\
+  \ de voet\", \"location\": \"Engelse Springer Club, Welsh Springer Spaniel Club,\
+  \ Cocker Spaniel Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"\
+  registration_text\": \"alleen voor ecs rubriek ii.a\", \"calendar_type\": \"Veldwedstrijd\"\
+  , \"source\": \"tier2\"}, {\"date\": \"2025-11-01\", \"organizer\": \"CAC Zweetspoorproef\
+  \ F\", \"location\": \"Cesky Fousek Vereniging Nederland[email\\u00a0protected]\"\
+  , \"type\": \"Veldwedstrijd\", \"registration_text\": \"alleen toegankelijk voor\
+  \ staande honden, bewijs van schotvastheid verplicht.\", \"calendar_type\": \"Veldwedstrijd\"\
+  , \"source\": \"tier2\"}, {\"date\": \"2025-11-01\", \"organizer\": \"CAC Zweetspoorproef\
+  \ F\", \"location\": \"Nederlandse Teckel Club[email\\u00a0protected]\", \"type\"\
+  : \"Veldwedstrijd\", \"registration_text\": \"alleen open voor dashonden (groep\
+  \ vi)\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\"\
+  : \"2025-11-07\", \"organizer\": \"Jeugd Spanielwedstrijd voor de voet\", \"location\"\
+  : \"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker Spaniel Club[email\\\
+  u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\"\
+  , \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-11-08\"\
+  , \"organizer\": \"CAC Zweetspoorproef E\", \"location\": \"Nederlandse Brakken\
+  \ Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"honden dienen schotvast certificaat te hebben behaald.\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-11-15\", \"organizer\"\
+  : \"Speciaal Spanielwedstrijd voor de voet\", \"location\": \"Engelse Springer Club,\
+  \ Welsh Springer Spaniel Club, Cocker Spaniel Club[email\\u00a0protected]\", \"\
+  type\": \"Veldwedstrijd\", \"registration_text\": \"inschrijven\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-11-15\", \"organizer\"\
+  : \"CAC Zweetspoorproef C\", \"location\": \"Nederlandse Teckel Club[email\\u00a0protected]\"\
+  , \"type\": \"Veldwedstrijd\", \"registration_text\": \"alleen open voor dashonden\
+  \ (groep vi)\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"\
+  date\": \"2025-11-28\", \"organizer\": \"Jeugd Spanielwedstrijd voor de voet\",\
+  \ \"location\": \"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker Spaniel\
+  \ Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2025-12-01\", \"organizer\": \"CAC Apporteerwedstrijd\", \"location\"\
+  : \"Labrador Kring Nederland[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\"\
+  , \"registration_text\": \"datum en plaats  worden later bekend gemaakt\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\", \"remark\": \"Kwalificatie: CAC1\"},\
+  \ {\"date\": \"2025-12-01\", \"organizer\": \"Novice Apporteerwedstrijd\", \"location\"\
+  : \"Nederlandse Retriever Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\"\
+  , \"registration_text\": \"datum en plaats worden later bekend gemaakt\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\"}, {\"date\": \"2025-12-01\", \"organizer\"\
+  : \"CAC Apporteerwedstrijd\", \"location\": \"Nederlandse Retriever Club[email\\\
+  u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\": \"datum en\
+  \ plaats worden later bekend gemaakt\", \"calendar_type\": \"Veldwedstrijd\", \"\
+  source\": \"tier2\", \"remark\": \"Kwalificatie: NRC CACT 1\"}, {\"date\": \"2025-12-01\"\
+  , \"organizer\": \"CACIT Apporteerwedstrijd\", \"location\": \"Nederlandse Retriever\
+  \ Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"datum en plaats worden later bekend gemaakt\", \"calendar_type\": \"Veldwedstrijd\"\
+  , \"source\": \"tier2\", \"remark\": \"Internationale kwalificatie: NRC CACIT 1\"\
+  }, {\"date\": \"2025-12-01\", \"organizer\": \"CAC Apporteerwedstrijd\", \"location\"\
+  : \"Nederlandse Labrador Vereniging[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\"\
+  , \"registration_text\": \"exacte tijdstip en locatie volgt tzt\", \"calendar_type\"\
+  : \"Veldwedstrijd\", \"source\": \"tier2\", \"remark\": \"Kwalificatie: West Brabant\
+  \ CAC 2\"}, {\"date\": \"2025-12-13\", \"organizer\": \"CACIT Spanielwedstrijd voor\
+  \ de voet\", \"location\": \"Engelse Springer Club, Welsh Springer Spaniel Club,\
+  \ Cocker Spaniel Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"\
+  registration_text\": \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\"\
+  : \"tier2\"}, {\"date\": \"2025-12-21\", \"organizer\": \"Jeugd Jeugdwedstrijd spaniels\"\
+  , \"location\": \"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker Spaniel\
+  \ Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2026-01-02\", \"organizer\": \"CACIT Spanielwedstrijd voor de voet\"\
+  , \"location\": \"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker Spaniel\
+  \ Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2026-01-10\", \"organizer\": \"CAC Spanielwedstrijd voor de voet\"\
+  , \"location\": \"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker Spaniel\
+  \ Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2026-01-17\", \"organizer\": \"CAC Spanielwedstrijd voor de voet\"\
+  , \"location\": \"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker Spaniel\
+  \ Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2026-01-24\", \"organizer\": \"CAC Spanielwedstrijd voor de voet\"\
+  , \"location\": \"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker Spaniel\
+  \ Club[email\\u00a0protected]\", \"type\": \"Veldwedstrijd\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Veldwedstrijd\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2025-07-12\", \"organizer\": \"Standaard Jachthonden proef\", \"\
+  location\": \"Vereniging Vrienden Duits Draadhaar[email\\u00a0protected]\", \"type\"\
+  : \"PuttenSchremmersteeg 43882 SE\\u00a0Putten\", \"registration_text\": \"alleen\
+  \ voor duitse staande draadharen\", \"calendar_type\": \"Jachthondenproef\", \"\
+  source\": \"tier2\"}, {\"date\": \"2025-07-12\", \"organizer\": \"Standaard Jachthonden\
+  \ proef\", \"location\": \"Epagneul Vereniging Nederlandi.s.m: Epagneul de Saint\
+  \ Usuge, Slovaakse Staande Draadharen en Duitse staande lang haren[email\\u00a0protected]\"\
+  , \"type\": \"AlmkerkEendenveld thv huisnummer 54283 HV\\u00a0GiessenAanvang: 8.00\"\
+  , \"registration_text\": \"inschrijving voor deze sjp is open voor epagneul picard,\
+  \ epagneul blue de picardie, epagneul francais, epageneul pont audemer, epagneul\
+  \ de saint usuge, slovaakse staande draadharen, duitse staande lang haren  en heidelwachtel.\
+  \ leden van evn en epagneul saint usuge hebben conform het algemeen reglement jachthondenproeven\
+  \ (artikel v.6) 30 dagen  voorrang na opening van de inschrijving.\", \"calendar_type\"\
+  : \"Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"2025-07-18\", \"organizer\"\
+  : \"Standaard Jachthonden proef\", \"location\": \"Vereniging De Drentsche Patrijshondi.s.m:\
+  \ Nederlandse Vereniging voor Stabij- en Wetterhounen[email\\u00a0protected]\",\
+  \ \"type\": \"Landgoed Heerlijkheid Mari\\u00ebnwaerdt't Klooster 54153 RR\\u00a0Beesd\"\
+  , \"registration_text\": \"deze proef is enkel voor drentsche patrijshonden, stabij-\
+  \ en wetterhounen. inschrijving sluit op 27-06\", \"calendar_type\": \"Jachthondenproef\"\
+  , \"source\": \"tier2\"}, {\"date\": \"2025-07-26\", \"organizer\": \"Team Apporteer\
+  \ Proef\", \"location\": \"KNJV Provincie Noord-HollandStichting Jachthonden Noord-Holland,\
+  \ afd. Haarlemmermeer[email\\u00a0protected]\", \"type\": \"Manege SpaarnwoudeHoutrakkerweg\
+  \ 621165 MX\\u00a0HalfwegAanvang: 08.15\", \"registration_text\": \"geannuleerd\
+  \ i.v.m. onvoldoende deelnemers\", \"calendar_type\": \"Jachthondenproef\", \"source\"\
+  : \"tier2\"}, {\"date\": \"2025-07-28\", \"organizer\": \"Standaard Jachthonden\
+  \ proef\", \"location\": \"Stichting Zeeuwse Jachthonden[email\\u00a0protected]\"\
+  , \"type\": \"Sportpark VV RillandiaBatsheweg 544411 RK\\u00a0RillandAanvang: 07.30\"\
+  , \"registration_text\": \"gelijk met inschrijving inschrijfgeld overmaken. zorg\
+  \ dat uw inschrijving compleet is.\", \"calendar_type\": \"Jachthondenproef\", \"\
+  source\": \"tier2\"}, {\"date\": \"2025-07-28\", \"organizer\": \"Standaard Jachthonden\
+  \ proef\", \"location\": \"Nederlandse Vereniging Langhaari.s.m: NVDSK Duitse staande\
+  \ korthaar[email\\u00a0protected]\", \"type\": \"Fam SteggetmanWatermolenweg 127481\
+  \ VL\\u00a0HaaksbergenAanvang: 8.00\", \"registration_text\": \"deze proef kunnen\
+  \ alleen duitse staande langharen en kortharen inschrijven\", \"calendar_type\"\
+  : \"Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"2025-08-02\", \"organizer\"\
+  : \"Standaard Jachthonden proef\", \"location\": \"Continentale Staande honden Vereenigingi.s.m:\
+  \ Jachtcommissie SUN[email\\u00a0protected]\", \"type\": \"Crobse Waardnabij Crob\
+  \ 18HaaftenAanvang: 08.00\", \"registration_text\": \"inschrijving open voor continentaal\
+  \ staande honden en spani\\u00ebls. leden van de organiserende rasverenigingen hebben\
+  \ voorrang tot 10 dagen na openstellen inschrijving.\", \"calendar_type\": \"Jachthondenproef\"\
+  , \"source\": \"tier2\"}, {\"date\": \"2025-08-09\", \"organizer\": \"Standaard\
+  \ Jachthonden proef\", \"location\": \"Jachthondenopleiding 't Hogeland[email\\\
+  u00a0protected]\", \"type\": \"Bosplan BiessumDamlaan9931 TE\\u00a0DelfzijlAanvang:\
+  \ 07.30\", \"registration_text\": \"inschrijven\", \"calendar_type\": \"Jachthondenproef\"\
+  , \"source\": \"tier2\"}, {\"date\": \"2025-08-15\", \"organizer\": \"Standaard\
+  \ Jachthonden proef\", \"location\": \"Stichting Jachthonden Brabant West[email\\\
+  u00a0protected]\", \"type\": \"KlundertMolenvliet 74791 GB\\u00a0KlundertAanvang:\
+  \ 7.30\", \"registration_text\": \"deelnemende hond mag 1 keer deelnemen (15 of\
+  \ 18 aug)\", \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"}, {\"\
+  date\": \"2025-08-16\", \"organizer\": \"Standaard Jachthonden proef\", \"location\"\
+  : \"Nederlandse Vereniging van Hongaarse Staande Honden 'Vizsla'i.s.m: Nederlandse\
+  \ Grote M\\u00fcnsterlander Vereniging[email\\u00a0protected]\", \"type\": \"Crobsche\
+  \ WaardCrob 18 - 204175LR\\u00a0HaaftenAanvang: 8:00\", \"registration_text\": \"\
+  alleen voor vizsla's en grote m\\u00fcnsterlanders. leden van onze vereniging hebben\
+  \ voorrang tot en met 14 dagen na openstelling inschrijving.\", \"calendar_type\"\
+  : \"Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"2025-08-18\", \"organizer\"\
+  : \"Standaard Jachthonden proef\", \"location\": \"Stichting Jachthonden Brabant\
+  \ West[email\\u00a0protected]\", \"type\": \"KlundertMolenvliet 74791 GB\\u00a0KlundertAanvang:\
+  \ 7.30\", \"registration_text\": \"deelnemende hond mag 1 keer deelnemen (15 of\
+  \ 18 aug)\", \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"}, {\"\
+  date\": \"2025-08-23\", \"organizer\": \"MAP proef\", \"location\": \"Nederlandse\
+  \ Labrador Vereniging[email\\u00a0protected]\", \"type\": \"Paviljoen \\\"de Kogeloven\\\
+  \" OostvoorneBrielse Maas 13233LD\\u00a0OostvoorneAanvang: 7.30\", \"registration_text\"\
+  : \"open alleen voor labrador retrievers, leden nlv hebben voorrang\", \"calendar_type\"\
+  : \"Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"2025-08-23\", \"organizer\"\
+  : \"Standaard Jachthonden proef\", \"location\": \"Vereniging Jachthondenopleiding\
+  \ Heuvelrug[email\\u00a0protected]\", \"type\": \"ScherpenzeelBroekerweg  73931\
+  \ PL\\u00a0WoudenbergAanvang: 8.00\", \"registration_text\": \"leden van jagersvereniging\
+  \ provincie utrecht hebben 10 dagen voorrang bij inschrijving\", \"calendar_type\"\
+  : \"Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"2025-08-24\", \"organizer\"\
+  : \"Standaard Jachthonden proef\", \"location\": \"Jhs. St. Hubertus[email\\u00a0protected]\"\
+  , \"type\": \"KC Delfttandhofdreef 102623 EXAanvang: 8\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"\
+  }, {\"date\": \"2025-08-30\", \"organizer\": \"Standaard Jachthonden proef\", \"\
+  location\": \"KNJV Provincie GelderlandStichting Jachthonden Opleiding Terborg[email\\\
+  u00a0protected]\", \"type\": \"Openluchttheater EngbergenBosweg 57083 AB\\u00a0Voorst,\
+  \ gemeente Oude IJsselstreekAanvang: 07.30\", \"registration_text\": \"leden van\
+  \ jagersvereniging provincie gelderland hebben tot 10 dagen na openstelling van\
+  \ de inschrijving  voorrang bij inschrijving. niet complete inschrijvingen worden\
+  \ niet in behandeling genomen. na inschrijving direct uw inschrijfgeld overmaken\"\
+  , \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"\
+  2025-08-30\", \"organizer\": \"Standaard Jachthonden proef\", \"location\": \"Stichting\
+  \ Jachthonden Provincie Noord-Holland, locatie Hoorn[email\\u00a0protected]\", \"\
+  type\": \"Het StreekbosVeilingweg1611BN\\u00a0BovenkarspelAanvang: 07:30\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"\
+  }, {\"date\": \"2025-08-30\", \"organizer\": \"Standaard Jachthonden proef\", \"\
+  location\": \"Stichting Jachthondengroep Uffelte[email\\u00a0protected]\", \"type\"\
+  : \"UffelteRijksweg 417975 RV\\u00a0UffelteAanvang: 7:30\", \"registration_text\"\
+  : \"alleen nog geopend voor het aanpassen van inschrijvingen. nieuwe inschrijvingen\
+  \ niet meer mogelijk.\", \"calendar_type\": \"Jachthondenproef\", \"source\": \"\
+  tier2\"}, {\"date\": \"2025-08-31\", \"organizer\": \"Standaard Jachthonden proef\"\
+  , \"location\": \"KNJV Provincie GelderlandStichting Jachthonden Opleiding Terborgi.s.m:\
+  \ Nederlandse Korthals Griffonclub & Cesky Fousek Vereniging Nederland[email\\u00a0protected]\"\
+  , \"type\": \"Openluchttheater EngbergenBosweg 57083 AB\\u00a0Voorst, gemeente Oude\
+  \ IJsselstreekAanvang: 07.30\", \"registration_text\": \"de inschrijving is alleen\
+  \ open voor staande honden. leden van de nederlandse korthals griffonclub en de\
+  \ cesky fousek vereniging nederland hebben voorrang tot 10 dagen na het openstellen\
+  \ van de inschrijving. niet complete inschrijvingen worden niet in behandeling genomen.\
+  \ na inschrijving direct uw inschrijfgeld overmaken.\", \"calendar_type\": \"Jachthondenproef\"\
+  , \"source\": \"tier2\"}, {\"date\": \"2025-09-05\", \"organizer\": \"Standaard\
+  \ Jachthonden proef\", \"location\": \"KNJV Provincie OverijsselStichting Jachthonden\
+  \ Salland Twente[email\\u00a0protected]\", \"type\": \"LuttenStobbenplasweg 7LuttenAanvang:\
+  \ 7.00\", \"registration_text\": \"leden overijssel, drente, groningen, friesland\
+  \ gaan 10 dagen voor\", \"calendar_type\": \"Jachthondenproef\", \"source\": \"\
+  tier2\"}, {\"date\": \"2025-09-06\", \"organizer\": \"MAP proef\", \"location\"\
+  : \"Labrador Kring Nederland[email\\u00a0protected]\", \"type\": \"Landgoed Hof\
+  \ te DierenKerkallee 26955 JA\\u00a0EllecomAanvang: 07:30\", \"registration_text\"\
+  : \"open voor alle retrieverrassen.  leden van de lkn hebben tot 1 week na openstellen\
+  \ voorrang bij overinschrijving\", \"calendar_type\": \"Jachthondenproef\", \"source\"\
+  : \"tier2\"}, {\"date\": \"2025-09-06\", \"organizer\": \"Standaard Jachthonden\
+  \ proef\", \"location\": \"Stichting Jachthondopleiding De Meinweg[email\\u00a0protected]\"\
+  , \"type\": \"St.Odili\\u00ebnbergAanvang: 08:30\", \"registration_text\": \"na\
+  \ voorrangsperiode van 10 dagen volgt nadere informatie.\", \"calendar_type\": \"\
+  Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"2025-09-06\", \"organizer\"\
+  : \"Standaard Jachthonden proef\", \"location\": \"Stichting Jachthondentraining\
+  \ Frysl\\u00e2n[email\\u00a0protected]\", \"type\": \"TerbantSchoolwegTerbantAanvang:\
+  \ 8:00\", \"registration_text\": \"inschrijven\", \"calendar_type\": \"Jachthondenproef\"\
+  , \"source\": \"tier2\"}, {\"date\": \"2025-09-07\", \"organizer\": \"Standaard\
+  \ Jachthonden proef\", \"location\": \"KNJV Provincie Noord-HollandStichting Jachthonden\
+  \ Provincie Noord Holland, locatie Alkmaar[email\\u00a0protected]\", \"type\": \"\
+  Anna PaulownaBoermansweg 21761LK\\u00a0Anna PaulownaAanvang: 08:00\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"\
+  }, {\"date\": \"2025-09-08\", \"organizer\": \"MAP proef\", \"location\": \"Stichting\
+  \ Zeeuwse Jachthonden[email\\u00a0protected]\", \"type\": \"Rilland Kreekrak gebiedMarkiezaatsweg4411\
+  \ SX\\u00a0RillandAanvang: 07.30\", \"registration_text\": \"gelijk met inschrijving\
+  \ inschrijfgeld overmaken. zorg dat uw inschrijving compleet is.\", \"calendar_type\"\
+  : \"Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"2025-09-08\", \"organizer\"\
+  : \"Standaard Jachthonden proef\", \"location\": \"KNJV Provincie DrentheVereniging\
+  \ Zelfopleiding Jachthonden N&M Drenthe[email\\u00a0protected]\", \"type\": \"GietenGietenAanvang:\
+  \ 07:30\", \"registration_text\": \"geef bij inschrijving aan voor welk diploma\
+  \ (c-b-a) u op wilt gaan.\", \"calendar_type\": \"Jachthondenproef\", \"source\"\
+  : \"tier2\"}, {\"date\": \"2025-09-12\", \"organizer\": \"Standaard Jachthonden\
+  \ proef\", \"location\": \"Stichting Jachthonden Zuid-Holland regio Gouda[email\\\
+  u00a0protected]\", \"type\": \"RottemerenKooilaan 32665 KR\\u00a0Bleiswijk\", \"\
+  registration_text\": \"leden knjv zuid-holland hebben voorrang tot 10 dagen na de\
+  \ openstelling van de inschrijving. graag bij uw betaling aangeven in welke klasse\
+  \ (c, b of a) u wilt deelnemen.\", \"calendar_type\": \"Jachthondenproef\", \"source\"\
+  : \"tier2\"}, {\"date\": \"2025-09-13\", \"organizer\": \"Standaard Jachthonden\
+  \ proef\", \"location\": \"Jachthondentrainingsgroep Stichting 't Sticht[email\\\
+  u00a0protected]\", \"type\": \"De KooihoeveTiendweg 94152 GC\\u00a0RhenoyAanvang:\
+  \ 08.00\", \"registration_text\": \"leden knjv utrecht hebben tot  en met 10 dagen\
+  \ na opening van de inschrijving voorrang bij plaatsing\", \"calendar_type\": \"\
+  Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"2025-09-13\", \"organizer\"\
+  : \"Standaard Jachthonden proef\", \"location\": \"Vereniging De Weimarse Staande\
+  \ Hond[email\\u00a0protected]\", \"type\": \"PuttenSchremmersteeg 23882 SE\\u00a0PuttenAanvang:\
+  \ 08:00\", \"registration_text\": \"alleen open voor weimarse staande honden (kort-\
+  \ en langhaar). leden van de wsh hebben tot de 30ste dag na opening van de inschrijving\
+  \  voorrang.\", \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2025-09-13\", \"organizer\": \"Standaard Jachthonden proef\", \"\
+  location\": \"KNJV Provincie Noord-BrabantStichting Jachthonden training Den Bosch[email\\\
+  u00a0protected]\", \"type\": \"Landgoed BleijendijkBleijendijk 5VughtAanvang: 6,45\"\
+  , \"registration_text\": \"inschrijven\", \"calendar_type\": \"Jachthondenproef\"\
+  , \"source\": \"tier2\"}, {\"date\": \"2025-09-19\", \"organizer\": \"MAP proef\"\
+  , \"location\": \"Jachthondentrainingsgroep Stichting 't Sticht[email\\u00a0protected]\"\
+  , \"type\": \"Landgoed VollenhoveUtrechtsewegDe BiltAanvang: 08.00\", \"registration_text\"\
+  : \"leden knjv utrecht hebben tot  en met 10 dagen na opening van de inschrijving\
+  \ voorrang bij plaatsing\", \"calendar_type\": \"Jachthondenproef\", \"source\"\
+  : \"tier2\"}, {\"date\": \"2025-09-20\", \"organizer\": \"MAP proef\", \"location\"\
+  : \"Vereniging Jachthondenopleiding Heuvelrug[email\\u00a0protected]\", \"type\"\
+  : \"HindersteynLangbroekerdijk nabij Rhodensteinselaan.3972 MC\", \"registration_text\"\
+  : \"leden van jagersvereniging provincie utrecht hebben 10 dagen voorrang bij inschrijving\"\
+  , \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"\
+  2025-09-20\", \"organizer\": \"Standaard Jachthonden proef\", \"location\": \"KNJV\
+  \ Provincie GroningenStichting Jachthonden Westerkwartier[email\\u00a0protected]\"\
+  , \"type\": \"Landgoedboerderij OosterheerdtOosterheerdtstraat 79351 BK\\u00a0LeekAanvang:\
+  \ 08:00\", \"registration_text\": \"inschrijven\", \"calendar_type\": \"Jachthondenproef\"\
+  , \"source\": \"tier2\"}, {\"date\": \"2025-09-20\", \"organizer\": \"Standaard\
+  \ Jachthonden proef\", \"location\": \"KNJV Provincie Noord-HollandStichting Jachthonden\
+  \ Noord-Holland, afd. Haarlemmermeer[email\\u00a0protected]\", \"type\": \"Haarlemmermeerse\
+  \ bosIJweg 9512131LV\\u00a0HoofddorpAanvang: 08:00\", \"registration_text\": \"\
+  inschrijven\", \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"},\
+  \ {\"date\": \"2025-09-20\", \"organizer\": \"Standaard Jachthonden proef\", \"\
+  location\": \"Jagersvereniging Gelderland, De Veluwse Polder[email\\u00a0protected]\"\
+  , \"type\": \"Landgoed KlarenbeekOude Courageweg 18085 SC\\u00a0DoornspijkAanvang:\
+  \ 8.00\", \"registration_text\": \"inschrijven\", \"calendar_type\": \"Jachthondenproef\"\
+  , \"source\": \"tier2\"}, {\"date\": \"2025-09-21\", \"organizer\": \"Standaard\
+  \ Jachthonden proef\", \"location\": \"Stichting Jachthonden Noord-Limburg[email\\\
+  u00a0protected]\", \"type\": \"HorstWittebrugweg5961NJ\\u00a0HorstAanvang: 8:00\"\
+  , \"registration_text\": \"leden van knjv provincie limburg hebben 10 dagen voorrang\
+  \ bij inschrijving\", \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"\
+  }, {\"date\": \"2025-09-26\", \"organizer\": \"MAP proef\", \"location\": \"KNJV\
+  \ Provincie OverijsselStichting Jachthonden Salland Twente[email\\u00a0protected]\"\
+  , \"type\": \"DenekampAanvang: 7.00\", \"registration_text\": \"leden overijssel\
+  \ gaan 10 dagen voor\", \"calendar_type\": \"Jachthondenproef\", \"source\": \"\
+  tier2\"}, {\"date\": \"2025-09-27\", \"organizer\": \"MAP proef\", \"location\"\
+  : \"Stichting Jachthonden Eemland[email\\u00a0protected]\", \"type\": \"Landgoed\
+  \ VollenhovenDe Bilt\", \"registration_text\": \"leden van gewest utrecht hebben\
+  \ 10 dagen voorrang\", \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"\
+  }, {\"date\": \"2025-09-27\", \"organizer\": \"MAP proef\", \"location\": \"MAP\
+  \ Samenwerkende Continentaleni.s.m: Cesky Fousek Ver., Epagneul Breton Club, Korthals\
+  \ Griffonclub, Vizsla Ver., Cont. Staande Honden Vereeniging[email\\u00a0protected]\"\
+  , \"type\": \"Crobse Waardnabij Crob 18HaaftenAanvang: 08.00\", \"registration_text\"\
+  : \"inschrijving open voor continentaal staande honden rubriek b en c . leden van\
+  \ de organiserende rasverenigingen hebben voorrang tot 10 dagen na openstellen inschrijving.\"\
+  , \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"\
+  2025-09-27\", \"organizer\": \"Standaard Jachthonden proef\", \"location\": \"KNJV\
+  \ Provincie GelderlandJachthondenopleiding Oost Achterhoek[email\\u00a0protected]\"\
+  , \"type\": \"WinterswijkBuitinkweg 77107BE\\u00a0Winterswijk-KottenAanvang: 7.30\"\
+  , \"registration_text\": \"inschrijven\", \"calendar_type\": \"Jachthondenproef\"\
+  , \"source\": \"tier2\"}, {\"date\": \"2025-09-27\", \"organizer\": \"MAP proef\"\
+  , \"location\": \"Stichting Jachthondengroep Uffelte[email\\u00a0protected]\", \"\
+  type\": \"UffelteRijksweg 417975 RV\\u00a0UffelteAanvang: 7:30\", \"registration_text\"\
+  : \"alleen volledig en juist ingevulde inschrijvingen worden in behandeling genomen\"\
+  , \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"\
+  2025-09-27\", \"organizer\": \"MAP proef\", \"location\": \"GRCN[email\\u00a0protected]\"\
+  , \"type\": \"RhenoyTiendweg 94152GC\\u00a0RhenoyAanvang: 8.00\", \"registration_text\"\
+  : \"open voor alleen golden retrievers, leden van de grcn hebben 10 dagen voorrang\
+  \ bij inschrijving na openstellen.\", \"calendar_type\": \"Jachthondenproef\", \"\
+  source\": \"tier2\"}, {\"date\": \"2025-09-27\", \"organizer\": \"Standaard Jachthonden\
+  \ proef\", \"location\": \"KNJV Provincie OverijsselStichting Jachthondentraining\
+  \ NW Overijssel[email\\u00a0protected]\", \"type\": \"RIOS GenemuidenLage VlaktewegGenemuidenAanvang:\
+  \ 8.00\", \"registration_text\": \"zorg s.v.p. dat uw inschrijving compleet is.\
+  \  betaling pas na bevestiging deelname.\", \"calendar_type\": \"Jachthondenproef\"\
+  , \"source\": \"tier2\"}, {\"date\": \"2025-09-29\", \"organizer\": \"MAP proef\"\
+  , \"location\": \"Stichting Jachthonden Brabant West[email\\u00a0protected]\", \"\
+  type\": \"KlundertMolenvliet 74791 GB\\u00a0KlundertAanvang: 7.30\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"\
+  }, {\"date\": \"2025-09-29\", \"organizer\": \"MAP proef\", \"location\": \"KNJV\
+  \ Provincie OverijsselStichting Jachthondentraining NW Overijsseli.s.m: Jagersvereniging\
+  \ Groningen, Drenthe, Friesland en Overijssel[email\\u00a0protected]\", \"type\"\
+  : \"RIOS GenemuidenLage VlaktewegGenemuidenAanvang: 8.00\", \"registration_text\"\
+  : \"zorg dat uw inschrijving compleet is. betaling pas na bevestiging deelname.\"\
+  , \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"\
+  2025-10-04\", \"organizer\": \"MAP proef\", \"location\": \"Jachthondenopleiding\
+  \ 't Hogeland[email\\u00a0protected]\", \"type\": \"Bosplan BiessumDamlaan9931 TE\\\
+  u00a0DelfzijlAanvang: 07.00\", \"registration_text\": \"inschrijven\", \"calendar_type\"\
+  : \"Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"2025-10-04\", \"organizer\"\
+  : \"MAP proef\", \"location\": \"Nederlandse Vereniging van Heidewachtel Liefhebbers[email\\\
+  u00a0protected]\", \"type\": \"Het HulsbeekOldenzaalAanvang: 08.00\", \"registration_text\"\
+  : \"inschrijving open voor continentaal staande honden en spani\\u00ebls. leden\
+  \ van de heidewachtelvereniging hebben voorrang tot 10 dagen na openstellen inschrijving.\"\
+  , \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"\
+  2025-10-04\", \"organizer\": \"MAP proef\", \"location\": \"Werkende Flatcoated\
+  \ Retriever Groep[email\\u00a0protected]\", \"type\": \"BerlicumAanvang: 8.00\"\
+  , \"registration_text\": \"open voor alle retrievers. leden van de wfrg hebben voorrang\
+  \ mits dit in de inschrijving is gemeld.\", \"calendar_type\": \"Jachthondenproef\"\
+  , \"source\": \"tier2\"}, {\"date\": \"2025-10-05\", \"organizer\": \"MAP proef\"\
+  , \"location\": \"Jhs. St. Hubertus[email\\u00a0protected]\", \"type\": \"KC Delfttandhofdreef\
+  \ 102623 EX\\u00a0DELFT\", \"registration_text\": \"gelijk met inschrijving inschrijfgeld\
+  \ overmaken. alleen complete inschrijvingen worden behandeld. zorg dus ook dat uw\
+  \ kjv pas van dit jaar is. (vink elk document aan, ook na een aanpassing weer opnieuw\
+  \ aanvinken.)\", \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"\
+  }, {\"date\": \"2025-10-05\", \"organizer\": \"MAP proef\", \"location\": \"Stichting\
+  \ Jachthonden Noord-Limburg[email\\u00a0protected]\", \"type\": \"ReuverDrakenrijkstraat5953TR\\\
+  u00a0ReuverAanvang: 8:00\", \"registration_text\": \"leden van knjv provincie limburg\
+  \ hebben 10 dagen voorrang bij inschrijving\", \"calendar_type\": \"Jachthondenproef\"\
+  , \"source\": \"tier2\"}, {\"date\": \"2025-10-10\", \"organizer\": \"MAP proef\"\
+  , \"location\": \"Nederlandse Grote Munsterlander Verenigingi.s.m: Nederlandse Vereniging\
+  \ Duitse Staande Korthaar[email\\u00a0protected]\", \"type\": \"Rha/SteenderenEmmerweg\
+  \ 127221LA\\u00a0SteenderenAanvang: 07:00\", \"registration_text\": \"alleen open\
+  \ voor continentale staande honden. leden met honden van de organiserende rasverenigingen\
+  \ hebben voorrang. bij overinschrijving wordt gekeken naar mogelijkheden tot uitbreiding\
+  \ van het deelnemersveld.\", \"calendar_type\": \"Jachthondenproef\", \"source\"\
+  : \"tier2\"}, {\"date\": \"2025-10-11\", \"organizer\": \"MAP proef\", \"location\"\
+  : \"Labrador Kring Nederland[email\\u00a0protected]\", \"type\": \"BiddinghuizenBiddinghuizenAanvang:\
+  \ 07:30\", \"registration_text\": \"open voor alle retrieverrassen.  leden van de\
+  \ lkn hebben tot 1 week na openstellen voorrang bij overinschrijving\", \"calendar_type\"\
+  : \"Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"2025-10-11\", \"organizer\"\
+  : \"MAP proef\", \"location\": \"KNJV Provincie Noord-HollandStichting Jachthonden\
+  \ Noord-Holland, afd. Haarlemmermeer[email\\u00a0protected]\", \"type\": \"Nieuw\
+  \ VennepHoofdweg 10412152LJ\\u00a0Nieuw VennepAanvang: 08.15\", \"registration_text\"\
+  : \"inschrijven\", \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"\
+  }, {\"date\": \"2025-10-11\", \"organizer\": \"MAP proef\", \"location\": \"Stichting\
+  \ Jachthondentraining Frysl\\u00e2n[email\\u00a0protected]\", \"type\": \"TerbantSchoolwegTerbantAanvang:\
+  \ 7:00\", \"registration_text\": \"inschrijven\", \"calendar_type\": \"Jachthondenproef\"\
+  , \"source\": \"tier2\"}, {\"date\": \"2025-10-11\", \"organizer\": \"Standaard\
+  \ Jachthonden proef\", \"location\": \"Nederlandse Vereniging van Hongaarse Staande\
+  \ Honden 'Vizsla'[email\\u00a0protected]\", \"type\": \"De Heerlijkheid van WolphaartsdijkMuidenweg\
+  \ 104471NM\\u00a0WolphaartsdijkAanvang: 8:30\", \"registration_text\": \"alleen\
+  \ voor vizsla's. leden van onze vereniging hebben voorrang tot 14 dagen na openstelling\
+  \ inschrijving.\", \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"\
+  }, {\"date\": \"2025-10-13\", \"organizer\": \"MAP proef\", \"location\": \"Stichting\
+  \ Zeeuwse Jachthonden[email\\u00a0protected]\", \"type\": \"WolphaartsdijkMuidenweg\
+  \ 104471 NM\\u00a0WolphaartsdijkAanvang: 07.30\", \"registration_text\": \"gelijk\
+  \ met inschrijving inschrijfgeld overmaken. zorg dat uw inschrijving compleet is.\"\
+  , \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"\
+  2025-10-18\", \"organizer\": \"MAP proef\", \"location\": \"Nederlandse Vereniging\
+  \ Langhaar[email\\u00a0protected]\", \"type\": \"AlmkerkEendenveld thv huisnummer\
+  \ 54283 HV\\u00a0GiessenAanvang: 08.00\", \"registration_text\": \"inschrijving\
+  \ voor alle continentaal staande honden. leden van nederlandse vereniging langhaar\
+  \ hebben voorrang tot 10 dagen na opening inschrijving\", \"calendar_type\": \"\
+  Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"2025-10-18\", \"organizer\"\
+  : \"MAP proef\", \"location\": \"Stichting Jachthondentrainingen Zwiepi.s.m: Stichting\
+  \ Jachthondenopleiding Terborg en St.Jachthondenopleiding Oost Achterhoek[email\\\
+  u00a0protected]\", \"type\": \"NeedePolhaarweg 37161 MC\\u00a0NeedeAanvang: 08.00\"\
+  , \"registration_text\": \"u kunt zich maar opgeven voor 1 proef(18e of 20e)\",\
+  \ \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"\
+  2025-10-20\", \"organizer\": \"MAP proef\", \"location\": \"KNJV Provincie DrentheVereniging\
+  \ Zelfopleiding Jachthonden N&M Drenthe[email\\u00a0protected]\", \"type\": \"Noord\
+  \ DrentheAanvang: 07:30\", \"registration_text\": \"inschrijven\", \"calendar_type\"\
+  : \"Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"2025-10-20\", \"organizer\"\
+  : \"MAP proef\", \"location\": \"Stichting Jachthondentrainingen Zwiepi.s.m: Stichting\
+  \ Jachthondenopleiding Terborg en St.Jachthondenopleiding Oost Achterhoek[email\\\
+  u00a0protected]\", \"type\": \"NeedePolhaarweg 37161 MC\\u00a0NeedeAanvang: 08.00\"\
+  , \"registration_text\": \"u kunt zich maar opgeven voor 1 proef(18e of 20e)\",\
+  \ \"calendar_type\": \"Jachthondenproef\", \"source\": \"tier2\"}, {\"date\": \"\
+  2025-10-31\", \"organizer\": \"Provinciale jachthonden proef\", \"location\": \"\
+  Vereniging Jachthondenopleiding Heuvelrug[email\\u00a0protected]\", \"type\": \"\
+  Provincie UtrechtAanvang: 8.00\", \"registration_text\": \"uitsluitend voor leden\
+  \ van de jagersvereniging provincie utrecht\", \"calendar_type\": \"Jachthondenproef\"\
+  , \"source\": \"tier2\"}, {\"date\": \"2025-08-30\", \"organizer\": \"Spani\\u00ebl\
+  \ Workingtest\", \"location\": \"Engelse Springer Club, Welsh Springer Spaniel Club,\
+  \ Cocker Spaniel Club[email\\u00a0protected]\", \"type\": \"Beers\", \"registration_text\"\
+  : \"deelname is op uitnodiging.\", \"calendar_type\": \"ORWEJA Werktest\", \"source\"\
+  : \"tier2\"}], \"has_match_data\": true}"

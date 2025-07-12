@@ -1455,7 +1455,7 @@ class _InstellingenPageState extends State<InstellingenPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text('Versie', style: mainActionStyle),
-                            Text('10.3.0', style: TextStyle(color: CupertinoColors.systemGrey, fontSize: 13, fontWeight: FontWeight.normal)),
+                            Text('10.6.0', style: TextStyle(color: CupertinoColors.systemGrey, fontSize: 13, fontWeight: FontWeight.normal)),
                           ],
                         ),
                       ),

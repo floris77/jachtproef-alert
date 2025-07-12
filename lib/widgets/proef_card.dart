@@ -58,6 +58,81 @@ class ProefCard extends StatelessWidget {
   Color get olive => const Color(0xFF535B22);
   Color get lightOlive => const Color(0xFFE6E9D8);
 
+  String _cleanText(String text) {
+    // Clean up text by removing email protection and formatting issues
+    String cleaned = text;
+    
+    // Remove email protection text (various formats)
+    cleaned = cleaned.replaceAll(RegExp(r'\[email[^\]]*protected\]'), '');
+    cleaned = cleaned.replaceAll(RegExp(r'\[email[^\]]*\]'), '');
+    
+    // Remove "Aanvang:" and similar prefixes
+    cleaned = cleaned.replaceAll(RegExp(r'Aanvang:\s*\d{1,2}[:.]\d{2}'), '');
+    
+    // Fix spacing issues in text (especially for locations)
+    cleaned = _fixTextSpacing(cleaned);
+    
+    // Clean up multiple spaces and trim
+    cleaned = cleaned.replaceAll(RegExp(r'\s+'), ' ').trim();
+    
+    return cleaned;
+  }
+  
+  String _fixTextSpacing(String text) {
+    if (text.isEmpty) return text;
+    
+    // Fix common concatenation issues
+    String fixed = text
+        // Add spaces before capital letters (camelCase fix)
+        .replaceAllMapped(RegExp(r'([a-z])([A-Z])'), (match) => '${match.group(1)} ${match.group(2)}')
+        // Add spaces before numbers if missing
+        .replaceAllMapped(RegExp(r'([a-zA-Z])(\d)'), (match) => '${match.group(1)} ${match.group(2)}')
+        // Clean up multiple spaces
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+    
+    // Log the fix if it changed (for debugging)
+    if (fixed != text && text.isNotEmpty) {
+      print('📍 [CARD] Fixed text spacing: "$text" → "$fixed"');
+    }
+    
+    return fixed;
+  }
+
+  String _cleanLocation(String location) {
+    // Clean up location text by removing extra information and formatting
+    String cleaned = _cleanText(location);
+    
+    // If location contains address-like info, format it better
+    if (cleaned.contains(RegExp(r'\d{4}\s*[A-Z]{2}'))) {
+      // Contains postal code, try to format as: Street, City
+      final parts = cleaned.split(RegExp(r'\s+'));
+      List<String> addressParts = [];
+      List<String> cityParts = [];
+      bool foundPostalCode = false;
+      
+      for (int i = 0; i < parts.length; i++) {
+        if (parts[i].contains(RegExp(r'\d{4}')) && i + 1 < parts.length) {
+          // Found postal code
+          foundPostalCode = true;
+          cityParts.add(parts[i]); // postal code
+          if (i + 1 < parts.length) {
+            cityParts.add(parts[i + 1]); // city name
+          }
+          break;
+        } else if (!foundPostalCode) {
+          addressParts.add(parts[i]);
+        }
+      }
+      
+      if (addressParts.isNotEmpty && cityParts.isNotEmpty) {
+        return '${addressParts.join(' ')}, ${cityParts.join(' ')}';
+      }
+    }
+    
+    return cleaned;
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -101,8 +176,10 @@ class ProefCard extends StatelessWidget {
     final showType = type.isNotEmpty && type.toLowerCase() != 'onbekend' && type.toLowerCase() != 'unknown';
     final isClosed = statusText == 'GESLOTEN';
     final isVeldwedstrijd = type.toLowerCase().contains('veldwedstrijd');
-    final organizer = proef['organizer']?.toString() ?? 'Onbekende organisator';
-    final location = proef['location']?.toString() ?? 'Locatie onbekend';
+    final rawOrganizer = proef['organizer']?.toString() ?? 'Onbekende organisator';
+    final organizer = _cleanText(rawOrganizer);
+    final rawLocation = proef['location']?.toString() ?? 'Locatie onbekend';
+    final location = _cleanLocation(rawLocation);
     final showDateAndLocation = dateStr != 'Datum onbekend' && location != 'Locatie onbekend';
     final remark = proef['remark']?.toString();
     final showRemark = remark != null && remark.isNotEmpty;
@@ -138,20 +215,20 @@ class ProefCard extends StatelessWidget {
                     child: Text(
                       organizer,
                       style: TextStyle(
-                        fontSize: isVerySmallScreen ? 12 : 20,
+                        fontSize: isVerySmallScreen ? 12 : 16,
                         fontWeight: FontWeight.w900,
                         color: olive,
                         height: 1.18,
                         letterSpacing: 0.1,
                       ),
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   // Type badge (right)
                   if (showType)
                     Container(
-                      margin: EdgeInsets.only(left: 8, top: 2),
+                      margin: EdgeInsets.only(left: 8, top: 0),
                       padding: EdgeInsets.symmetric(horizontal: isVerySmallScreen ? 6 : 10, vertical: isVerySmallScreen ? 2 : 4),
                       decoration: BoxDecoration(
                         color: lightOlive,
@@ -202,9 +279,10 @@ class ProefCard extends StatelessWidget {
                         location,
                         style: TextStyle(
                           color: Colors.grey[700],
-                          fontSize: isVerySmallScreen ? 12 : 15,
-                          fontWeight: FontWeight.w600,
+                          fontSize: isVerySmallScreen ? 11 : 14,
+                          fontWeight: FontWeight.w500,
                           letterSpacing: 0.05,
+                          height: 1.3,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -242,12 +320,12 @@ class ProefCard extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                       letterSpacing: 0.05,
                     ),
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-              // Add this before the status badge at the bottom
-              if (statusText == 'BINNENKORT')
+              // Only show the 'Inschrijving opent op ...' banner if the match is truly in 'Binnenkort' (enrollmentDate in the future)
+              if (statusText == 'BINNENKORT' && _shouldShowEnrollmentBanner(proef, regText))
                 _buildBinnenkortEnrollmentInfo(regText),
               // Status badge at bottom left for all statuses
               if (statusText == 'INSCHRIJVEN' || statusText == 'BINNENKORT' || statusText == 'GESLOTEN' || statusText == 'ONBEKEND')
@@ -323,6 +401,37 @@ class ProefCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  bool _shouldShowEnrollmentBanner(Map<String, dynamic> proef, String regText) {
+    // Try to get enrollmentDate from the proef object
+    DateTime? enrollmentDate = proef['enrollmentDate'];
+    if (enrollmentDate == null && regText.startsWith('vanaf ')) {
+      // Fallback: parse from regText if not present
+      try {
+        final dateTimeStr = regText.substring(6).trim();
+        final parts = dateTimeStr.split(RegExp(r'\s+'));
+        if (parts.length >= 1) {
+          final datePart = parts[0];
+          String timePart = '00:00';
+          if (parts.length >= 2) {
+            timePart = parts[1];
+          }
+          final dateComponents = datePart.split('-');
+          final timeComponents = timePart.split(':');
+          if (dateComponents.length == 3 && timeComponents.length == 2) {
+            enrollmentDate = DateTime(
+              int.parse(dateComponents[2]),
+              int.parse(dateComponents[1]),
+              int.parse(dateComponents[0]),
+              int.parse(timeComponents[0]),
+              int.parse(timeComponents[1]),
+            );
+          }
+        }
+      } catch (_) {}
+    }
+    return enrollmentDate != null && enrollmentDate.isAfter(DateTime.now());
   }
 
   Widget _buildBinnenkortEnrollmentInfo(String regText) {

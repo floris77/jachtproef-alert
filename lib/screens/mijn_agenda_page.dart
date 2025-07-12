@@ -26,12 +26,22 @@ class _MijnAgendaPageState extends State<MijnAgendaPage> {
   bool hasError = false;
   String errorMessage = '';
 
+  // ScrollController for preserving scroll position
+  late ScrollController _scrollController;
+
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     if (!widget.fromDemo) {
       _loadEnrolledMatches();
     }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadEnrolledMatches() async {
@@ -274,6 +284,8 @@ class _MijnAgendaPageState extends State<MijnAgendaPage> {
                               description: 'Voeg proeven toe aan je agenda om ze hier te zien.',
                             )
                           : ListView.separated(
+        key: const PageStorageKey('agenda_list_scroll_position'),
+        controller: _scrollController,
         itemCount: enrolledMatches.length,
                               separatorBuilder: (_, __) => Divider(height: 1, color: CupertinoColors.systemGrey4),
         itemBuilder: (context, index) {

@@ -147,4 +147,112 @@ class AnalyticsService {
 
   // Get Analytics Instance for Advanced Usage
   static FirebaseAnalytics get instance => _analytics;
+
+  // === REAL USER TRACKING ENHANCEMENTS ===
+  
+  // User Journey Tracking
+  static Future<void> logUserJourney(String journeyStep, {Map<String, Object>? context}) async {
+    await _analytics.logEvent(
+      name: 'user_journey',
+      parameters: {
+        'journey_step': journeyStep,
+        'timestamp': DateTime.now().millisecondsSinceEpoch,
+        ...?context,
+      },
+    );
+  }
+
+  // Subscription & Revenue Tracking
+  static Future<void> logSubscriptionEvent(String event, {
+    String? planType,
+    double? revenue,
+    String? currency = 'EUR',
+  }) async {
+    await _analytics.logEvent(
+      name: 'subscription_$event',
+      parameters: {
+        if (planType != null) 'plan_type': planType,
+        if (revenue != null) 'value': revenue,
+        if (currency != null) 'currency': currency,
+        'timestamp': DateTime.now().millisecondsSinceEpoch,
+      },
+    );
+  }
+
+  // Engagement Quality Tracking
+  static Future<void> logEngagementQuality({
+    required int sessionsThisWeek,
+    required int examsViewedThisWeek,
+    required int calendarAddsThisWeek,
+  }) async {
+    await _analytics.logEvent(
+      name: 'engagement_quality',
+      parameters: {
+        'sessions_weekly': sessionsThisWeek,
+        'exams_viewed_weekly': examsViewedThisWeek,
+        'calendar_adds_weekly': calendarAddsThisWeek,
+        'engagement_score': (sessionsThisWeek * 2) + (examsViewedThisWeek * 3) + (calendarAddsThisWeek * 5),
+      },
+    );
+  }
+
+  // Feature Discovery Tracking
+  static Future<void> logFeatureDiscovery(String featureName, String discoveryMethod) async {
+    await _analytics.logEvent(
+      name: 'feature_discovery',
+      parameters: {
+        'feature_name': featureName,
+        'discovery_method': discoveryMethod, // 'tutorial', 'exploration', 'notification'
+        'user_session_number': await _getUserSessionNumber(),
+      },
+    );
+  }
+
+  // User Satisfaction Tracking
+  static Future<void> logUserSatisfactionSignal(String signal, {Map<String, Object>? context}) async {
+    await _analytics.logEvent(
+      name: 'satisfaction_signal',
+      parameters: {
+        'signal_type': signal, // 'app_background', 'quick_return', 'long_session'
+        'timestamp': DateTime.now().millisecondsSinceEpoch,
+        ...?context,
+      },
+    );
+  }
+
+  // Quick Setup Flow Tracking
+  static Future<void> logQuickSetupStep(String step, bool completed, {String? errorReason}) async {
+    await _analytics.logEvent(
+      name: 'quick_setup_step',
+      parameters: {
+        'step_name': step,
+        'completed': completed,
+        if (errorReason != null) 'error_reason': errorReason,
+        'step_timestamp': DateTime.now().millisecondsSinceEpoch,
+      },
+    );
+  }
+
+  // Real User Cohort Tracking
+  static Future<void> logCohortMilestone(String milestone, int daysSinceInstall) async {
+    await _analytics.logEvent(
+      name: 'cohort_milestone',
+      parameters: {
+        'milestone': milestone, // 'first_exam_view', 'first_calendar_add', 'week_1_retention'
+        'days_since_install': daysSinceInstall,
+        'user_segment': await _getUserSegment(),
+      },
+    );
+  }
+
+  // Helper Methods
+  static Future<int> _getUserSessionNumber() async {
+    // Implement session counting logic
+    return 1; // Placeholder
+  }
+
+  static Future<String> _getUserSegment() async {
+    // Determine user segment: 'trial', 'premium', 'churned'
+    return 'unknown'; // Placeholder - implement based on your user data
+  }
 } 

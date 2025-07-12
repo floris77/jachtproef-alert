@@ -1438,6 +1438,17 @@ class PaymentService extends ChangeNotifier {
         'willAutoRenew': false,
       },
     }, SetOptions(merge: true));
+    
+    // Check if quick setup is already completed
+    final doc = await _firestore!.collection('users').doc(user.uid).get();
+    final quickSetupCompleted = doc.data()?['quickSetupCompleted'] == true;
+    print('🔍 [DEBUG] forceBypassTrialWithPlan: quickSetupCompleted=$quickSetupCompleted');
+    if (!quickSetupCompleted) {
+      // Navigate to Quick Setup after successful trial setup (debug bypass)
+      _navigateToQuickSetup();
+    } else {
+      print('🔍 [DEBUG] forceBypassTrialWithPlan: Skipping Quick Setup, already completed.');
+    }
   }
 
   Future<bool> isInAppPurchaseAvailable() async {
@@ -1557,6 +1568,16 @@ class PaymentService extends ChangeNotifier {
   /// Check if user has premium access (trial or subscription)
   Future<bool> hasPremiumAccess() async {
     try {
+      // --- TEMPORARY BYPASS FOR SIMULATOR TESTING ---
+      bool isSimulator = false;
+      try {
+        isSimulator = Platform.isIOS && Platform.environment.containsKey('SIMULATOR_DEVICE_NAME');
+      } catch (_) {}
+      if (isSimulator) {
+        print('[DEBUG] Simulator detected: bypassing payment and granting premium access');
+        return true;
+      }
+      // --- END TEMPORARY BYPASS ---
       final User? user = FirebaseAuth.instance.currentUser;
       if (user == null || _firestore == null) return false;
       final DocumentSnapshot doc = await _firestore!.collection('users').doc(user.uid).get();

@@ -87,9 +87,10 @@ class EnrollmentConfirmationService {
   }) async {
     try {
       final notificationTime = enrollmentDate.add(const Duration(minutes: 15));
+      final now = DateTime.now();
       
-      // Only schedule if the notification time is in the future
-      if (notificationTime.isAfter(DateTime.now())) {
+      // Only schedule if the notification time is in the future (with 1-minute buffer)
+      if (notificationTime.isAfter(now.add(const Duration(minutes: 1)))) {
         final abbreviatedTitle = matchTitle.length > 50 
             ? '${matchTitle.substring(0, 47)}...' 
             : matchTitle;
@@ -106,6 +107,8 @@ class EnrollmentConfirmationService {
         );
         
         print('📱 Scheduled 15-minute post-enrollment notification for $matchTitle at $notificationTime');
+      } else {
+        print('⚠️ Not scheduling post-enrollment notification: time $notificationTime is not far enough in the future (now: $now)');
       }
     } catch (e) {
       print('❌ Error scheduling post-enrollment notification: $e');

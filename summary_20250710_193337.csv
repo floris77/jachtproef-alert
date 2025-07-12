@@ -1,0 +1,6 @@
+metric,value,description
+Total Tier 1,162,Public calendar entries
+Total Tier 2,162,Protected calendar entries
+Unique Dates,68,Total unique dates found
+Potential Matches,695,Entries with >50% similarity
+Match Rate,429.0%,Percentage of Tier 1 that could match

@@ -5,6 +5,7 @@ import '../services/payment_service.dart';
 import '../services/auth_service.dart';
 import '../utils/constants.dart';
 import '../utils/last_page_manager.dart';
+import 'dart:io';
 
 class PlanSelectionScreen extends StatefulWidget {
   const PlanSelectionScreen({super.key});
@@ -350,6 +351,36 @@ class _PlanSelectionScreenState extends State<PlanSelectionScreen> {
                               ),
                             ),
                           ],
+                        ),
+                      ),
+                    // TEMPORARY: Bypass Paywall button for simulator/debug
+                    if (kDebugMode || (Platform.isIOS && Platform.environment.containsKey('SIMULATOR_DEVICE_NAME')))
+                      Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                          onPressed: () async {
+                            setState(() { _isLoading = true; });
+                            final plan = _selectedPlan ?? 'monthly';
+                            try {
+                              await PaymentService().forceBypassTrialWithPlan(plan);
+                              if (mounted) {
+                                // Let the main app routing handle navigation (may go to quick setup)
+                                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                              }
+                            } catch (e) {
+                              setState(() { _errorMessage = 'Bypass mislukt: \\n${e.toString()}'; });
+                            } finally {
+                              if (mounted) setState(() { _isLoading = false; });
+                            }
+                          },
+                          child: const Text('Bypass Paywall (Debug/Simulator)', style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
                       ),
                   ],

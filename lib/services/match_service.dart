@@ -51,6 +51,65 @@ class MatchService {
     }
   }
 
+  // Cache for preventing unnecessary rebuilds
+  static List<Map<String, dynamic>>? _cachedMatches;
+  static String? _lastDataHash;
+
+  /// Get real-time stream of matches from Firestore with caching
+  static Stream<List<Map<String, dynamic>>> getMatchesStream() {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        print('❌ No authenticated user for Firestore stream');
+        return Stream.value([]);
+      }
+
+      // Return a real-time stream from Firestore with data comparison
+      return _firestore.collection('matches').snapshots().map((snapshot) {
+        if (snapshot.docs.isEmpty) {
+          print('📭 No matches found in Firestore stream');
+          return [];
+        }
+
+        final matches = snapshot.docs.map((doc) {
+          final data = doc.data();
+          return {
+            'id': doc.id,
+            ...data,
+          };
+        }).toList();
+
+        // Generate hash of the data to check if it has actually changed
+        final dataHash = _generateDataHash(matches);
+        
+        // Only emit if data has actually changed
+        if (_lastDataHash != null && _lastDataHash == dataHash) {
+          print('🔄 Data unchanged - returning cached matches (${matches.length} items)');
+          return _cachedMatches!;
+        }
+
+        // Data has changed, update cache and emit
+        _lastDataHash = dataHash;
+        _cachedMatches = matches;
+        print('✅ Real-time update: ${matches.length} matches from Firestore stream');
+        return matches;
+      });
+      
+    } catch (e) {
+      print('❌ Error creating matches stream from Firestore: $e');
+      return Stream.value([]);
+    }
+  }
+
+  /// Generate a simple hash of the matches data for comparison
+  static String _generateDataHash(List<Map<String, dynamic>> matches) {
+    // Use the number of matches and a hash of key fields for quick comparison
+    final keyData = matches.map((match) => 
+      '${match['id']}_${match['title']}_${match['date']}_${match['registration_text']}'
+    ).join('|');
+    return '${matches.length}_${keyData.hashCode}';
+  }
+
   /// Get match details from Firestore (not API)
   static Future<Map<String, dynamic>?> getMatchDetails(String matchId) async {
     try {

@@ -1,0 +1,668 @@
+executionId: 1599rjcxdjfy
+result: "{\"status\": \"success\", \"matches_found\": 155, \"tier1_matches\": 155,\
+  \ \"tier2_matches\": 155, \"csv_data\": \"Tier,Date,Organizer,Location,Type,Registration_Text,Remarks,Calendar_Type,Source\\\
+  r\\nTier 1,2025-07-12,KNJV,Vereniging Vrienden Duits Draadhaar,********,PuttenSchremmersteeg\
+  \ 43882 SE Putten,,,tier1\\r\\nTier 1,2025-07-12,KNJV,\\\"Epagneul Vereniging Nederlandi.s.m:\
+  \ Epagneul de Saint Usuge, Slovaakse Staande Draadharen en Duitse staande lang haren\\\
+  \",********,AlmkerkEendenveld thv huisnummer 54283 HV GiessenAanvang: 8.00,,,tier1\\\
+  r\\nTier 1,2025-07-18,KNJV,Vereniging De Drentsche Patrijshondi.s.m: Nederlandse\
+  \ Vereniging voor Stabij- en Wetterhounen,********,Landgoed Heerlijkheid Mari\\\
+  u00ebnwaerdt't Klooster 54153 RR Beesd,,,tier1\\r\\nTier 1,2025-07-24,veldwedstrijd,Chesapeake\
+  \ Bay Retriever Club Nederland,********,West Brabant,,,tier1\\r\\nTier 1,2025-07-26,TAP,\\\
+  \"KNJV Provincie Noord-HollandStichting Jachthonden Noord-Holland, afd. Haarlemmermeer\\\
+  \",********,Manege SpaarnwoudeHoutrakkerweg 621165 MX HalfwegAanvang: 08.15,,,tier1\\\
+  r\\nTier 1,2025-07-28,KNJV,Stichting Zeeuwse Jachthonden,********,Sportpark VV RillandiaBatsheweg\
+  \ 544411 RK RillandAanvang: 07.30,,,tier1\\r\\nTier 1,2025-07-28,KNJV,Nederlandse\
+  \ Vereniging Langhaari.s.m: NVDSK Duitse staande korthaar,********,Fam SteggetmanWatermolenweg\
+  \ 127481 VL HaaksbergenAanvang: 8.00,,,tier1\\r\\nTier 1,2025-08-02,KNJV,Continentale\
+  \ Staande honden Vereenigingi.s.m: Jachtcommissie SUN,********,Crobse Waardnabij\
+  \ Crob 18HaaftenAanvang: 08.00,,,tier1\\r\\nTier 1,2025-08-09,KNJV,Jachthondenopleiding\
+  \ 't Hogeland,********,Bosplan BiessumDamlaan9931 TE DelfzijlAanvang: 07.30,,,tier1\\\
+  r\\nTier 1,2025-08-15,KNJV,Stichting Jachthonden Brabant West,********,KlundertMolenvliet\
+  \ 74791 GB KlundertAanvang: 7.30,,,tier1\\r\\nTier 1,2025-08-16,KNJV,Nederlandse\
+  \ Vereniging van Hongaarse Staande Honden 'Vizsla'i.s.m: Nederlandse Grote M\\u00fcnsterlander\
+  \ Vereniging,********,Crobsche WaardCrob 18 - 204175LR HaaftenAanvang: 8:00,,,tier1\\\
+  r\\nTier 1,2025-08-18,KNJV,Stichting Jachthonden Brabant West,********,KlundertMolenvliet\
+  \ 74791 GB KlundertAanvang: 7.30,,,tier1\\r\\nTier 1,2025-08-23,MAP,Nederlandse\
+  \ Labrador Vereniging,********,\\\"Paviljoen \\\"\\\"de Kogeloven\\\"\\\" OostvoorneBrielse\
+  \ Maas 13233LD OostvoorneAanvang: 7.30\\\",,,tier1\\r\\nTier 1,2025-08-23,KNJV,Vereniging\
+  \ Jachthondenopleiding Heuvelrug,********,ScherpenzeelBroekerweg  73931 PL WoudenbergAanvang:\
+  \ 8.00,,,tier1\\r\\nTier 1,2025-08-24,KNJV,Jhs. St. Hubertus,********,KC Delfttandhofdreef\
+  \ 102623 EXAanvang: 8,,,tier1\\r\\nTier 1,2025-08-30,SWT,\\\"Engelse Springer Club,\
+  \ Welsh Springer Spaniel Club, Cocker Spaniel Club\\\",********,Beers,,,tier1\\\
+  r\\nTier 1,2025-08-30,KNJV,KNJV Provincie GelderlandStichting Jachthonden Opleiding\
+  \ Terborg,********,\\\"Openluchttheater EngbergenBosweg 57083 AB Voorst, gemeente\
+  \ Oude IJsselstreekAanvang: 07.30\\\",,,tier1\\r\\nTier 1,2025-08-30,KNJV,\\\"Stichting\
+  \ Jachthonden Provincie Noord-Holland, locatie Hoorn\\\",********,Het StreekbosVeilingweg1611BN\
+  \ BovenkarspelAanvang: 07:30,,,tier1\\r\\nTier 1,2025-08-30,KNJV,Stichting Jachthondengroep\
+  \ Uffelte,********,UffelteRijksweg 417975 RV UffelteAanvang: 7:30,,,tier1\\r\\nTier\
+  \ 1,2025-08-31,KNJV,KNJV Provincie GelderlandStichting Jachthonden Opleiding Terborgi.s.m:\
+  \ Nederlandse Korthals Griffonclub & Cesky Fousek Vereniging Nederland,********,\\\
+  \"Openluchttheater EngbergenBosweg 57083 AB Voorst, gemeente Oude IJsselstreekAanvang:\
+  \ 07.30\\\",,,tier1\\r\\nTier 1,2025-09-03,veldwedstrijd,Continentale Staande honden\
+  \ Vereeniging,********,St. AnnalandAanvang: 8.30,,,tier1\\r\\nTier 1,2025-09-03,veldwedstrijd,Vereniging\
+  \ De Weimarse Staande Hond,********,BudelAanvang: 9.00,,,tier1\\r\\nTier 1,2025-09-05,KNJV,KNJV\
+  \ Provincie OverijsselStichting Jachthonden Salland Twente,********,LuttenStobbenplasweg\
+  \ 7LuttenAanvang: 7.00,,,tier1\\r\\nTier 1,2025-09-06,veldwedstrijd,\\\"Nederlandse\
+  \ Vereniging \\\"\\\"De Duitse Staande Korthaar\\\"\\\"\\\",********,Sint Annaland,,,tier1\\\
+  r\\nTier 1,2025-09-06,veldwedstrijd,Nederlandse Pointer Club,********,Waterlandkerkje,,,tier1\\\
+  r\\nTier 1,2025-09-06,MAP,Labrador Kring Nederland,********,Landgoed Hof te DierenKerkallee\
+  \ 26955 JA EllecomAanvang: 07:30,,,tier1\\r\\nTier 1,2025-09-06,KNJV,Stichting Jachthondopleiding\
+  \ De Meinweg,********,St.Odili\\u00ebnbergAanvang: 08:30,,,tier1\\r\\nTier 1,2025-09-06,veldwedstrijd,Nederlandse\
+  \ Vereniging Langhaar,********,RillandAanvang: 0900,,,tier1\\r\\nTier 1,2025-09-06,KNJV,Stichting\
+  \ Jachthondentraining Frysl\\u00e2n,********,TerbantSchoolwegTerbantAanvang: 8:00,,,tier1\\\
+  r\\nTier 1,2025-09-07,KNJV,\\\"KNJV Provincie Noord-HollandStichting Jachthonden\
+  \ Provincie Noord Holland, locatie Alkmaar\\\",********,Anna PaulownaBoermansweg\
+  \ 21761LK Anna PaulownaAanvang: 08:00,,,tier1\\r\\nTier 1,2025-09-08,MAP,Stichting\
+  \ Zeeuwse Jachthonden,********,Rilland Kreekrak gebiedMarkiezaatsweg4411 SX RillandAanvang:\
+  \ 07.30,,,tier1\\r\\nTier 1,2025-09-08,KNJV,KNJV Provincie DrentheVereniging Zelfopleiding\
+  \ Jachthonden N&M Drenthe,********,GietenGietenAanvang: 07:30,,,tier1\\r\\nTier\
+  \ 1,2025-09-10,veldwedstrijd,Vereniging De Drentsche Patrijshond,********,DirkslandAanvang:\
+  \ 9 UUR,,,tier1\\r\\nTier 1,2025-09-10,veldwedstrijd,Epagneul Vereniging Nederland,********,St.\
+  \ AnnalandF.M. BoogaardwegST.AnnalandAanvang: 9.00u,,,tier1\\r\\nTier 1,2025-09-11,veldwedstrijd,Vereniging\
+  \ De Weimarse Staande Hond,********,De Heen,,,tier1\\r\\nTier 1,2025-09-11,veldwedstrijd,Nederlandse\
+  \ Vereniging Langhaar,********,IjzendijkeAanvang: 0900,,,tier1\\r\\nTier 1,2025-09-12,KNJV,Stichting\
+  \ Jachthonden Zuid-Holland regio Gouda,********,RottemerenKooilaan 32665 KR Bleiswijk,,,tier1\\\
+  r\\nTier 1,2025-09-12,veldwedstrijd,Nederlandse Vereniging Langhaari.s.m: Vereniging\
+  \ de Drentsche Patrijshond,********,Ijzendijke,,,tier1\\r\\nTier 1,2025-09-13,veldwedstrijd,\\\
+  \"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker Spaniel Club\\\",********,Wolphaartsdijk,,,tier1\\\
+  r\\nTier 1,2025-09-13,veldwedstrijd,Nederlandse Vereniging Langhaar,********,Ijzendijke,,,tier1\\\
+  r\\nTier 1,2025-09-13,KNJV,Jachthondentrainingsgroep Stichting 't Sticht,********,De\
+  \ KooihoeveTiendweg 94152 GC RhenoyAanvang: 08.00,,,tier1\\r\\nTier 1,2025-09-13,KNJV,Vereniging\
+  \ De Weimarse Staande Hond,********,PuttenSchremmersteeg 23882 SE PuttenAanvang:\
+  \ 08:00,,,tier1\\r\\nTier 1,2025-09-13,KNJV,KNJV Provincie Noord-BrabantStichting\
+  \ Jachthonden training Den Bosch,********,\\\"Landgoed BleijendijkBleijendijk 5VughtAanvang:\
+  \ 6,45\\\",,,tier1\\r\\nTier 1,2025-09-14,veldwedstrijd,Nederlandse Teckel Club,********,SandenburgDoornAanvang:\
+  \ 8.00,,,tier1\\r\\nTier 1,2025-09-15,veldwedstrijd,Nederlandse Vereniging van Hongaarse\
+  \ Staande Honden 'Vizsla',********,WillemstadAanvang: 08:30,,,tier1\\r\\nTier 1,2025-09-15,veldwedstrijd,Nederlandse\
+  \ Grote Munsterlander Vereniging,********,Nieuw BuinenZuiderdiep 429521 AT  BuinenAanvang:\
+  \ 9.00,,,tier1\\r\\nTier 1,2025-09-16,veldwedstrijd,Bracco Italiano Club,********,St\
+  \ JacobiparochieSt Jacobiparochie,,,tier1\\r\\nTier 1,2025-09-17,veldwedstrijd,Nederlandse\
+  \ Vereniging Langhaar,********,De Heen,,,tier1\\r\\nTier 1,2025-09-17,veldwedstrijd,Nederlandse\
+  \ Vereniging Langhaar,********,BudelAanvang: 8.30,,,tier1\\r\\nTier 1,2025-09-17,veldwedstrijd,Nederlandse\
+  \ Vereniging van Heidewachtel Liefhebbers,********,St. AnnalandF.M. Boogaardweg\
+  \ 194697GM St. AnnalandAanvang: 9.00,,,tier1\\r\\nTier 1,2025-09-18,veldwedstrijd,Nederlandse\
+  \ Vereniging van Hongaarse Staande Honden 'Vizsla',********,WillemstadAanvang: 08:30,,,tier1\\\
+  r\\nTier 1,2025-09-19,MAP,Jachthondentrainingsgroep Stichting 't Sticht,********,Landgoed\
+  \ VollenhoveUtrechtsewegDe BiltAanvang: 08.00,,,tier1\\r\\nTier 1,2025-09-19,veldwedstrijd,Vereniging\
+  \ De Drentsche Patrijshond,********,DirkslandAanvang: 9 UUR,,,tier1\\r\\nTier 1,2025-09-19,veldwedstrijd,Vereniging\
+  \ Vrienden Duits Draadhaar,********,MiddelharnisAanvang: 9:00,,,tier1\\r\\nTier\
+  \ 1,2025-09-20,veldwedstrijd,Nederlandse Vereniging Langhaar,********,Wilhelminadorp,,,tier1\\\
+  r\\nTier 1,2025-09-20,veldwedstrijd,Vereniging Vrienden Duits Draadhaar,********,DinteloordBoonhil4756SN\
+  \ kruisland,,,tier1\\r\\nTier 1,2025-09-20,MAP,Vereniging Jachthondenopleiding Heuvelrug,********,HindersteynLangbroekerdijk\
+  \ nabij Rhodensteinselaan.3972 MC,,,tier1\\r\\nTier 1,2025-09-20,KNJV,KNJV Provincie\
+  \ GroningenStichting Jachthonden Westerkwartier,********,Landgoedboerderij OosterheerdtOosterheerdtstraat\
+  \ 79351 BK LeekAanvang: 08:00,,,tier1\\r\\nTier 1,2025-09-20,KNJV,\\\"KNJV Provincie\
+  \ Noord-HollandStichting Jachthonden Noord-Holland, afd. Haarlemmermeer\\\",********,Haarlemmermeerse\
+  \ bosIJweg 9512131LV HoofddorpAanvang: 08:00,,,tier1\\r\\nTier 1,2025-09-20,veldwedstrijd,Bracco\
+  \ Italiano Club,********,St. AnnalandF.M. Boogaardweg 194697 GM St. AnnalandAanvang:\
+  \ 09.00,,,tier1\\r\\nTier 1,2025-09-20,veldwedstrijd,Vereniging Liefhebbers van\
+  \ de Engelse Setter,********,MelissantMolendijk 633248 BA MelissantAanvang: 09:00,,,tier1\\\
+  r\\nTier 1,2025-09-20,veldwedstrijd,Vereniging Liefhebbers van de Engelse Setter,********,MelissantMolendijk\
+  \ 633248 BA MelissantAanvang: 09:00,,,tier1\\r\\nTier 1,2025-09-20,KNJV,\\\"Jagersvereniging\
+  \ Gelderland, De Veluwse Polder\\\",********,Landgoed KlarenbeekOude Courageweg\
+  \ 18085 SC DoornspijkAanvang: 8.00,,,tier1\\r\\nTier 1,2025-09-21,KNJV,Stichting\
+  \ Jachthonden Noord-Limburg,********,HorstWittebrugweg5961NJ HorstAanvang: 8:00,,,tier1\\\
+  r\\nTier 1,2025-09-22,veldwedstrijd,Nederlandse Vereniging van Hongaarse Staande\
+  \ Honden 'Vizsla',********,De Heen/SteenbergenAanvang: 08:30,,,tier1\\r\\nTier 1,2025-09-23,veldwedstrijd,Vereniging\
+  \ Slowaakse Ruwharige Staande Hond,********,BruinisseAanvang: 09:00,,,tier1\\r\\\
+  nTier 1,2025-09-24,veldwedstrijd,Nederlandse Vereniging Langhaar,********,Ritthem,,,tier1\\\
+  r\\nTier 1,2025-09-24,veldwedstrijd,Vereniging De Weimarse Staande Hond,********,OuwerkerkOude\
+  \ Beesdseweg 6Aanvang: 09.00,,,tier1\\r\\nTier 1,2025-09-24,veldwedstrijd,Epagneul\
+  \ Breton Club Nederland,********,HeikantAanvang: 9.00,,,tier1\\r\\nTier 1,2025-09-24,veldwedstrijd,Epagneul\
+  \ Vereniging Nederland,********,St. AnnalandF.M. BoogaardwegSt. AnnalandAanvang:\
+  \ 9.00,,,tier1\\r\\nTier 1,2025-09-25,veldwedstrijd,Continentale Staande honden\
+  \ Vereeniging,********,Grathem/Venlo,,,tier1\\r\\nTier 1,2025-09-26,veldwedstrijd,Continentale\
+  \ Staande honden Vereeniging,********,Grathem/Venlo,,,tier1\\r\\nTier 1,2025-09-26,MAP,KNJV\
+  \ Provincie OverijsselStichting Jachthonden Salland Twente,********,DenekampAanvang:\
+  \ 7.00,,,tier1\\r\\nTier 1,2025-09-27,MAP,Stichting Jachthonden Eemland,********,Landgoed\
+  \ VollenhovenDe Bilt,,,tier1\\r\\nTier 1,2025-09-27,veldwedstrijd,\\\"Engelse Springer\
+  \ Club, Welsh Springer Spaniel Club, Cocker Spaniel Club\\\",********,Vragender,,,tier1\\\
+  r\\nTier 1,2025-09-27,MAP,\\\"MAP Samenwerkende Continentaleni.s.m: Cesky Fousek\
+  \ Ver., Epagneul Breton Club, Korthals Griffonclub, Vizsla Ver., Cont. Staande Honden\
+  \ Vereeniging\\\",********,Crobse Waardnabij Crob 18HaaftenAanvang: 08.00,,,tier1\\\
+  r\\nTier 1,2025-09-27,veldwedstrijd,Vereniging De Weimarse Staande Hond,********,De\
+  \ HeenAanvang: 09.00,,,tier1\\r\\nTier 1,2025-09-27,KNJV,KNJV Provincie GelderlandJachthondenopleiding\
+  \ Oost Achterhoek,********,WinterswijkBuitinkweg 77107BE Winterswijk-KottenAanvang:\
+  \ 7.30,,,tier1\\r\\nTier 1,2025-09-27,MAP,Stichting Jachthondengroep Uffelte,********,UffelteRijksweg\
+  \ 417975 RV UffelteAanvang: 7:30,,,tier1\\r\\nTier 1,2025-09-27,MAP,GRCN,********,RhenoyTiendweg\
+  \ 94152GC RhenoyAanvang: 8.00,,,tier1\\r\\nTier 1,2025-09-27,KNJV,KNJV Provincie\
+  \ OverijsselStichting Jachthondentraining NW Overijssel,********,RIOS GenemuidenLage\
+  \ VlaktewegGenemuidenAanvang: 8.00,,,tier1\\r\\nTier 1,2025-09-27,veldwedstrijd,Vereniging\
+  \ De Drentsche Patrijshond,********,Stad a/h HaringvlietAanvang: 9 UUR,,,tier1\\\
+  r\\nTier 1,2025-09-27,veldwedstrijd,Nederlandse Pointer Clubi.s.m: Ierse Setterclub,********,Sint\
+  \ AnnalandF.M. Boogaardwg 19Sint AnnalandAanvang: 9.00,,,tier1\\r\\nTier 1,2025-09-28,veldwedstrijd,Epagneul\
+  \ Breton Club Nederland,********,ZuidzandeAanvang: 9.00,,,tier1\\r\\nTier 1,2025-09-29,veldwedstrijd,Bracco\
+  \ Italiano Club,********,OnstweddeOnstwedde,,,tier1\\r\\nTier 1,2025-09-29,MAP,Stichting\
+  \ Jachthonden Brabant West,********,KlundertMolenvliet 74791 GB KlundertAanvang:\
+  \ 7.30,,,tier1\\r\\nTier 1,2025-09-29,MAP,\\\"KNJV Provincie OverijsselStichting\
+  \ Jachthondentraining NW Overijsseli.s.m: Jagersvereniging Groningen, Drenthe, Friesland\
+  \ en Overijssel\\\",********,RIOS GenemuidenLage VlaktewegGenemuidenAanvang: 8.00,,,tier1\\\
+  r\\nTier 1,2025-09-29,veldwedstrijd,Nederlandse Grote Munsterlander Vereniging,********,Nieuw\
+  \ PekelaJ.R Stuutstraat F849663 SJ Nieuwe PekelaAanvang: 9.00,,,tier1\\r\\nTier\
+  \ 1,2025-09-30,veldwedstrijd,Bracco Italiano Club,********,Bellingwolde,,,tier1\\\
+  r\\nTier 1,2025-10-01,veldwedstrijd,Continentale Staande honden Vereeniging,********,St.\
+  \ AnnalandAanvang: 8.30,,,tier1\\r\\nTier 1,2025-10-02,veldwedstrijd,Vereniging\
+  \ De Drentsche Patrijshond,********,HeijningenAanvang: 9 UUR,,,tier1\\r\\nTier 1,2025-10-02,veldwedstrijd,Epagneul\
+  \ Breton Club Nederland,********,KloosterzandeAanvang: 9.00,,,tier1\\r\\nTier 1,2025-10-03,veldwedstrijd,Nederlandse\
+  \ Vereniging Langhaar,********,\\\"Anjum, Friesland\\\",,,tier1\\r\\nTier 1,2025-10-03,veldwedstrijd,Nederlandse\
+  \ Pointer Club,********,Grathem,,,tier1\\r\\nTier 1,2025-10-03,veldwedstrijd,Nederlandse\
+  \ Vereniging Langhaar,********,\\\"Anjum, FrieslandAanvang: 09.00\\\",,,tier1\\\
+  r\\nTier 1,2025-10-04,veldwedstrijd,Vereniging Vrienden Duits Draadhaar,********,Beesterzwaag,,,tier1\\\
+  r\\nTier 1,2025-10-04,MAP,Jachthondenopleiding 't Hogeland,********,Bosplan BiessumDamlaan9931\
+  \ TE DelfzijlAanvang: 07.00,,,tier1\\r\\nTier 1,2025-10-04,MAP,Nederlandse Vereniging\
+  \ van Heidewachtel Liefhebbers,********,Het HulsbeekOldenzaalAanvang: 08.00,,,tier1\\\
+  r\\nTier 1,2025-10-04,veldwedstrijd,Parson Russell Terrier Club Nederland,********,EchtAanvang:\
+  \ 08:30,,,tier1\\r\\nTier 1,2025-10-04,veldwedstrijd,Nederlandse Vereniging Langhaar,********,\\\
+  \"Ferwert, FrieslandAanvang: 09.00\\\",,,tier1\\r\\nTier 1,2025-10-04,veldwedstrijd,Nederlandse\
+  \ Vereniging Langhaar,********,\\\"Ferwert, FrieslandAanvang: 09.00\\\",,,tier1\\\
+  r\\nTier 1,2025-10-04,MAP,Werkende Flatcoated Retriever Groep,********,BerlicumAanvang:\
+  \ 8.00,,,tier1\\r\\nTier 1,2025-10-05,MAP,Jhs. St. Hubertus,********,KC Delfttandhofdreef\
+  \ 102623 EX DELFT,,,tier1\\r\\nTier 1,2025-10-05,MAP,Stichting Jachthonden Noord-Limburg,********,ReuverDrakenrijkstraat5953TR\
+  \ ReuverAanvang: 8:00,,,tier1\\r\\nTier 1,2025-10-08,veldwedstrijd,Vereniging De\
+  \ Drentsche Patrijshond,********,Westernieland,,,tier1\\r\\nTier 1,2025-10-08,veldwedstrijd,Continentale\
+  \ Staande honden Vereeniging,********,St. AnnalandAanvang: 8.30,,,tier1\\r\\nTier\
+  \ 1,2025-10-08,veldwedstrijd,Nederlandse Fauve de Bretagne Club,********,Omgeving\
+  \ WeertAanvang: 9:00,,,tier1\\r\\nTier 1,2025-10-10,MAP,Nederlandse Grote Munsterlander\
+  \ Verenigingi.s.m: Nederlandse Vereniging Duitse Staande Korthaar,********,Rha/SteenderenEmmerweg\
+  \ 127221LA SteenderenAanvang: 07:00,,,tier1\\r\\nTier 1,2025-10-11,veldwedstrijd,Nederlandse\
+  \ Vereniging Langhaar,********,De Heen,,,tier1\\r\\nTier 1,2025-10-11,veldwedstrijd,Vereniging\
+  \ Vrienden Duits Draadhaar,********,Ooltgensplaat,,,tier1\\r\\nTier 1,2025-10-11,MAP,Labrador\
+  \ Kring Nederland,********,BiddinghuizenBiddinghuizenAanvang: 07:30,,,tier1\\r\\\
+  nTier 1,2025-10-11,MAP,\\\"KNJV Provincie Noord-HollandStichting Jachthonden Noord-Holland,\
+  \ afd. Haarlemmermeer\\\",********,Nieuw VennepHoofdweg 10412152LJ Nieuw VennepAanvang:\
+  \ 08.15,,,tier1\\r\\nTier 1,2025-10-11,veldwedstrijd,Nederlandse Vereniging Langhaar,********,TholenAanvang:\
+  \ 09.00,,,tier1\\r\\nTier 1,2025-10-11,MAP,Stichting Jachthondentraining Frysl\\\
+  u00e2n,********,TerbantSchoolwegTerbantAanvang: 7:00,,,tier1\\r\\nTier 1,2025-10-11,veldwedstrijd,Nederlandse\
+  \ Teckel Club,********,GiesbeekGiesbeekAanvang: 8:00,,,tier1\\r\\nTier 1,2025-10-11,KNJV,Nederlandse\
+  \ Vereniging van Hongaarse Staande Honden 'Vizsla',********,De Heerlijkheid van\
+  \ WolphaartsdijkMuidenweg 104471NM WolphaartsdijkAanvang: 8:30,,,tier1\\r\\nTier\
+  \ 1,2025-10-12,veldwedstrijd,Nederlandse Vereniging Langhaar,********,IjzendijkeAanvang:\
+  \ 09.00,,,tier1\\r\\nTier 1,2025-10-13,MAP,Stichting Zeeuwse Jachthonden,********,WolphaartsdijkMuidenweg\
+  \ 104471 NM WolphaartsdijkAanvang: 07.30,,,tier1\\r\\nTier 1,2025-10-18,veldwedstrijd,Nederlandse\
+  \ Brakken Club,********,zuid oost Brabant,,,tier1\\r\\nTier 1,2025-10-18,MAP,Nederlandse\
+  \ Vereniging Langhaar,********,AlmkerkEendenveld thv huisnummer 54283 HV GiessenAanvang:\
+  \ 08.00,,,tier1\\r\\nTier 1,2025-10-18,MAP,Stichting Jachthondentrainingen Zwiepi.s.m:\
+  \ Stichting Jachthondenopleiding Terborg en St.Jachthondenopleiding Oost Achterhoek,********,NeedePolhaarweg\
+  \ 37161 MC NeedeAanvang: 08.00,,,tier1\\r\\nTier 1,2025-10-18,veldwedstrijd,Nederlandse\
+  \ Teckel Club,********,GoirleGoirleAanvang: 8.00,,,tier1\\r\\nTier 1,2025-10-20,MAP,KNJV\
+  \ Provincie DrentheVereniging Zelfopleiding Jachthonden N&M Drenthe,********,Noord\
+  \ DrentheAanvang: 07:30,,,tier1\\r\\nTier 1,2025-10-20,MAP,Stichting Jachthondentrainingen\
+  \ Zwiepi.s.m: Stichting Jachthondenopleiding Terborg en St.Jachthondenopleiding\
+  \ Oost Achterhoek,********,NeedePolhaarweg 37161 MC NeedeAanvang: 08.00,,,tier1\\\
+  r\\nTier 1,2025-10-25,veldwedstrijd,\\\"Engelse Springer Club, Welsh Springer Spaniel\
+  \ Club, Cocker Spaniel Club\\\",********,Ameland,,,tier1\\r\\nTier 1,2025-10-31,PJP,Vereniging\
+  \ Jachthondenopleiding Heuvelrug,********,Provincie UtrechtAanvang: 8.00,,,tier1\\\
+  r\\nTier 1,2025-11-01,veldwedstrijd,\\\"Engelse Springer Club, Welsh Springer Spaniel\
+  \ Club, Cocker Spaniel Club\\\",********,ZuidzandeAanvang: 08.30,,,tier1\\r\\nTier\
+  \ 1,2025-11-01,veldwedstrijd,Cesky Fousek Vereniging Nederland,********,BeetsterzwaagAanvang:\
+  \ 8.30,,,tier1\\r\\nTier 1,2025-11-01,veldwedstrijd,Nederlandse Teckel Club,********,WesterbergenEchten\
+  \ - DrentheAanvang: 8:00,,,tier1\\r\\nTier 1,2025-11-07,veldwedstrijd,\\\"Engelse\
+  \ Springer Club, Welsh Springer Spaniel Club, Cocker Spaniel Club\\\",********,Burgh-Haamstede,,,tier1\\\
+  r\\nTier 1,2025-11-08,veldwedstrijd,Nederlandse Brakken Club,********,zuid oost\
+  \ Brabant,,,tier1\\r\\nTier 1,2025-11-15,veldwedstrijd,\\\"Engelse Springer Club,\
+  \ Welsh Springer Spaniel Club, Cocker Spaniel Club\\\",********,Tholen,,,tier1\\\
+  r\\nTier 1,2025-11-15,veldwedstrijd,Nederlandse Teckel Club,********,HeinoHeino\
+  \ - OverijsselAanvang: 8:00,,,tier1\\r\\nTier 1,2025-11-28,veldwedstrijd,\\\"Engelse\
+  \ Springer Club, Welsh Springer Spaniel Club, Cocker Spaniel Club\\\",********,Dinteloord,,,tier1\\\
+  r\\nTier 1,2025-12-01,veldwedstrijd,Labrador Kring Nederland,********,CAC1,,,tier1\\\
+  r\\nTier 1,2025-12-01,veldwedstrijd,Nederlandse Retriever Club,********,NRC Novice\
+  \ 1,,,tier1\\r\\nTier 1,2025-12-01,veldwedstrijd,Nederlandse Retriever Club,********,NRC\
+  \ Novice 2,,,tier1\\r\\nTier 1,2025-12-01,veldwedstrijd,Nederlandse Retriever Club,********,NRC\
+  \ Novice 3,,,tier1\\r\\nTier 1,2025-12-01,veldwedstrijd,Nederlandse Retriever Club,********,NRC\
+  \ CACT 1,,,tier1\\r\\nTier 1,2025-12-01,veldwedstrijd,Nederlandse Retriever Club,********,NRC\
+  \ CACT 2,,,tier1\\r\\nTier 1,2025-12-01,veldwedstrijd,Nederlandse Retriever Club,********,NRC\
+  \ CACT 3,,,tier1\\r\\nTier 1,2025-12-01,veldwedstrijd,Nederlandse Retriever Club,********,NRC\
+  \ CACT4,,,tier1\\r\\nTier 1,2025-12-01,veldwedstrijd,Nederlandse Retriever Club,********,NRC\
+  \ CACT5,,,tier1\\r\\nTier 1,2025-12-01,veldwedstrijd,Nederlandse Retriever Club,********,NRC\
+  \ CACIT 1,,,tier1\\r\\nTier 1,2025-12-01,veldwedstrijd,Nederlandse Retriever Club,********,NRC\
+  \ CACIT 2,,,tier1\\r\\nTier 1,2025-12-01,veldwedstrijd,Nederlandse Retriever Club,********,NRC\
+  \ CACIT 3,,,tier1\\r\\nTier 1,2025-12-01,veldwedstrijd,Nederlandse Labrador Vereniging,********,West\
+  \ Brabant CAC 2,,,tier1\\r\\nTier 1,2025-12-01,veldwedstrijd,Nederlandse Labrador\
+  \ Vereniging,********,Zeeuws Vlaanderen CAC 1,,,tier1\\r\\nTier 1,2025-12-13,veldwedstrijd,\\\
+  \"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker Spaniel Club\\\",********,Kloosterzande,,,tier1\\\
+  r\\nTier 1,2025-12-21,veldwedstrijd,\\\"Engelse Springer Club, Welsh Springer Spaniel\
+  \ Club, Cocker Spaniel Club\\\",********,Duitsland,,,tier1\\r\\nTier 1,2026-01-02,veldwedstrijd,\\\
+  \"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker Spaniel Club\\\",********,Koewacht,,,tier1\\\
+  r\\nTier 1,2026-01-10,veldwedstrijd,\\\"Engelse Springer Club, Welsh Springer Spaniel\
+  \ Club, Cocker Spaniel Club\\\",********,Hulst NN,,,tier1\\r\\nTier 1,2026-01-17,veldwedstrijd,\\\
+  \"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker Spaniel Club\\\",********,Zuidzande,,,tier1\\\
+  r\\nTier 1,2026-01-24,veldwedstrijd,\\\"Engelse Springer Club, Welsh Springer Spaniel\
+  \ Club, Cocker Spaniel Club\\\",********,Tholen,,,tier1\\r\\nTier 1,2026-01-24,veldwedstrijd,\\\
+  \"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker Spaniel Club\\\",********,Tholen,,,tier1\\\
+  r\\nTier 2,2025-07-24,Chesapeake Bay Retriever Club Nederland [email\\u00a0protected],West\
+  \ Brabant,CAC Apporteerwedstrijd,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2025-09-03,Continentale\
+  \ Staande honden Vereeniging [email\\u00a0protected],St. Annaland Aanvang: 8.30,CACIT\
+  \ Najaarswedstrijd Continentaal I koppel,Inschrijven,Selectie wedstrijd WK Continentale,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-03,Vereniging De Weimarse Staande Hond [email\\u00a0protected],Budel\
+  \ Aanvang: 9.00,CAC Zweetspoorproef C,Inschrijven,\\\"Alleen inschrijven met een\
+  \ staande hond (rasgroep 7) de hond moet tenminste een van de aantekeningen ZW D,\
+  \ ZW E, ZW F bezitten\\\",Veldwedstrijd,tier2\\r\\nTier 2,2025-09-06,\\\"Nederlandse\
+  \ Vereniging \\\"\\\"De Duitse Staande Korthaar\\\"\\\" [email\\u00a0protected]\\\
+  \",Sint Annaland,CAC Najaarswedstrijd Continentaal I solo,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-06,Nederlandse Pointer Club [email\\u00a0protected],Waterlandkerkje,CAC\
+  \ Najaarswedstrijd Quete a la Francaise solo,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-06,Nederlandse Vereniging Langhaar [email\\u00a0protected],Rilland\
+  \ Aanvang: 0900,Jeugd Jeugdwedstrijd najaar staande honden,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-10,Vereniging De Drentsche Patrijshond [email\\u00a0protected],Dirksland\
+  \ Aanvang: 9 UUR,Jeugd Jeugdwedstrijd najaar staande honden,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-10,Epagneul Vereniging Nederland [email\\u00a0protected],St.\
+  \ Annaland F.M. Boogaardweg ST.Annaland Aanvang: 9.00u,CAC Najaarswedstrijd Continentaal\
+  \ II solo,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2025-09-11,Vereniging De\
+  \ Weimarse Staande Hond [email\\u00a0protected],De Heen,Jeugd Jeugdwedstrijd najaar\
+  \ staande honden,Inschrijven,Voor jeugdhonden Continentaal II (C),Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-11,Nederlandse Vereniging Langhaar [email\\u00a0protected],Ijzendijke\
+  \ Aanvang: 0900,CACIT Najaarswedstrijd Continentaal I solo,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-12,Nederlandse Vereniging Langhaar i.s.m: Vereniging de Drentsche\
+  \ Patrijshond [email\\u00a0protected],Ijzendijke,CACIT Najaarswedstrijd Continentaal\
+  \ I solo,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2025-09-13,\\\"Engelse Springer\
+  \ Club, Welsh Springer Spaniel Club, Cocker Spaniel Club [email\\u00a0protected]\\\
+  \",Wolphaartsdijk,n.v.t. Certificaatdag Spaniels,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-13,Nederlandse Vereniging Langhaar [email\\u00a0protected],Ijzendijke,CACIT\
+  \ Najaarswedstrijd Continentaal I solo,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier\
+  \ 2,2025-09-14,Nederlandse Teckel Club [email\\u00a0protected],Sandenburg Doorn\
+  \ Aanvang: 8.00,CAC Zweetspoorproef F,Inschrijven,Alleen open voor dashonden (Groep\
+  \ VI),Veldwedstrijd,tier2\\r\\nTier 2,2025-09-15,Nederlandse Vereniging van Hongaarse\
+  \ Staande Honden 'Vizsla' [email\\u00a0protected],Willemstad Aanvang: 08:30,CAC\
+  \ Najaarswedstrijd Continentaal I solo,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier\
+  \ 2,2025-09-15,Nederlandse Grote Munsterlander Vereniging [email\\u00a0protected],Nieuw\
+  \ Buinen Zuiderdiep 42 9521 AT \\u00a0Buinen Aanvang: 9.00,CAC Najaarswedstrijd\
+  \ Continentaal II solo,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2025-09-16,Bracco\
+  \ Italiano Club [email\\u00a0protected],St Jacobiparochie St Jacobiparochie,CAC\
+  \ Najaarswedstrijd Continentaal II solo,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier\
+  \ 2,2025-09-17,Nederlandse Vereniging Langhaar [email\\u00a0protected],De Heen,Jeugd\
+  \ Jeugdwedstrijd najaar staande honden,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier\
+  \ 2,2025-09-17,Nederlandse Vereniging Langhaar [email\\u00a0protected],Budel Aanvang:\
+  \ 8.30,CAC Zweetspoorproef F,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2025-09-17,Nederlandse\
+  \ Vereniging van Heidewachtel Liefhebbers [email\\u00a0protected],St. Annaland F.M.\
+  \ Boogaardweg 19 4697GM\\u00a0St. Annaland Aanvang: 9.00,Jeugd Jeugdwedstrijd najaar\
+  \ staande honden,Inschrijven,Indeling op basis lotingsprotocol,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-18,Nederlandse Vereniging van Hongaarse Staande Honden 'Vizsla'\
+  \ [email\\u00a0protected],Willemstad Aanvang: 08:30,CAC Najaarswedstrijd Continentaal\
+  \ I solo,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2025-09-19,Vereniging De Drentsche\
+  \ Patrijshond [email\\u00a0protected],Dirksland Aanvang: 9 UUR,CAC Najaarswedstrijd\
+  \ Continentaal II solo,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2025-09-19,Vereniging\
+  \ Vrienden Duits Draadhaar [email\\u00a0protected],Middelharnis Aanvang: 9:00,CAC\
+  \ Najaarswedstrijd Continentaal I solo,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier\
+  \ 2,2025-09-20,Nederlandse Vereniging Langhaar [email\\u00a0protected],Wilhelminadorp,CACIT\
+  \ Najaarswedstrijd Continentaal I solo,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier\
+  \ 2,2025-09-20,Vereniging Vrienden Duits Draadhaar [email\\u00a0protected],Dinteloord\
+  \ Boonhil 4756SN\\u00a0kruisland,Jeugd Jeugdwedstrijd najaar staande honden,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-20,Bracco Italiano Club [email\\u00a0protected],St. Annaland\
+  \ F.M. Boogaardweg 19 4697 GM\\u00a0St. Annaland Aanvang: 09.00,CAC Najaarswedstrijd\
+  \ Continentaal II solo,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2025-09-20,Vereniging\
+  \ Liefhebbers van de Engelse Setter [email\\u00a0protected],Melissant Molendijk\
+  \ 63 3248 BA\\u00a0Melissant Aanvang: 09:00,CACIT Najaarswedstrijd Quete a la Francaise\
+  \ koppel,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2025-09-20,Vereniging Liefhebbers\
+  \ van de Engelse Setter [email\\u00a0protected],Melissant Molendijk 63 3248 BA\\\
+  u00a0Melissant Aanvang: 09:00,CAC Najaarswedstrijd Quete a la Francaise solo,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-22,Nederlandse Vereniging van Hongaarse Staande Honden 'Vizsla'\
+  \ [email\\u00a0protected],De Heen/Steenbergen Aanvang: 08:30,Jeugd Jeugdwedstrijd\
+  \ najaar staande honden,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2025-09-23,Vereniging\
+  \ Slowaakse Ruwharige Staande Hond [email\\u00a0protected],Bruinisse Aanvang: 09:00,CAC\
+  \ Najaarswedstrijd Continentaal II solo,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier\
+  \ 2,2025-09-24,Nederlandse Vereniging Langhaar [email\\u00a0protected],Ritthem,Jeugd\
+  \ Jeugdwedstrijd najaar staande honden,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier\
+  \ 2,2025-09-24,Vereniging De Weimarse Staande Hond [email\\u00a0protected],Ouwerkerk\
+  \ Oude Beesdseweg 6 Aanvang: 09.00,CAC Najaarswedstrijd Continentaal II solo,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-24,Epagneul Breton Club Nederland [email\\u00a0protected],Heikant\
+  \ Aanvang: 9.00,CAC Najaarswedstrijd Continentaal I solo,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-24,Epagneul Vereniging Nederland [email\\u00a0protected],St.\
+  \ Annaland F.M. Boogaardweg St. Annaland Aanvang: 9.00,Jeugd Jeugdwedstrijd najaar\
+  \ staande honden,Inschrijven,EVN Continentaal II jeugdwedstrijd,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-25,Continentale Staande honden Vereeniging [email\\u00a0protected],Grathem/Venlo,CACIT\
+  \ Najaarswedstrijd Continentaal I solo,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier\
+  \ 2,2025-09-26,Continentale Staande honden Vereeniging [email\\u00a0protected],Grathem/Venlo,CACIT\
+  \ Najaarswedstrijd Continentaal I solo,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier\
+  \ 2,2025-09-27,\\\"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker Spaniel\
+  \ Club [email\\u00a0protected]\\\",Vragender,n.v.t. Certificaatdag Spaniels,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-27,Vereniging De Weimarse Staande Hond [email\\u00a0protected],De\
+  \ Heen Aanvang: 09.00,Jeugd Jeugdwedstrijd najaar staande honden,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-27,Vereniging De Drentsche Patrijshond [email\\u00a0protected],Stad\
+  \ a/h Haringvliet Aanvang: 9 UUR,CAC Najaarswedstrijd Continentaal II solo,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-27,Nederlandse Pointer Club i.s.m: Ierse Setterclub [email\\\
+  u00a0protected],Sint Annaland F.M. Boogaardwg 19 Sint Annaland Aanvang: 9.00,CAC\
+  \ Najaarswedstrijd Quete a la Francaise solo,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-28,Epagneul Breton Club Nederland [email\\u00a0protected],Zuidzande\
+  \ Aanvang: 9.00,CAC Najaarswedstrijd Continentaal I solo,Inschrijven,Locatie samenkomst\
+  \ volgt,Veldwedstrijd,tier2\\r\\nTier 2,2025-09-29,Bracco Italiano Club [email\\\
+  u00a0protected],Onstwedde Onstwedde,CAC Najaarswedstrijd Continentaal II solo,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-09-29,Nederlandse Grote Munsterlander Vereniging [email\\u00a0protected],Nieuw\
+  \ Pekela J.R Stuutstraat F84 9663 SJ\\u00a0Nieuwe Pekela Aanvang: 9.00,Jeugd Jeugdwedstrijd\
+  \ najaar staande honden,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2025-09-30,Bracco\
+  \ Italiano Club [email\\u00a0protected],Bellingwolde,CAC Najaarswedstrijd Continentaal\
+  \ II solo,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2025-10-01,Continentale Staande\
+  \ honden Vereeniging [email\\u00a0protected],St. Annaland Aanvang: 8.30,Jeugd Jeugdwedstrijd\
+  \ najaar staande honden,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2025-10-02,Vereniging\
+  \ De Drentsche Patrijshond [email\\u00a0protected],Heijningen Aanvang: 9 UUR,Jeugd\
+  \ Jeugdwedstrijd najaar staande honden,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier\
+  \ 2,2025-10-02,Epagneul Breton Club Nederland [email\\u00a0protected],Kloosterzande\
+  \ Aanvang: 9.00,CAC Najaarswedstrijd Continentaal I solo,Inschrijven,Locatie samenkomst\
+  \ volgt,Veldwedstrijd,tier2\\r\\nTier 2,2025-10-03,Nederlandse Vereniging Langhaar\
+  \ [email\\u00a0protected],\\\"Anjum, Friesland\\\",Jeugd Jeugdwedstrijd najaar staande\
+  \ honden,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2025-10-03,Nederlandse Pointer\
+  \ Club [email\\u00a0protected],Grathem,CAC Najaarswedstrijd Quete a la Francaise\
+  \ solo,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2025-10-03,Nederlandse Vereniging\
+  \ Langhaar [email\\u00a0protected],\\\"Anjum, Friesland Aanvang: 09.00\\\",CAC Najaarswedstrijd\
+  \ Continentaal I solo,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2025-10-04,Vereniging\
+  \ Vrienden Duits Draadhaar [email\\u00a0protected],Beesterzwaag,CAC Zweetspoorproef\
+  \ F,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2025-10-04,Parson Russell Terrier\
+  \ Club Nederland [email\\u00a0protected],Echt Aanvang: 08:30,CAC Zweetspoorproef\
+  \ F,Inschrijven,Honden dienen schotvast certificaat te hebben behaald.,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-10-04,Nederlandse Vereniging Langhaar [email\\u00a0protected],\\\
+  \"Ferwert, Friesland Aanvang: 09.00\\\",Jeugd Jeugdwedstrijd najaar staande honden,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-10-04,Nederlandse Vereniging Langhaar [email\\u00a0protected],\\\
+  \"Ferwert, Friesland Aanvang: 09.00\\\",CAC Najaarswedstrijd Continentaal I solo,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-10-08,Vereniging De Drentsche Patrijshond [email\\u00a0protected],Westernieland,Jeugd\
+  \ Jeugdwedstrijd najaar staande honden,Inschrijven,I.BC - Continentale Staande Honden,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-10-08,Continentale Staande honden Vereeniging [email\\u00a0protected],St.\
+  \ Annaland Aanvang: 8.30,CACIT Najaarswedstrijd Continentaal I solo,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-10-08,Nederlandse Fauve de Bretagne Club [email\\u00a0protected],Omgeving\
+  \ Weert Aanvang: 9:00,CAC Zweetspoorproef F,Inschrijven,Cat. IV (lopende honden)\
+  \ en V (zweethonden),Veldwedstrijd,tier2\\r\\nTier 2,2025-10-11,Nederlandse Vereniging\
+  \ Langhaar [email\\u00a0protected],De Heen,Jeugd Jeugdwedstrijd najaar staande honden,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-10-11,Vereniging Vrienden Duits Draadhaar [email\\u00a0protected],Ooltgensplaat,Jeugd\
+  \ Jeugdwedstrijd najaar staande honden,Inschrijven,alleen voor duitse staande draadharen,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-10-11,Nederlandse Vereniging Langhaar [email\\u00a0protected],Tholen\
+  \ Aanvang: 09.00,CACIT Najaarswedstrijd Continentaal I solo,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-10-11,Nederlandse Teckel Club [email\\u00a0protected],Giesbeek Giesbeek\
+  \ Aanvang: 8:00,n.v.t. Luid op spoor proef,Inschrijven,,Veldwedstrijd,tier2\\r\\\
+  nTier 2,2025-10-12,Nederlandse Vereniging Langhaar [email\\u00a0protected],Ijzendijke\
+  \ Aanvang: 09.00,Jeugd Jeugdwedstrijd najaar staande honden,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-10-18,Nederlandse Brakken Club [email\\u00a0protected],zuid oost\
+  \ Brabant,CAC Zweetspoorproef D,Inschrijven,Honden dienen 2 jaar oud te zijn en\
+  \ schotvast certificaat te hebben behaald.,Veldwedstrijd,tier2\\r\\nTier 2,2025-10-18,Nederlandse\
+  \ Teckel Club [email\\u00a0protected],Goirle Goirle Aanvang: 8.00,CAC Zweetspoorproef\
+  \ E,Inschrijven,Alleen open voor dashonden (Groep VI),Veldwedstrijd,tier2\\r\\nTier\
+  \ 2,2025-10-25,\\\"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker Spaniel\
+  \ Club [email\\u00a0protected]\\\",Ameland,CAC Spanielwedstrijd voor de voet,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-11-01,\\\"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker\
+  \ Spaniel Club [email\\u00a0protected]\\\",Zuidzande Aanvang: 08.30,CAC Spanielwedstrijd\
+  \ voor de voet,Inschrijven,Alleen voor ECS rubriek II.A,Veldwedstrijd,tier2\\r\\\
+  nTier 2,2025-11-01,Cesky Fousek Vereniging Nederland [email\\u00a0protected],Beetsterzwaag\
+  \ Aanvang: 8.30,CAC Zweetspoorproef F,Inschrijven,\\\"Alleen toegankelijk voor staande\
+  \ honden, bewijs van schotvastheid verplicht.\\\",Veldwedstrijd,tier2\\r\\nTier\
+  \ 2,2025-11-01,Nederlandse Teckel Club [email\\u00a0protected],Westerbergen Echten\
+  \ - Drenthe Aanvang: 8:00,CAC Zweetspoorproef F,Inschrijven,Alleen open voor dashonden\
+  \ (Groep VI),Veldwedstrijd,tier2\\r\\nTier 2,2025-11-07,\\\"Engelse Springer Club,\
+  \ Welsh Springer Spaniel Club, Cocker Spaniel Club [email\\u00a0protected]\\\",Burgh-Haamstede,Jeugd\
+  \ Spanielwedstrijd voor de voet,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2025-11-08,Nederlandse\
+  \ Brakken Club [email\\u00a0protected],zuid oost Brabant,CAC Zweetspoorproef E,Inschrijven,Honden\
+  \ dienen schotvast certificaat te hebben behaald.,Veldwedstrijd,tier2\\r\\nTier\
+  \ 2,2025-11-15,\\\"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker Spaniel\
+  \ Club [email\\u00a0protected]\\\",Tholen,Speciaal Spanielwedstrijd voor de voet,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-11-15,Nederlandse Teckel Club [email\\u00a0protected],Heino Heino\
+  \ - Overijssel Aanvang: 8:00,CAC Zweetspoorproef C,Inschrijven,Alleen open voor\
+  \ dashonden (Groep VI),Veldwedstrijd,tier2\\r\\nTier 2,2025-11-28,\\\"Engelse Springer\
+  \ Club, Welsh Springer Spaniel Club, Cocker Spaniel Club [email\\u00a0protected]\\\
+  \",Dinteloord,Jeugd Spanielwedstrijd voor de voet,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-12-01,Labrador Kring Nederland [email\\u00a0protected],CAC1,CAC\
+  \ Apporteerwedstrijd,Inschrijven,Datum en plaats  worden later bekend gemaakt,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-12-01,Nederlandse Retriever Club [email\\u00a0protected],NRC Novice\
+  \ 1,Novice Apporteerwedstrijd,Inschrijven,Datum en plaats worden later bekend gemaakt,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-12-01,Nederlandse Retriever Club [email\\u00a0protected],NRC Novice\
+  \ 2,Novice Apporteerwedstrijd,Inschrijven,Datum en plaats worden later bekend gemaakt,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-12-01,Nederlandse Retriever Club [email\\u00a0protected],NRC Novice\
+  \ 3,Novice Apporteerwedstrijd,Inschrijven,Datum en plaats worden later bekend gemaakt,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-12-01,Nederlandse Retriever Club [email\\u00a0protected],NRC CACT\
+  \ 1,CAC Apporteerwedstrijd,Inschrijven,Datum en plaats worden later bekend gemaakt,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-12-01,Nederlandse Retriever Club [email\\u00a0protected],NRC CACT\
+  \ 2,CAC Apporteerwedstrijd,Inschrijven,Datum is nog onder voorbehoud Datum en plaats\
+  \ worden later bekend gemaakt,Veldwedstrijd,tier2\\r\\nTier 2,2025-12-01,Nederlandse\
+  \ Retriever Club [email\\u00a0protected],NRC CACT 3,CAC Apporteerwedstrijd,Inschrijven,Datum\
+  \ is nog onder voorbehoud,Veldwedstrijd,tier2\\r\\nTier 2,2025-12-01,Nederlandse\
+  \ Retriever Club [email\\u00a0protected],NRC CACT4,CAC Apporteerwedstrijd,Inschrijven,Datum\
+  \ en plaats worden later bekend gemaakt,Veldwedstrijd,tier2\\r\\nTier 2,2025-12-01,Nederlandse\
+  \ Retriever Club [email\\u00a0protected],NRC CACT5,CAC Apporteerwedstrijd,Inschrijven,Datum\
+  \ en plaats worden later bekend gemaakt,Veldwedstrijd,tier2\\r\\nTier 2,2025-12-01,Nederlandse\
+  \ Retriever Club [email\\u00a0protected],NRC CACIT 1,CACIT Apporteerwedstrijd,Inschrijven,Datum\
+  \ en plaats worden later bekend gemaakt,Veldwedstrijd,tier2\\r\\nTier 2,2025-12-01,Nederlandse\
+  \ Retriever Club [email\\u00a0protected],NRC CACIT 2,CACIT Apporteerwedstrijd,Inschrijven,Datum\
+  \ en plaats worden later bekend gemaakt,Veldwedstrijd,tier2\\r\\nTier 2,2025-12-01,Nederlandse\
+  \ Retriever Club [email\\u00a0protected],NRC CACIT 3,CACIT Apporteerwedstrijd,Inschrijven,Datum\
+  \ en plaats worden later bekend gemaakt,Veldwedstrijd,tier2\\r\\nTier 2,2025-12-01,Nederlandse\
+  \ Labrador Vereniging [email\\u00a0protected],West Brabant CAC 2,CAC Apporteerwedstrijd,Inschrijven,exacte\
+  \ tijdstip en locatie volgt tzt,Veldwedstrijd,tier2\\r\\nTier 2,2025-12-01,Nederlandse\
+  \ Labrador Vereniging [email\\u00a0protected],Zeeuws Vlaanderen CAC 1,CAC Apporteerwedstrijd,Inschrijven,exacte\
+  \ tijdstip en locatie volgt tzt,Veldwedstrijd,tier2\\r\\nTier 2,2025-12-13,\\\"\
+  Engelse Springer Club, Welsh Springer Spaniel Club, Cocker Spaniel Club [email\\\
+  u00a0protected]\\\",Kloosterzande,CACIT Spanielwedstrijd voor de voet,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-12-21,\\\"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker\
+  \ Spaniel Club [email\\u00a0protected]\\\",Duitsland,Jeugd Jeugdwedstrijd spaniels,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2026-01-02,\\\"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker\
+  \ Spaniel Club [email\\u00a0protected]\\\",Koewacht,CACIT Spanielwedstrijd voor\
+  \ de voet,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2026-01-10,\\\"Engelse Springer\
+  \ Club, Welsh Springer Spaniel Club, Cocker Spaniel Club [email\\u00a0protected]\\\
+  \",Hulst NN,CAC Spanielwedstrijd voor de voet,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2026-01-17,\\\"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker\
+  \ Spaniel Club [email\\u00a0protected]\\\",Zuidzande,CAC Spanielwedstrijd voor de\
+  \ voet,Inschrijven,,Veldwedstrijd,tier2\\r\\nTier 2,2026-01-24,\\\"Engelse Springer\
+  \ Club, Welsh Springer Spaniel Club, Cocker Spaniel Club [email\\u00a0protected]\\\
+  \",Tholen,CAC Spanielwedstrijd voor de voet,Inschrijven,,Veldwedstrijd,tier2\\r\\\
+  nTier 2,2026-01-24,\\\"Engelse Springer Club, Welsh Springer Spaniel Club, Cocker\
+  \ Spaniel Club [email\\u00a0protected]\\\",Tholen,CAC Spanielwedstrijd voor de voet,Inschrijven,,Veldwedstrijd,tier2\\\
+  r\\nTier 2,2025-07-12,Vereniging Vrienden Duits Draadhaar [email\\u00a0protected],Putten\
+  \ Schremmersteeg 4 3882 SE\\u00a0Putten,Standaard Jachthonden proef,niet meer mogelijk,Alleen\
+  \ voor Duitse Staande Draadharen,Jachthondenproef,tier2\\r\\nTier 2,2025-07-12,\\\
+  \"Epagneul Vereniging Nederland i.s.m: Epagneul de Saint Usuge, Slovaakse Staande\
+  \ Draadharen en Duitse staande lang haren [email\\u00a0protected]\\\",Almkerk Eendenveld\
+  \ thv huisnummer 5 4283 HV\\u00a0Giessen Aanvang: 8.00,Standaard Jachthonden proef,niet\
+  \ meer mogelijk,\\\"Inschrijving voor deze SJP is open voor Epagneul Picard, Epagneul\
+  \ blue de Picardie, Epagneul Francais, Epageneul pont audemer, Epagneul de Saint\
+  \ Usuge, Slovaakse Staande Draadharen, Duitse staande lang haren  en Heidelwachtel.\
+  \ Leden van EVN en Epagneul Saint Usuge hebben conform het algemeen reglement jachthondenproeven\
+  \ (Artikel V.6) 30 dagen  voorrang na opening van de inschrijving.\\\",Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-07-18,Vereniging De Drentsche Patrijshond i.s.m: Nederlandse Vereniging\
+  \ voor Stabij- en Wetterhounen [email\\u00a0protected],Landgoed Heerlijkheid Mari\\\
+  u00ebnwaerdt 't Klooster 5 4153 RR\\u00a0Beesd,Standaard Jachthonden proef,niet\
+  \ meer mogelijk,\\\"Deze proef is enkel voor Drentsche Patrijshonden, Stabij- en\
+  \ Wetterhounen. Inschrijving sluit op 27-06\\\",Jachthondenproef,tier2\\r\\nTier\
+  \ 2,2025-07-26,\\\"KNJV Provincie Noord-Holland Stichting Jachthonden Noord-Holland,\
+  \ afd. Haarlemmermeer [email\\u00a0protected]\\\",Manege Spaarnwoude Houtrakkerweg\
+  \ 62 1165 MX\\u00a0Halfweg Aanvang: 08.15,Team Apporteer Proef,niet mogelijk,geannuleerd\
+  \ i.v.m. onvoldoende deelnemers,Jachthondenproef,tier2\\r\\nTier 2,2025-07-28,Stichting\
+  \ Zeeuwse Jachthonden [email\\u00a0protected],Sportpark VV Rillandia Batsheweg 54\
+  \ 4411 RK\\u00a0Rilland Aanvang: 07.30,Standaard Jachthonden proef,niet meer mogelijk,Gelijk\
+  \ met inschrijving inschrijfgeld overmaken. Zorg dat uw inschrijving compleet is.,Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-07-28,Nederlandse Vereniging Langhaar i.s.m: NVDSK Duitse staande\
+  \ korthaar [email\\u00a0protected],Fam Steggetman Watermolenweg 12 7481 VL\\u00a0Haaksbergen\
+  \ Aanvang: 8.00,Standaard Jachthonden proef,Inschrijven,Deze proef kunnen alleen\
+  \ Duitse staande langharen en kortharen inschrijven,Jachthondenproef,tier2\\r\\\
+  nTier 2,2025-08-02,Continentale Staande honden Vereeniging i.s.m: Jachtcommissie\
+  \ SUN [email\\u00a0protected],Crobse Waard nabij Crob 18 Haaften Aanvang: 08.00,Standaard\
+  \ Jachthonden proef,niet meer mogelijk,Inschrijving open voor Continentaal Staande\
+  \ Honden en Spani\\u00ebls. Leden van de organiserende rasverenigingen hebben voorrang\
+  \ tot 10 dagen na openstellen inschrijving.,Jachthondenproef,tier2\\r\\nTier 2,2025-08-09,Jachthondenopleiding\
+  \ 't Hogeland [email\\u00a0protected],Bosplan Biessum Damlaan 9931 TE\\u00a0Delfzijl\
+  \ Aanvang: 07.30,Standaard Jachthonden proef,niet meer mogelijk,,Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-08-15,Stichting Jachthonden Brabant West [email\\u00a0protected],Klundert\
+  \ Molenvliet 7 4791 GB\\u00a0Klundert Aanvang: 7.30,Standaard Jachthonden proef,Inschrijven,Deelnemende\
+  \ hond mag 1 keer deelnemen (15 of 18 aug),Jachthondenproef,tier2\\r\\nTier 2,2025-08-16,Nederlandse\
+  \ Vereniging van Hongaarse Staande Honden 'Vizsla' i.s.m: Nederlandse Grote M\\\
+  u00fcnsterlander Vereniging [email\\u00a0protected],Crobsche Waard Crob 18 - 20\
+  \ 4175LR\\u00a0Haaften Aanvang: 8:00,Standaard Jachthonden proef,Inschrijven,Alleen\
+  \ voor Vizsla's en Grote M\\u00fcnsterlanders. Leden van onze vereniging hebben\
+  \ voorrang tot en met 14 dagen na openstelling inschrijving.,Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-08-18,Stichting Jachthonden Brabant West [email\\u00a0protected],Klundert\
+  \ Molenvliet 7 4791 GB\\u00a0Klundert Aanvang: 7.30,Standaard Jachthonden proef,Inschrijven,Deelnemende\
+  \ hond mag 1 keer deelnemen (15 of 18 aug),Jachthondenproef,tier2\\r\\nTier 2,2025-08-23,Nederlandse\
+  \ Labrador Vereniging [email\\u00a0protected],\\\"Paviljoen \\\"\\\"de Kogeloven\\\
+  \"\\\" Oostvoorne Brielse Maas 1 3233LD\\u00a0Oostvoorne Aanvang: 7.30\\\",MAP proef,Inschrijven,\\\
+  \"Open alleen voor Labrador Retrievers, leden NLV hebben voorrang\\\",Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-08-23,Vereniging Jachthondenopleiding Heuvelrug [email\\u00a0protected],Scherpenzeel\
+  \ Broekerweg  7 3931 PL\\u00a0Woudenberg Aanvang: 8.00,Standaard Jachthonden proef,niet\
+  \ meer mogelijk,Leden van Jagersvereniging Provincie Utrecht hebben 10 dagen voorrang\
+  \ bij inschrijving,Jachthondenproef,tier2\\r\\nTier 2,2025-08-24,Jhs. St. Hubertus\
+  \ [email\\u00a0protected],KC Delft tandhofdreef 10 2623 EX Aanvang: 8,Standaard\
+  \ Jachthonden proef,Inschrijven,,Jachthondenproef,tier2\\r\\nTier 2,2025-08-30,KNJV\
+  \ Provincie Gelderland Stichting Jachthonden Opleiding Terborg [email\\u00a0protected],\\\
+  \"Openluchttheater Engbergen Bosweg 5 7083 AB\\u00a0Voorst, gemeente Oude IJsselstreek\
+  \ Aanvang: 07.30\\\",Standaard Jachthonden proef,Inschrijven,Leden van Jagersvereniging\
+  \ Provincie Gelderland hebben tot 10 dagen na openstelling van de inschrijving \
+  \ voorrang bij inschrijving. Niet complete inschrijvingen worden niet in behandeling\
+  \ genomen. Na inschrijving direct uw inschrijfgeld overmaken,Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-08-30,\\\"Stichting Jachthonden Provincie Noord-Holland, locatie\
+  \ Hoorn [email\\u00a0protected]\\\",Het Streekbos Veilingweg 1611BN\\u00a0Bovenkarspel\
+  \ Aanvang: 07:30,Standaard Jachthonden proef,Inschrijven,,Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-08-30,Stichting Jachthondengroep Uffelte [email\\u00a0protected],Uffelte\
+  \ Rijksweg 41 7975 RV\\u00a0Uffelte Aanvang: 7:30,Standaard Jachthonden proef,Inschrijven,Alleen\
+  \ nog geopend voor het aanpassen van inschrijvingen. Nieuwe inschrijvingen niet\
+  \ meer mogelijk.,Jachthondenproef,tier2\\r\\nTier 2,2025-08-31,KNJV Provincie Gelderland\
+  \ Stichting Jachthonden Opleiding Terborg i.s.m: Nederlandse Korthals Griffonclub\
+  \ & Cesky Fousek Vereniging Nederland [email\\u00a0protected],\\\"Openluchttheater\
+  \ Engbergen Bosweg 5 7083 AB\\u00a0Voorst, gemeente Oude IJsselstreek Aanvang: 07.30\\\
+  \",Standaard Jachthonden proef,Inschrijven,De inschrijving is alleen open voor Staande\
+  \ Honden. Leden van de Nederlandse Korthals Griffonclub en de Cesky Fousek Vereniging\
+  \ Nederland hebben voorrang tot 10 dagen na het openstellen van de inschrijving.\
+  \ Niet complete inschrijvingen worden niet in behandeling genomen. Na inschrijving\
+  \ direct uw inschrijfgeld overmaken.,Jachthondenproef,tier2\\r\\nTier 2,2025-09-05,KNJV\
+  \ Provincie Overijssel Stichting Jachthonden Salland Twente [email\\u00a0protected],Lutten\
+  \ Stobbenplasweg 7 Lutten Aanvang: 7.00,Standaard Jachthonden proef,Inschrijven,\\\
+  \"Leden Overijssel, Drente, Groningen, Friesland gaan 10 dagen voor\\\",Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-09-06,Labrador Kring Nederland [email\\u00a0protected],Landgoed\
+  \ Hof te Dieren Kerkallee 2 6955 JA\\u00a0Ellecom Aanvang: 07:30,MAP proef,Inschrijven,Open\
+  \ voor alle retrieverrassen.  Leden van de LKN hebben tot 1 week na openstellen\
+  \ voorrang bij overinschrijving,Jachthondenproef,tier2\\r\\nTier 2,2025-09-06,Stichting\
+  \ Jachthondopleiding De Meinweg [email\\u00a0protected],St.Odili\\u00ebnberg Aanvang:\
+  \ 08:30,Standaard Jachthonden proef,Inschrijven,Na voorrangsperiode van 10 dagen\
+  \ volgt nadere informatie.,Jachthondenproef,tier2\\r\\nTier 2,2025-09-06,Stichting\
+  \ Jachthondentraining Frysl\\u00e2n [email\\u00a0protected],Terbant Schoolweg Terbant\
+  \ Aanvang: 8:00,Standaard Jachthonden proef,Inschrijven,,Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-09-07,\\\"KNJV Provincie Noord-Holland Stichting Jachthonden Provincie\
+  \ Noord Holland, locatie Alkmaar [email\\u00a0protected]\\\",Anna Paulowna Boermansweg\
+  \ 2 1761LK\\u00a0Anna Paulowna Aanvang: 08:00,Standaard Jachthonden proef,Inschrijven,,Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-09-08,Stichting Zeeuwse Jachthonden [email\\u00a0protected],Rilland\
+  \ Kreekrak gebied Markiezaatsweg 4411 SX\\u00a0Rilland Aanvang: 07.30,MAP proef,vanaf\
+  \ 7-07-2025 19:00,Gelijk met inschrijving inschrijfgeld overmaken. Zorg dat uw inschrijving\
+  \ compleet is.,Jachthondenproef,tier2\\r\\nTier 2,2025-09-08,KNJV Provincie Drenthe\
+  \ Vereniging Zelfopleiding Jachthonden N&M Drenthe [email\\u00a0protected],Gieten\
+  \ Gieten Aanvang: 07:30,Standaard Jachthonden proef,Inschrijven,Geef bij inschrijving\
+  \ aan voor welk diploma (C-B-A) u op wilt gaan.,Jachthondenproef,tier2\\r\\nTier\
+  \ 2,2025-09-12,Stichting Jachthonden Zuid-Holland regio Gouda [email\\u00a0protected],Rottemeren\
+  \ Kooilaan 3 2665 KR\\u00a0Bleiswijk,Standaard Jachthonden proef,Inschrijven,\\\"\
+  Leden KNJV Zuid-Holland hebben voorrang tot 10 dagen na de openstelling van de inschrijving.\
+  \ Graag bij uw betaling aangeven in welke klasse (C, B of A) u wilt deelnemen.\\\
+  \",Jachthondenproef,tier2\\r\\nTier 2,2025-09-13,Jachthondentrainingsgroep Stichting\
+  \ 't Sticht [email\\u00a0protected],De Kooihoeve Tiendweg 9 4152 GC\\u00a0Rhenoy\
+  \ Aanvang: 08.00,Standaard Jachthonden proef,Inschrijven,Leden KNJV Utrecht hebben\
+  \ tot  en met 10 dagen na opening van de inschrijving voorrang bij plaatsing,Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-09-13,Vereniging De Weimarse Staande Hond [email\\u00a0protected],Putten\
+  \ Schremmersteeg 2 3882 SE\\u00a0Putten Aanvang: 08:00,Standaard Jachthonden proef,Inschrijven,Alleen\
+  \ open voor Weimarse Staande Honden (Kort- en Langhaar). Leden van de WSH hebben\
+  \ tot de 30ste dag na opening van de inschrijving  voorrang.,Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-09-13,KNJV Provincie Noord-Brabant Stichting Jachthonden training\
+  \ Den Bosch [email\\u00a0protected],\\\"Landgoed Bleijendijk Bleijendijk 5 Vught\
+  \ Aanvang: 6,45\\\",Standaard Jachthonden proef,Inschrijven,,Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-09-19,Jachthondentrainingsgroep Stichting 't Sticht [email\\u00a0protected],Landgoed\
+  \ Vollenhove Utrechtseweg De Bilt Aanvang: 08.00,MAP proef,vanaf 10-07-2025 19:00,Leden\
+  \ KNJV Utrecht hebben tot  en met 10 dagen na opening van de inschrijving voorrang\
+  \ bij plaatsing,Jachthondenproef,tier2\\r\\nTier 2,2025-09-20,Vereniging Jachthondenopleiding\
+  \ Heuvelrug [email\\u00a0protected],Hindersteyn Langbroekerdijk nabij Rhodensteinselaan.\
+  \ 3972 MC,MAP proef,vanaf 12-07-2025 19:00,Leden van Jagersvereniging Provincie\
+  \ Utrecht hebben 10 dagen voorrang bij inschrijving,Jachthondenproef,tier2\\r\\\
+  nTier 2,2025-09-20,KNJV Provincie Groningen Stichting Jachthonden Westerkwartier\
+  \ [email\\u00a0protected],Landgoedboerderij Oosterheerdt Oosterheerdtstraat 7 9351\
+  \ BK\\u00a0Leek Aanvang: 08:00,Standaard Jachthonden proef,vanaf 11-07-2025 19:00,,Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-09-20,\\\"KNJV Provincie Noord-Holland Stichting Jachthonden Noord-Holland,\
+  \ afd. Haarlemmermeer [email\\u00a0protected]\\\",Haarlemmermeerse bos IJweg 951\
+  \ 2131LV\\u00a0Hoofddorp Aanvang: 08:00,Standaard Jachthonden proef,vanaf 11-07-2025\
+  \ 19:00,,Jachthondenproef,tier2\\r\\nTier 2,2025-09-20,\\\"Jagersvereniging Gelderland,\
+  \ De Veluwse Polder [email\\u00a0protected]\\\",Landgoed Klarenbeek Oude Courageweg\
+  \ 1 8085 SC\\u00a0Doornspijk Aanvang: 8.00,Standaard Jachthonden proef,vanaf 12-07-2025\
+  \ 19:00,,Jachthondenproef,tier2\\r\\nTier 2,2025-09-21,Stichting Jachthonden Noord-Limburg\
+  \ [email\\u00a0protected],Horst Wittebrugweg 5961NJ\\u00a0Horst Aanvang: 8:00,Standaard\
+  \ Jachthonden proef,vanaf 13-07-2025 19:00,Leden van KNJV Provincie Limburg hebben\
+  \ 10 dagen voorrang bij inschrijving,Jachthondenproef,tier2\\r\\nTier 2,2025-09-26,KNJV\
+  \ Provincie Overijssel Stichting Jachthonden Salland Twente [email\\u00a0protected],Denekamp\
+  \ Aanvang: 7.00,MAP proef,vanaf 18-07-2025 19:00,Leden overijssel gaan 10 dagen\
+  \ voor,Jachthondenproef,tier2\\r\\nTier 2,2025-09-27,Stichting Jachthonden Eemland\
+  \ [email\\u00a0protected],Landgoed Vollenhoven De Bilt,MAP proef,vanaf 18-07-2025\
+  \ 19:00,Leden van gewest Utrecht hebben 10 dagen voorrang,Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-09-27,\\\"MAP Samenwerkende Continentalen i.s.m: Cesky Fousek Ver.,\
+  \ Epagneul Breton Club, Korthals Griffonclub, Vizsla Ver., Cont. Staande Honden\
+  \ Vereeniging [email\\u00a0protected]\\\",Crobse Waard nabij Crob 18 Haaften Aanvang:\
+  \ 08.00,MAP proef,vanaf 18-07-2025 19:00,Inschrijving open voor Continentaal Staande\
+  \ Honden rubriek B en C . Leden van de organiserende rasverenigingen hebben voorrang\
+  \ tot 10 dagen na openstellen inschrijving.,Jachthondenproef,tier2\\r\\nTier 2,2025-09-27,KNJV\
+  \ Provincie Gelderland Jachthondenopleiding Oost Achterhoek [email\\u00a0protected],Winterswijk\
+  \ Buitinkweg 7 7107BE\\u00a0Winterswijk-Kotten Aanvang: 7.30,Standaard Jachthonden\
+  \ proef,vanaf 19-07-2025 19:00,,Jachthondenproef,tier2\\r\\nTier 2,2025-09-27,Stichting\
+  \ Jachthondengroep Uffelte [email\\u00a0protected],Uffelte Rijksweg 41 7975 RV\\\
+  u00a0Uffelte Aanvang: 7:30,MAP proef,vanaf 19-07-2025 19:00,Alleen volledig en juist\
+  \ ingevulde inschrijvingen worden in behandeling genomen,Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-09-27,GRCN [email\\u00a0protected],Rhenoy Tiendweg 9 4152GC\\u00a0Rhenoy\
+  \ Aanvang: 8.00,MAP proef,vanaf 19-07-2025 19:00,\\\"Open voor alleen Golden Retrievers,\
+  \ leden van de GRCN hebben 10 dagen voorrang bij inschrijving na openstellen.\\\"\
+  ,Jachthondenproef,tier2\\r\\nTier 2,2025-09-27,KNJV Provincie Overijssel Stichting\
+  \ Jachthondentraining NW Overijssel [email\\u00a0protected],RIOS Genemuiden Lage\
+  \ Vlakteweg Genemuiden Aanvang: 8.00,Standaard Jachthonden proef,vanaf 19-07-2025\
+  \ 19:00,Zorg s.v.p. dat uw inschrijving compleet is.  Betaling pas na bevestiging\
+  \ deelname.,Jachthondenproef,tier2\\r\\nTier 2,2025-09-29,Stichting Jachthonden\
+  \ Brabant West [email\\u00a0protected],Klundert Molenvliet 7 4791 GB\\u00a0Klundert\
+  \ Aanvang: 7.30,MAP proef,vanaf 21-07-2025 19:00,,Jachthondenproef,tier2\\r\\nTier\
+  \ 2,2025-09-29,\\\"KNJV Provincie Overijssel Stichting Jachthondentraining NW Overijssel\
+  \ i.s.m: Jagersvereniging Groningen, Drenthe, Friesland en Overijssel [email\\u00a0protected]\\\
+  \",RIOS Genemuiden Lage Vlakteweg Genemuiden Aanvang: 8.00,MAP proef,vanaf 21-07-2025\
+  \ 19:00,Zorg dat uw inschrijving compleet is. Betaling pas na bevestiging deelname.,Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-10-04,Jachthondenopleiding 't Hogeland [email\\u00a0protected],Bosplan\
+  \ Biessum Damlaan 9931 TE\\u00a0Delfzijl Aanvang: 07.00,MAP proef,vanaf 26-07-2025\
+  \ 19:00,,Jachthondenproef,tier2\\r\\nTier 2,2025-10-04,Nederlandse Vereniging van\
+  \ Heidewachtel Liefhebbers [email\\u00a0protected],Het Hulsbeek Oldenzaal Aanvang:\
+  \ 08.00,MAP proef,vanaf 26-07-2025 19:00,Inschrijving open voor Continentaal Staande\
+  \ Honden en Spani\\u00ebls. Leden van de Heidewachtelvereniging hebben voorrang\
+  \ tot 10 dagen na openstellen inschrijving.,Jachthondenproef,tier2\\r\\nTier 2,2025-10-04,Werkende\
+  \ Flatcoated Retriever Groep [email\\u00a0protected],Berlicum Aanvang: 8.00,MAP\
+  \ proef,vanaf 26-07-2025 19:00,Open voor alle retrievers. Leden van de WFRG hebben\
+  \ voorrang mits dit in de inschrijving is gemeld.,Jachthondenproef,tier2\\r\\nTier\
+  \ 2,2025-10-05,Jhs. St. Hubertus [email\\u00a0protected],KC Delft tandhofdreef 10\
+  \ 2623 EX\\u00a0DELFT,MAP proef,vanaf 27-07-2025 19:00,\\\"Gelijk met inschrijving\
+  \ inschrijfgeld overmaken. Alleen complete inschrijvingen worden behandeld. Zorg\
+  \ dus ook dat uw KJV pas van dit jaar is. (Vink elk document aan, ook na een aanpassing\
+  \ weer opnieuw aanvinken.)\\\",Jachthondenproef,tier2\\r\\nTier 2,2025-10-05,Stichting\
+  \ Jachthonden Noord-Limburg [email\\u00a0protected],Reuver Drakenrijkstraat 5953TR\\\
+  u00a0Reuver Aanvang: 8:00,MAP proef,vanaf 27-07-2025 19:00,Leden van KNJV Provincie\
+  \ Limburg hebben 10 dagen voorrang bij inschrijving,Jachthondenproef,tier2\\r\\\
+  nTier 2,2025-10-10,Nederlandse Grote Munsterlander Vereniging i.s.m: Nederlandse\
+  \ Vereniging Duitse Staande Korthaar [email\\u00a0protected],Rha/Steenderen Emmerweg\
+  \ 12 7221LA\\u00a0Steenderen Aanvang: 07:00,MAP proef,vanaf 1-08-2025 19:00,Alleen\
+  \ Open voor Continentale Staande Honden. Leden met honden van de organiserende rasverenigingen\
+  \ hebben voorrang. Bij overinschrijving wordt gekeken naar mogelijkheden tot uitbreiding\
+  \ van het deelnemersveld.,Jachthondenproef,tier2\\r\\nTier 2,2025-10-11,Labrador\
+  \ Kring Nederland [email\\u00a0protected],Biddinghuizen Biddinghuizen Aanvang: 07:30,MAP\
+  \ proef,vanaf 2-08-2025 19:00,Open voor alle retrieverrassen.  Leden van de LKN\
+  \ hebben tot 1 week na openstellen voorrang bij overinschrijving,Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-10-11,\\\"KNJV Provincie Noord-Holland Stichting Jachthonden Noord-Holland,\
+  \ afd. Haarlemmermeer [email\\u00a0protected]\\\",Nieuw Vennep Hoofdweg 1041 2152LJ\\\
+  u00a0Nieuw Vennep Aanvang: 08.15,MAP proef,vanaf 2-08-2025 19:00,,Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-10-11,Stichting Jachthondentraining Frysl\\u00e2n [email\\u00a0protected],Terbant\
+  \ Schoolweg Terbant Aanvang: 7:00,MAP proef,vanaf 2-08-2025 19:00,,Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-10-11,Nederlandse Vereniging van Hongaarse Staande Honden 'Vizsla'\
+  \ [email\\u00a0protected],De Heerlijkheid van Wolphaartsdijk Muidenweg 10 4471NM\\\
+  u00a0Wolphaartsdijk Aanvang: 8:30,Standaard Jachthonden proef,vanaf 2-08-2025 19:00,Alleen\
+  \ voor Vizsla's. Leden van onze vereniging hebben voorrang tot 14 dagen na openstelling\
+  \ inschrijving.,Jachthondenproef,tier2\\r\\nTier 2,2025-10-13,Stichting Zeeuwse\
+  \ Jachthonden [email\\u00a0protected],Wolphaartsdijk Muidenweg 10 4471 NM\\u00a0Wolphaartsdijk\
+  \ Aanvang: 07.30,MAP proef,vanaf 4-08-2025 19:00,Gelijk met inschrijving inschrijfgeld\
+  \ overmaken. Zorg dat uw inschrijving compleet is.,Jachthondenproef,tier2\\r\\nTier\
+  \ 2,2025-10-18,Nederlandse Vereniging Langhaar [email\\u00a0protected],Almkerk Eendenveld\
+  \ thv huisnummer 5 4283 HV\\u00a0Giessen Aanvang: 08.00,MAP proef,vanaf 9-08-2025\
+  \ 19:00,Inschrijving voor alle continentaal staande honden. Leden van Nederlandse\
+  \ Vereniging Langhaar hebben voorrang tot 10 dagen na opening inschrijving,Jachthondenproef,tier2\\\
+  r\\nTier 2,2025-10-18,Stichting Jachthondentrainingen Zwiep i.s.m: Stichting Jachthondenopleiding\
+  \ Terborg en St.Jachthondenopleiding Oost Achterhoek [email\\u00a0protected],Neede\
+  \ Polhaarweg 3 7161 MC\\u00a0Neede Aanvang: 08.00,MAP proef,vanaf 9-08-2025 19:00,U\
+  \ kunt zich maar opgeven voor 1 proef(18e of 20e),Jachthondenproef,tier2\\r\\nTier\
+  \ 2,2025-10-20,KNJV Provincie Drenthe Vereniging Zelfopleiding Jachthonden N&M Drenthe\
+  \ [email\\u00a0protected],Noord Drenthe Aanvang: 07:30,MAP proef,vanaf 11-08-2025\
+  \ 19:00,,Jachthondenproef,tier2\\r\\nTier 2,2025-10-20,Stichting Jachthondentrainingen\
+  \ Zwiep i.s.m: Stichting Jachthondenopleiding Terborg en St.Jachthondenopleiding\
+  \ Oost Achterhoek [email\\u00a0protected],Neede Polhaarweg 3 7161 MC\\u00a0Neede\
+  \ Aanvang: 08.00,MAP proef,vanaf 11-08-2025 19:00,U kunt zich maar opgeven voor\
+  \ 1 proef(18e of 20e),Jachthondenproef,tier2\\r\\nTier 2,2025-10-31,Vereniging Jachthondenopleiding\
+  \ Heuvelrug [email\\u00a0protected],Provincie Utrecht Aanvang: 8.00,Provinciale\
+  \ jachthonden proef,vanaf 23-08-2025 19:00,Uitsluitend voor leden van de Jagersvereniging\
+  \ Provincie Utrecht,Jachthondenproef,tier2\\r\\nTier 2,2025-08-30,\\\"Engelse Springer\
+  \ Club, Welsh Springer Spaniel Club, Cocker Spaniel Club [email\\u00a0protected]\\\
+  \",Beers,Spani\\u00ebl Workingtest,niet mogelijk,Deelname is op uitnodiging.,ORWEJA\
+  \ Werktest,tier2\\r\\n\", \"csv_filename\": \"jachtproef_matches_20250706_172142.csv\"\
+  }"
