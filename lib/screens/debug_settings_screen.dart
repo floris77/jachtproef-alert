@@ -6,6 +6,7 @@ import '../services/debug_logging_service.dart';
 import '../utils/constants.dart';
 import '../services/auth_service.dart';
 import '../services/payment_service.dart';
+import '../services/match_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DebugSettingsScreen extends StatefulWidget {
@@ -338,6 +339,40 @@ class _DebugSettingsScreenState extends State<DebugSettingsScreen> {
                       label: const Text('Check Stuck Purchase Completers'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue[700],
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    // Clear Match Cache Button
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        try {
+                          MatchService.clearCache();
+                          
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Match cache cleared! Fresh data will be loaded from Firebase.'),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 3),
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Error clearing match cache: $e'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        }
+                      },
+                      icon: const Icon(Icons.refresh, color: Colors.white),
+                      label: const Text('Clear Match Cache'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green[700],
                         foregroundColor: Colors.white,
                       ),
                     ),

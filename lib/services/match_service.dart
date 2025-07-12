@@ -110,6 +110,19 @@ class MatchService {
     return '${matches.length}_${keyData.hashCode}';
   }
 
+  /// Clear cached matches to force fresh data fetch
+  static void clearCache() {
+    _cachedMatches = null;
+    _lastDataHash = null;
+    print('🧹 Match cache cleared - next fetch will be fresh from Firebase');
+  }
+
+  /// Force refresh matches by clearing cache and returning fresh stream
+  static Stream<List<Map<String, dynamic>>> getRefreshedMatchesStream() {
+    clearCache();
+    return getMatchesStream();
+  }
+
   /// Get match details from Firestore (not API)
   static Future<Map<String, dynamic>?> getMatchDetails(String matchId) async {
     try {

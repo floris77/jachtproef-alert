@@ -9,6 +9,7 @@ import '../services/auth_service.dart';
 import '../services/payment_service.dart';
 import '../services/analytics_service.dart';
 import '../services/email_notification_service.dart';
+import '../services/match_service.dart';
 import '../utils/constants.dart';
 import '../utils/help_system.dart';
 import '../utils/responsive_helper.dart';
@@ -971,6 +972,45 @@ class _InstellingenPageState extends State<InstellingenPage> {
                         ],
                       ),
                   ),
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: () async {
+                        try {
+                          MatchService.clearCache();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Match cache cleared! Fresh data will be loaded.'),
+                              backgroundColor: Colors.green,
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Error clearing cache: $e'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      },
+                      child: Row(
+                        children: [
+                          Icon(CupertinoIcons.refresh, color: Colors.green, size: 22),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Clear Match Cache',
+                              style: mainActionStyle,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const Spacer(),
+                          const Text('Force fresh data from Firebase', style: TextStyle(color: CupertinoColors.systemGrey, fontSize: 12)),
+                          Icon(CupertinoIcons.right_chevron, color: CupertinoColors.systemGrey, size: 18),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             ),
